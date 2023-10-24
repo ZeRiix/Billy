@@ -13,6 +13,7 @@ services:
         volumes:
             - ./app:/var/www
             - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        command: sh start.sh
         depends_on:
             composer:
                 condition: service_completed_successfully
