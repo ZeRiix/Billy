@@ -1,40 +1,48 @@
 version: "3.7"
 services:
-    composer:
-        image: composer
-        volumes:
-            - ./app:/app
-        command: composer install --ignore-platform-reqs --no-scripts
+  composer:
+    image: composer
+    volumes:
+      - ./app:/app
+    command: composer install --ignore-platform-reqs --no-scripts
 
-    php:
-        build: ./.docker/php
-        working_dir: /var/www/
-        env_file: ./app/.env
-        volumes:
-            - ./app:/var/www
-            - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-        command: sh start.sh
-        depends_on:
-            composer:
-                condition: service_completed_successfully
-            postgres:
-                condition: service_started
+  php:
+    build: ./.docker/php
+    working_dir: /var/www/
+    env_file: ./app/.env
+    volumes:
+      - ./app:/var/www
+      - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    command: sh start.sh
+    depends_on:
+      composer:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_started
 
-    postgres:
-        image: postgres:15.2
-        env_file: ./app/.env
-        volumes:
-            - postgres-data:/var/lib/postgresql/data
+  postgres:
+    image: postgres:15.2
+    env_file: ./app/.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
-    nginx:
-        image: nginx:alpine
-        ports:
-            - 8000:80
-        volumes:
-            - ./app/:/var/www
-            - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-        depends_on:
-            - php
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 8000:80
+    volumes:
+      - ./app/:/var/www
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  node:
+    build: ./.docker/node
+    volumes:
+      - ./app:/home/node/app
+    tty: true
+    working_dir: /home/node/app
+    command: tailwindcss -i ./src/input.css -o ./public/tailwind.css --watch
 
 volumes:
   postgres-data:
