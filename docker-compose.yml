@@ -4,6 +4,7 @@ services:
     image: composer
     volumes:
       - ./app:/app
+    user: 1000:1000
     command: composer install --ignore-platform-reqs --no-scripts
 
   php:
@@ -36,13 +37,23 @@ services:
     depends_on:
       - php
 
-  node:
-    build: ./.docker/node
+  webpack_installer:
+    image: node:20.8.1-alpine3.18
+    volumes:
+      - ./app:/home/node/app
+    working_dir: /home/node/app
+    command: npm i
+
+  webpack:
+    image: node:20.8.1-alpine3.18
     volumes:
       - ./app:/home/node/app
     tty: true
     working_dir: /home/node/app
-    command: tailwindcss -i ./src/input.css -o ./public/tailwind.css --watch
+    command: npm run watch
+    depends_on:
+      webpack_installer:
+        condition: service_completed_successfully
 
 volumes:
   postgres-data:
