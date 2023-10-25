@@ -14,7 +14,8 @@ services:
     volumes:
       - ./app:/var/www
       - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    command: sh start.sh
+    command: php-fpm
+    user: 1000:1000
     depends_on:
       composer:
         condition: service_completed_successfully
@@ -41,6 +42,7 @@ services:
     image: node:20.8.1-alpine3.18
     volumes:
       - ./app:/home/node/app
+    user: 1000:1000
     working_dir: /home/node/app
     command: npm i
 
@@ -51,6 +53,7 @@ services:
     tty: true
     working_dir: /home/node/app
     command: npm run watch
+    user: 1000:1000
     depends_on:
       webpack_installer:
         condition: service_completed_successfully
