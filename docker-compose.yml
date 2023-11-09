@@ -5,7 +5,8 @@ services:
     volumes:
       - ./app:/app
     user: 1000:1000
-    command: composer install --ignore-platform-reqs --no-scripts
+    #command: composer install --ignore-platform-reqs --no-scripts
+    command: composer update --ignore-platform-reqs --no-scripts
 
   php:
     build: ./.docker/php
