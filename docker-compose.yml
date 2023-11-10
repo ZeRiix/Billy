@@ -58,6 +58,8 @@ services:
     depends_on:
       webpack_installer:
         condition: service_completed_successfully
+      composer:
+        condition: service_completed_successfully
 
 volumes:
   postgres-data:
