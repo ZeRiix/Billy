@@ -8,5 +8,16 @@
 	"[yaml]": {
 		"editor.tabSize": 2,
 		"editor.insertSpaces": true
-	}
+	},
+
+	"emmet.includeLanguages": {
+		"twig": "html"
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true,
+	},
+	"editor.formatOnSave": true,
+	"prettier.documentSelectors": [
+		"**/*.php"
+	]
 }
