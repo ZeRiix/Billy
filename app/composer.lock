@@ -6185,16 +6185,16 @@
         },
         {
             "name": "symfony/stimulus-bundle",
-            "version": "v2.13.0",
+            "version": "v2.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stimulus-bundle.git",
-                "reference": "f6c8ff81b7b2ae82327f4a71c5f9377eb31f83f1"
+                "reference": "d7190749571a7a02664b677dab37f8949315b4d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/f6c8ff81b7b2ae82327f4a71c5f9377eb31f83f1",
-                "reference": "f6c8ff81b7b2ae82327f4a71c5f9377eb31f83f1",
+                "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/d7190749571a7a02664b677dab37f8949315b4d5",
+                "reference": "d7190749571a7a02664b677dab37f8949315b4d5",
                 "shasum": ""
             },
             "require": {
@@ -6234,7 +6234,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/stimulus-bundle/tree/v2.13.0"
+                "source": "https://github.com/symfony/stimulus-bundle/tree/v2.13.2"
             },
             "funding": [
                 {
@@ -6250,7 +6250,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-07T21:10:32+00:00"
+            "time": "2023-11-11T01:20:31+00:00"
         },
         {
             "name": "symfony/stopwatch",
@@ -6842,16 +6842,16 @@
         },
         {
             "name": "symfony/ux-vue",
-            "version": "v2.13.0",
+            "version": "v2.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-vue.git",
-                "reference": "d14236310bcc6b2a77ed4300b960a5b33de60308"
+                "reference": "26593ad52faaaa30af450f2732496d53ac897b34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-vue/zipball/d14236310bcc6b2a77ed4300b960a5b33de60308",
-                "reference": "d14236310bcc6b2a77ed4300b960a5b33de60308",
+                "url": "https://api.github.com/repos/symfony/ux-vue/zipball/26593ad52faaaa30af450f2732496d53ac897b34",
+                "reference": "26593ad52faaaa30af450f2732496d53ac897b34",
                 "shasum": ""
             },
             "require": {
@@ -6902,7 +6902,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-vue/tree/v2.13.0"
+                "source": "https://github.com/symfony/ux-vue/tree/v2.13.2"
             },
             "funding": [
                 {
@@ -6918,7 +6918,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-07T21:10:32+00:00"
+            "time": "2023-11-11T01:20:31+00:00"
         },
         {
             "name": "symfony/validator",
