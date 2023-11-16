@@ -35,7 +35,7 @@
 			<img src="{{ asset('assets/images/hero.jpeg') }}" alt="Comptable" class="w-full h-full object-cover">
 		</div>
 	</section>
-	<section class="bg-darker-white">
+	<section class="bg-dark-white">
 		<div class="container m-auto min-h-[480px] p-12 flex flex-col justify-between items-center">
 			<h2 class="text-3xl font-semibold text-center md:text-4xl">Pourquoi choisir Billy ?</h2>
 			<div class="mt-8 flex flex-wrap justify-center gap-16">
@@ -64,5 +64,59 @@
 			</div>
 		</div>
 	</section>
+	<section class="p-12">
+		<h2 class="text-3xl font-semibold text-center md:text-4xl">Les questions fréquemment posées</h2>
+		<div class="max-w-[570px] m-auto mt-8 flex flex-col gap-2.5">
+			<div class="p-4 bg-dark-white border rounded-t-lg rounded-b-lg shadow-md">
+				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl">
+					<p>Question 1</p>
+					<span class="mdi mdi-chevron-up"></span>
+				</div>
+				<div class="content hidden">
+					<hr class="h-px -mx-4 my-6 bg-darker-white border-0">
+					<div>
+						<p>
+							Réponse 1.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="p-4 bg-dark-white border rounded-t-lg rounded-b-lg shadow-md">
+				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl">
+					<p>Question 2</p>
+					<span class="mdi mdi-chevron-up"></span>
+				</div>
+				<div class="content hidden">
+					<hr class="h-px -mx-4 my-6 bg-darker-white border-0">
+					<div>
+						<p>
+							Réponse 2.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="p-4 bg-dark-white border rounded-t-lg rounded-b-lg shadow-md">
+				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl">
+					<p>Question 3</p>
+					<span class="mdi mdi-chevron-up"></span>
+				</div>
+				<div class="content hidden">
+					<hr class="h-px -mx-4 my-6 bg-darker-white border-0">
+					<div>
+						<p>
+							Réponse 3.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 </main>
+<footer class="h-80 bg-darker-green">
+</footer>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/accordion.js') }}"></script>
 {% endblock %}
