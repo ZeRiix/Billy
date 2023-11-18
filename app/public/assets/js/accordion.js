@@ -1,7 +1,7 @@
 console.log("accordion.js loaded");
 
 document.addEventListener("DOMContentLoaded", function(){
-	const accordionHeaders = document.querySelectorAll(".bg-bdark-white");
+	const accordionHeaders = document.querySelectorAll(".accordion");
 
 	accordionHeaders.forEach(header => {
 		header.addEventListener("click", function(){
