@@ -2,72 +2,105 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+// local imports
+use App\Services\SchemaService;
+use App\Services\User\AuthService;
+use App\Services\User\UserService;
+
 class UserController extends AbstractController
 {
-	private $manager;
+	#[Route("/register", name: "register_user", methods: "POST")]
+	public function register(
+		Request $request,
+		AuthService $authService
+	): JsonResponse {
+		try {
+			// Validate input data
+			$data = SchemaService::validateSchema(
+				json_decode($request->getContent(), true),
+				"register"
+			);
+			// Create user
+			$user = $authService->register($data);
 
-	private $user;
-
-	public function __construct(EntityManagerInterface $manager, UserRepository $user)
-	{
-		$this->manager = $manager;
-		$this->user = $user;
+			return new JsonResponse($user, Response::HTTP_CREATED);
+		} catch (\Exception $e) {
+			return new JsonResponse($e->getMessage(), $e->getCode());
+		}
 	}
 
-    #[Route('/api/user', name: 'create_user', methods: 'POST')]
-    public function create(Request $request): Response
-    {
-		$responseStatus = false;
-		$responseCode = 200;
-		$responseMessage = "";
+	#[Route("/login", name: "login_user", methods: "POST")]
+	public function login(Request $request, AuthService $authService): Response
+	{
+		try {
+			// Validate input data
+			$data = SchemaService::validateSchema(
+				json_decode($request->getContent(), true),
+				"login"
+			);
 
-		$data = json_decode($request->getContent(), true);
+			// get user if exists
+			$user = $authService->login($data);
+			// create token
+			$token = $authService->createToken($user);
+			// set token cookie
+			$authService->setTokenCookie($token);
 
-		$email = $data["email"];
-		$password = $data["password"];
-
-		$emailExist = $this->user->findOneByEmail($email);
-
-		if ($emailExist) {
-			$responseCode = 409;
-			$responseMessage = "Cet email existe déjà!";
-		} else {
-			$user = new User($email, $password);
-
-			if ($user->getEmail() !== null) {
-				$responseStatus = true;
-				$responseMessage = "L'utilisateur à bien été ajouté!";
-
-				$this->manager->persist($user);
-				$this->manager->flush();
-			} else {
-				$responseCode = 400;
-				$responseStatus = false;
-				$responseMessage = "L'email n'est pas valide!";
-			}
+			return new Response(null, Response::HTTP_ACCEPTED);
+		} catch (\Exception $e) {
+			return new JsonResponse($e->getMessage());
 		}
-		return new JsonResponse(
-			[
-				"code" => $responseCode,
-				"status" => $responseStatus,
-				"message" => $responseMessage
-			]
-		);
-    }
+	}
 
-	#[Route('/api/users', name: 'all_user', methods: 'GET')]
-    public function getUsers(): Response
-    {
-		$users = $this->user->findAll();
-		return $this->json($users);
+	#[Route("/api/users", name: "all_user", methods: "GET")]
+	public function getUsers(UserService $userService): JsonResponse
+	{
+		try {
+			$users = $userService->getAll();
+
+			return new JsonResponse($users, Response::HTTP_OK);
+		} catch (\Exception $e) {
+			return new JsonResponse(
+				$e->getMessage(),
+				Response::HTTP_INTERNAL_SERVER_ERROR
+			);
+		}
+	}
+
+	#[Route("/api/user/{id}", name: "get_user", methods: "GET")]
+	public function getUserById(
+		UserService $userService,
+		string $id
+	): JsonResponse {
+		try {
+			$user = $userService->getById($id);
+
+			return new JsonResponse($user, Response::HTTP_OK);
+		} catch (\Exception $e) {
+			return new JsonResponse(
+				$e->getMessage(),
+				$e->getCode() === 0
+					? Response::HTTP_INTERNAL_SERVER_ERROR
+					: $e->getCode()
+			);
+		}
+	}
+
+	#[Route("/api/user/{id}", name: "update_user", methods: "DELETE")]
+	public function deleteUser(UserService $userService, string $id): Response
+	{
+		try {
+			$userService->deleteById($id);
+
+			return new Response(null, Response::HTTP_NO_CONTENT);
+		} catch (\Exception $e) {
+			return new JsonResponse($e->getMessage(), $e->getCode());
+		}
 	}
 }
