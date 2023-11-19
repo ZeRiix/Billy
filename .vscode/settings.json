@@ -1,23 +1,21 @@
 {
-	"editor.tabSize": 4,
-	"editor.insertSpaces": false,
-	"editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
 
-	"files.autoSave": "off",
+    "files.autoSave": "off",
 
-	"[yaml]": {
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true
-	},
+    "[yaml]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    },
 
-	"emmet.includeLanguages": {
-		"twig": "html"
-	},
-	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true,
-	},
-	"editor.formatOnSave": true,
-	"prettier.documentSelectors": [
-		"**/*.php"
-	]
+    "emmet.includeLanguages": {
+        "twig": "html"
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": true,
+    "prettier.documentSelectors": ["**/*.php"]
 }

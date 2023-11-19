@@ -24,5 +24,51 @@ services:
         tags: ['controller.service_arguments']
         autowire: true
 
+    # Conf Base Repository
+
+    App\Repository\BaseRepository:
+        class: 'App\Repository\BaseRepository'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@validator'
+
+    App\Repository\ClientRepository:
+        class: 'App\Repository\ClientRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\CommandeRepository:
+        class: 'App\Repository\CommandeRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\DevisRepository:
+        class: 'App\Repository\DevisRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\FactureRepository:
+        class: 'App\Repository\FactureRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\OrganisationRepository:
+        class: 'App\Repository\OrganisationRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\RoleRepository:
+        class: 'App\Repository\RoleRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\ServiceRepository:
+        class: 'App\Repository\ServiceRepository'
+        parent: 'App\Repository\BaseRepository'
+
+    App\Repository\UserRepository:
+        class: 'App\Repository\UserRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+    
+    # define Middleware
+    App\Middleware\CheckTokenMiddleware:
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
