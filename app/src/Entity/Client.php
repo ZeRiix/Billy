@@ -11,29 +11,29 @@ use Symfony\Component\Uid\Uuid;
 
 // local imports
 use App\Repository\ClientRepository;
-use App\Entity\Organisation;
+use App\Entity\Organiation;
 use App\Entity\Devis;
 use App\Entity\Facture;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ORM\Table(name: '`client`')]
+#[ORM\Table(name: "`client`")]
 #[ORM\HasLifecycleCallbacks]
 class Client
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organisation::class, inversedBy: 'clients')]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "clients")]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organisation $organisation;
+	private Organization $Organization;
 
-	#[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'client')]
+	#[ORM\OneToMany(targetEntity: Devis::class, mappedBy: "client")]
 	private Collection $devis;
 
-	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: 'client')]
+	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "client")]
 	private Collection $factures;
 
 	#[ORM\Column(length: 100, nullable: false)]
@@ -71,14 +71,14 @@ class Client
 		return $this->id;
 	}
 
-	public function getOrganisation(): ?Organisation
+	public function getOrganization(): ?Organization
 	{
-		return $this->organisation;
+		return $this->Organization;
 	}
 
-	public function setOrganisation(?Organisation $organisation): self
+	public function setOrganization(?Organization $Organization): self
 	{
-		$this->organisation = $organisation;
+		$this->Organization = $Organization;
 
 		return $this;
 	}

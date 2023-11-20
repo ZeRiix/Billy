@@ -9,30 +9,30 @@ use Symfony\Component\Uid\Uuid;
 
 // local imports
 use App\Repository\FactureRepository;
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\Client;
 use App\Entity\Devis;
 
 #[ORM\Entity(repositoryClass: FactureRepository::class)]
-#[ORM\Table(name: '`facture`')]
+#[ORM\Table(name: "`facture`")]
 #[ORM\HasLifecycleCallbacks]
 class Facture
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organisation::class, inversedBy: 'factures')]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "factures")]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organisation $organisation;
+	private Organization $Organization;
 
-	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'factures')]
+	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: "factures")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Client $client;
 
-	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: 'factures')]
+	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: "factures")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Devis $devis;
 
@@ -48,10 +48,24 @@ class Facture
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $is_signed = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private ?string $total_ht = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private ?string $total_ttc = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -65,14 +79,14 @@ class Facture
 		return $this->id;
 	}
 
-	public function getOrganisation(): ?Organisation
+	public function getOrganization(): ?Organization
 	{
-		return $this->organisation;
+		return $this->Organization;
 	}
 
-	public function setOrganisation(Organisation $organisation): self
+	public function setOrganization(Organization $Organization): self
 	{
-		$this->organisation = $organisation;
+		$this->Organization = $Organization;
 
 		return $this;
 	}

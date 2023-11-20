@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'une organisation{% endblock %}
+
+{% block body %}
+{{ form_start(form) }}
+    <div class="my-custom-class-for-errors">
+        {{ form_errors(form) }}
+    </div>
+
+    <div class="bg-slate-100">
+        <div class="col">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.adress) }}
+        </div>
+		<div class="col">
+            {{ form_row(form.email) }}
+        </div>
+		<div class="col">
+            {{ form_row(form.phone) }}
+        </div>
+		<div class="col">
+            {{ form_row(form.activity) }}
+        </div>
+		<div class="col">
+            {{ form_row(form.siret) }}
+        </div>
+    </div>
+{{ form_end(form) }}
+{% endblock %}
