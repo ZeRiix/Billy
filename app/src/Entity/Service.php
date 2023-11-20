@@ -11,29 +11,29 @@ use Symfony\Component\Uid\Uuid;
 
 // local imports
 use App\Repository\ServiceRepository;
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\Commande;
 use App\Entity\Devis;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
-#[ORM\Table(name: '`service`')]
+#[ORM\Table(name: "`service`")]
 #[ORM\HasLifecycleCallbacks]
 class Service
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organisation::class, inversedBy: 'services')]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "services")]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organisation $organisation;
+	private Organization $Organization;
 
-	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'service')]
+	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "service")]
 	private Collection $commandes;
 
-	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: 'services')]
+	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: "services")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Devis $devis;
 
@@ -43,13 +43,34 @@ class Service
 	#[ORM\Column(type: Types::TEXT)]
 	private ?string $description = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private ?string $total_ht = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private ?string $total_ttc = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private $discount = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -63,19 +84,19 @@ class Service
 		$this->commandes = new ArrayCollection();
 	}
 
-    public function getId(): ?Uuid
-    {
-        return $this->id;
-    }
-
-	public function getOrganisation(): ?Organisation
+	public function getId(): ?Uuid
 	{
-		return $this->organisation;
+		return $this->id;
 	}
 
-	public function setOrganisation(?Organisation $organisation): self
+	public function getOrganization(): ?Organization
 	{
-		$this->organisation = $organisation;
+		return $this->Organization;
+	}
+
+	public function setOrganization(?Organization $Organization): self
+	{
+		$this->Organization = $Organization;
 
 		return $this;
 	}

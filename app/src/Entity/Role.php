@@ -11,25 +11,25 @@ use Doctrine\Common\Collections\Collection;
 
 //local imports
 use App\Repository\RoleRepository;
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
-#[ORM\Table(name: '`role`')]
+#[ORM\Table(name: "`role`")]
 #[ORM\HasLifecycleCallbacks]
 class Role
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organisation::class, inversedBy: 'roles')]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "roles")]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organisation $organisation;
+	private Organization $Organization;
 
-	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
+	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: "roles")]
 	#[ORM\JoinColumn(nullable: true)]
 	private Collection $users;
 
@@ -62,14 +62,14 @@ class Role
 		return $this->id;
 	}
 
-	public function getOrganisation(): ?Organisation
+	public function getOrganization(): ?Organization
 	{
-		return $this->organisation;
+		return $this->Organization;
 	}
 
-	public function setOrganisation(?Organisation $organisation): self
+	public function setOrganization(?Organization $Organization): self
 	{
-		$this->organisation = $organisation;
+		$this->Organization = $Organization;
 
 		return $this;
 	}

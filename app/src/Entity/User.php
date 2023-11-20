@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
@@ -12,42 +11,41 @@ use Symfony\Component\Uid\Uuid;
 
 // local imports
 use App\Repository\UserRepository;
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\Service;
 use App\Entity\Facture;
 use App\Entity\Role;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: "`user`")]
 #[ORM\HasLifecycleCallbacks]
 class User
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-
-	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
 	private Collection $roles;
 
-	#[ORM\ManyToMany(targetEntity: Organisation::class, inversedBy: 'users')]
+	#[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
-	private Collection $organisations;
+	private Collection $Organizations;
 
-	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'user')]
+	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "user")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $services;
 
-	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: 'user')]
+	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "user")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $factures;
 
-	#[ORM\OneToMany(targetEntity: Organisation::class, mappedBy: 'createdBy')]
+	#[ORM\OneToMany(targetEntity: Organization::class, mappedBy: "createdBy")]
 	#[ORM\JoinColumn(nullable: false)]
-	private Collection $createdOrganisations;
+	private Collection $createdOrganizations;
 
 	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $firstName = null;
@@ -72,10 +70,10 @@ class User
 	public function __construct()
 	{
 		$this->roles = new ArrayCollection();
-		$this->organisations = new ArrayCollection();
+		$this->Organizations = new ArrayCollection();
 		$this->services = new ArrayCollection();
 		$this->factures = new ArrayCollection();
-		$this->createdOrganisations = new ArrayCollection();
+		$this->createdOrganizations = new ArrayCollection();
 	}
 
 	public function getId(): ?Uuid
@@ -95,14 +93,14 @@ class User
 		return $this;
 	}
 
-	public function getOrganisations(): Collection
+	public function getOrganizations(): Collection
 	{
-		return $this->organisations;
+		return $this->Organizations;
 	}
 
-	public function setOrganisations(Collection $organisations): self
+	public function setOrganizations(Collection $Organizations): self
 	{
-		$this->organisations = $organisations;
+		$this->Organizations = $Organizations;
 
 		return $this;
 	}
@@ -117,9 +115,9 @@ class User
 		return $this->factures;
 	}
 
-	public function getCreatedOrganisations(): Collection
+	public function getCreatedOrganizations(): Collection
 	{
-		return $this->createdOrganisations;
+		return $this->createdOrganizations;
 	}
 
 	public function getFirstName(): ?string
