@@ -17,5 +17,7 @@
         "source.fixAll.eslint": true
     },
     "editor.formatOnSave": true,
-    "prettier.documentSelectors": ["**/*.php"]
+    "prettier.documentSelectors": ["**/*.php"],
+	
+	"intelephense.format.enable": false,
 }
