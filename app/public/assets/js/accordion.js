@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", function(){
 			const content = this.querySelector(".content");
 			content.classList.toggle("hidden");
 
-			const icon = this.querySelector("span");
-			icon.classList.toggle("mdi-chevron-down");
+			const icon = this.querySelectorAll("span")[this.querySelectorAll("span").length - 1];
 			icon.classList.toggle("mdi-chevron-up");
+			icon.classList.toggle("mdi-chevron-down");
 		});
 	});
 });

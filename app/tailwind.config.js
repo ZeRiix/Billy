@@ -16,6 +16,8 @@ module.exports = {
 				"blighter-green": "#B1C3BB",
 				"bdark-white": "#EFEFEF",
 				"bdarker-white": "#D3D3D3",
+				"grey": "#71717A",
+				"lighter-grey": "#768CA0"
 			},
 		}
 	},

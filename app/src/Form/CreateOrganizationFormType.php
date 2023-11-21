@@ -23,37 +23,56 @@ class CreateOrganizationFormType extends AbstractType
 			->add("name", TextType::class, [
 				"required" => true,
 				"attr" => [
-					"class" => "form-control",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
 					"minlenght" => "2",
 					"maxlenght" => "100",
 				],
-				"label" => "Nom de l'Organization",
+				"label" => "Nom de l'organisation",
 				"label_attr" => [
 					"class" => "form_label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 2, "max" => 100]),
+					new Assert\NotBlank(
+						message: "Le nom de l'organisation est obligatoire"
+					),
+					new Assert\Length([
+						"min" => 2,
+						"max" => 100,
+						"minMessage" =>
+							'Le nom de l\'organisation doit faire au moins {{ limit }} caractères',
+						"maxMessage" =>
+							'Le nom de l\'organisation doit faire au plus {{ limit }} caractères',
+					]),
 				],
 			])
-			->add("adress", TextType::class, [
+			->add("address", TextType::class, [
 				"attr" => [
-					"class" => "form-control",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
 					"minlenght" => "2",
 					"maxlenght" => "255",
 				],
-				"label" => "Adresse de l'Organization",
+				"label" => "Adresse",
 				"label_attr" => [
 					"class" => "form_label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 2, "max" => 255]),
+					new Assert\NotBlank(message: "L'adresse est obligatoire"),
+					new Assert\Length([
+						"min" => 2,
+						"max" => 255,
+						"minMessage" =>
+							"L'adresse doit faire au moins {{ limit }} caractères",
+						"maxMessage" =>
+							"L'adresse doit faire au plus {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("email", EmailType::class, [
 				"attr" => [
-					"class" => "form-control",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
 					"minlenght" => "2",
 					"maxlenght" => "180",
 				],
@@ -62,60 +81,95 @@ class CreateOrganizationFormType extends AbstractType
 					"class" => "form-label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 2, "max" => 180]),
+					new Assert\NotBlank(
+						message: "L'adresse email est obligatoire"
+					),
+					new Assert\Length([
+						"min" => 2,
+						"max" => 180,
+						"minMessage" =>
+							"L'adresse email doit faire au moins {{ limit }} caractères",
+						"maxMessage" =>
+							"L'adresse email doit faire au plus {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("phone", TelType::class, [
 				"attr" => [
-					"class" => "form-control",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
 					"minlenght" => "10",
 					"maxlenght" => "10",
 				],
-				"label" => "Téléphone de l'Organization",
+				"label" => "Téléphone",
 				"label_attr" => [
 					"class" => "form-label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 10, "max" => 10]),
+					new Assert\NotBlank(
+						message: "Le téléphone est obligatoire"
+					),
+					new Assert\Length([
+						"min" => 10,
+						"max" => 10,
+						"exactMessage" =>
+							"Le numéro de téléphone doit faire {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("activity", TextType::class, [
 				"attr" => [
-					"class" => "form-control",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
 					"minlenght" => "2",
 					"maxlenght" => "100",
 				],
-				"label" => "Activité de l'Organization",
+				"label" => "Secteur d'activité",
 				"label_attr" => [
 					"class" => "form_label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 2, "max" => 100]),
+					new Assert\NotBlank(
+						message: "Le secteur d'activité est obligatoire"
+					),
+					new Assert\Length([
+						"min" => 2,
+						"max" => 100,
+						"minMessage" =>
+							"Le secteur d'activité doit faire au moins {{ limit }} caractères",
+						"maxMessage" =>
+							"Le secteur d'activité doit faire au plus {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("siret", IntegerType::class, [
 				"required" => true,
 				"attr" => [
-					"class" => "form-control",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
 					"minlenght" => "14",
 					"maxlenght" => "14",
 				],
-				"label" => "Siret de l'Organization",
+				"label" => "Numéro de siret",
 				"label_attr" => [
 					"class" => "form_label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 14, "max" => 14]),
+					new Assert\NotBlank(message: "Le siret est obligatoire"),
+					new Assert\Length([
+						"min" => 14,
+						"max" => 14,
+						"exactMessage" =>
+							"Le siret doit faire {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("submit", SubmitType::class, [
 				"attr" => [
-					"class" => "btn btn-primary",
+					"class" =>
+						"px-12 py-4 text-white text-lg font-semibold bg-lighter-green rounded-large hover:bg-green ease-in-out duration-300",
 				],
+				"label" => "Créer",
 			]);
 	}
 
