@@ -27,10 +27,10 @@ class ClientRepository extends BaseRepository
 
 		$client->setFirstName($data["firstName"]);
 		$client->setName($data["name"]);
-		$client->setAdress($data["adress"]);
+		$client->setAddress($data["address"]);
 		$client->setEmail($data["email"]);
 		$client->setPhone($data["phone"]);
-		$client->setAdress($data["adress"]);
+		$client->setAddress($data["address"]);
 		$client->setActivity($data["activity"]);
 		$client->setOrganization($data["Organization"]);
 

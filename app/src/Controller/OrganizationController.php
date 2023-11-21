@@ -13,7 +13,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OrganizationController extends AbstractController
 {
-	#[Route("/organization", name: "app_organization", methods: ["GET"])]
+	#[
+		Route(
+			"/organization",
+			name: "app_organization",
+			methods: ["GET", "POST"]
+		)
+	]
 	public function create(
 		Request $request,
 		EntityManagerInterface $manager
@@ -27,7 +33,7 @@ class OrganizationController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			$organization = $form->getData();
 			$url =
-				"https://api.insee.fr/entreprises/sirene/V3/siret/" +
+				"https://api.insee.fr/entreprises/sirene/V3/siret/" .
 				$organization->getSiret();
 			$client = HttpClient::create();
 			$response = $client->request("GET", $url);
@@ -35,10 +41,10 @@ class OrganizationController extends AbstractController
 			if ($responseStatus !== Response::HTTP_OK) {
 				$this->addFlash("error", "Veuillez vérifier votre siret.");
 			} else {
-				$this->addFlash("success", "L'organisation à bien été créee.");
+				$manager->persist($organization);
+				$manager->flush($organization);
+				$this->addFlash("success", "L'organisation à bien été créée.");
 			}
-			$manager->persist($organization);
-			$manager->flush($organization);
 		}
 
 		return $this->render("organization/index.html.twig", [

@@ -16,5 +16,13 @@
     </head>
     <body>
         {% block body %}{% endblock %}
+
+		{% for message in app.flashes("error") %}
+        	<span>{{ message }}</span>
+    	{% endfor %}
+		
+		{% for message in app.flashes("success") %}
+			<span>{{ message }}</span>
+		{% endfor %}
     </body>
 </html>
