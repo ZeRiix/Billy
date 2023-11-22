@@ -43,7 +43,8 @@
 		"symfony/webpack-encore-bundle": "^2.1",
 		"symfony/yaml": "6.3.*",
 		"twig/extra-bundle": "^2.12|^3.0",
-		"twig/twig": "^2.12|^3.0"
+		"twig/twig": "^2.12|^3.0",
+		"symfony/google-mailer": "6.4.x-dev"
 	},
 	"config": {
 		"allow-plugins": {
