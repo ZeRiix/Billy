@@ -24,7 +24,7 @@ class CreateOrganizationFormType extends AbstractType
 				"required" => true,
 				"attr" => [
 					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "100",
 				],
@@ -49,7 +49,7 @@ class CreateOrganizationFormType extends AbstractType
 			->add("address", TextType::class, [
 				"attr" => [
 					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "255",
 				],
@@ -72,7 +72,7 @@ class CreateOrganizationFormType extends AbstractType
 			->add("email", EmailType::class, [
 				"attr" => [
 					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "180",
 				],
@@ -97,7 +97,7 @@ class CreateOrganizationFormType extends AbstractType
 			->add("phone", TelType::class, [
 				"attr" => [
 					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "10",
 					"maxlenght" => "10",
 				],
@@ -120,7 +120,7 @@ class CreateOrganizationFormType extends AbstractType
 			->add("activity", TextType::class, [
 				"attr" => [
 					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "100",
 				],
@@ -146,7 +146,7 @@ class CreateOrganizationFormType extends AbstractType
 				"required" => true,
 				"attr" => [
 					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-green",
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "14",
 					"maxlenght" => "14",
 				],
@@ -167,7 +167,7 @@ class CreateOrganizationFormType extends AbstractType
 			->add("submit", SubmitType::class, [
 				"attr" => [
 					"class" =>
-						"px-12 py-4 text-white text-lg font-semibold bg-lighter-green rounded-large hover:bg-green ease-in-out duration-300",
+						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
 				],
 				"label" => "Créer",
 			]);
