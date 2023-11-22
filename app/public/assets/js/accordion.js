@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	accordionHeaders.forEach(header => {
 		header.addEventListener("click", function(){
+			this.classList.toggle("text-white");
+
 			const content = this.querySelector(".content");
 			content.classList.toggle("hidden");
 
