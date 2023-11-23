@@ -2,105 +2,252 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Entity\UserRegister;
+use App\Form\ChangePasswordForm;
+use App\Form\ForgetPasswordForm;
+use App\Form\UserLoginForm;
+use App\Form\UserRegisterForm;
+use App\Repository\ForgetPasswordRepository;
+use App\Services\Token\AccessTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
-// local imports
-use App\Services\SchemaService;
 use App\Services\User\AuthService;
-use App\Services\User\UserService;
 
 class UserController extends AbstractController
 {
-	#[Route("/register", name: "register_user", methods: "POST")]
-	public function register(
+	#[Route("/register", name: "register_user", methods: ["GET", "POST"])]
+	public function register(Request $request, AuthService $authService)
+	{
+		$response = new Response();
+
+		// check if user has already valide token
+		if (AccessTokenService::extractCookie($request->cookies)) {
+			// redirect user to user dashboard
+			$response->setStatusCode(Response::HTTP_FOUND);
+			$response->headers->set("Location", "/dashboard");
+			return $response;
+		}
+
+		// create form
+		$userRegister = new UserRegister();
+		$userRegisterForm = $this->createForm(
+			UserRegisterForm::class,
+			$userRegister
+		);
+		$userRegisterForm->handleRequest($request);
+
+		if ($userRegisterForm->isSubmitted() && $userRegisterForm->isValid()) {
+			$userRegister = $userRegisterForm->getData();
+
+			try {
+				$authService->register($userRegister);
+				$this->addFlash("success", "Email de confirmation envoyé.");
+				$response->setStatusCode(Response::HTTP_CREATED);
+			} catch (\Exception $error) {
+				$this->addFlash("error", $error->getMessage());
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			}
+		}
+
+		return $this->render(
+			"user/register.html.twig",
+			[
+				"userRegisterForm" => $userRegisterForm->createView(),
+			],
+			$response
+		);
+	}
+
+	#[Route("/validate", name: "validate_user", methods: "GET")]
+	public function validate(Request $request, AuthService $authService)
+	{
+		$response = new Response();
+		$response->setStatusCode(Response::HTTP_FOUND);
+
+		// check if user has already valide token
+		if (AccessTokenService::extractCookie($request->cookies)) {
+			// redirect user to user dashboard
+			$response->headers->set("Location", "/dashboard");
+			return $response;
+		}
+
+		try {
+			$user = $authService->validate($request->query->get("id"));
+
+			// give accessToken to user
+			$response->headers->setCookie(
+				AccessTokenService::createCookie($user)
+			);
+
+			// redirect user to user dashboard
+			$response->headers->set("Location", "/dashboard");
+		} catch (\Exception $error) {
+			$response->headers->set("Location", "/");
+		}
+
+		return $response;
+	}
+
+	#[Route("/login", name: "login_user", methods: ["GET", "POST"])]
+	public function login(Request $request, AuthService $authService)
+	{
+		$response = new Response();
+
+		// check if user has already valide token
+		if (AccessTokenService::extractCookie($request->cookies)) {
+			// redirect user to user dashboard
+			$response->setStatusCode(Response::HTTP_FOUND);
+			$response->headers->set("Location", "/dashboard");
+			return $response;
+		}
+
+		// create user form
+		$user = new User();
+		$userLoginForm = $this->createForm(UserLoginForm::class, $user);
+		$userLoginForm->handleRequest($request);
+
+		if ($userLoginForm->isSubmitted() && $userLoginForm->isValid()) {
+			$user = $userLoginForm->getData();
+
+			try {
+				$user = $authService->login($user);
+
+				// give accessToken to user
+				$response->headers->setCookie(
+					AccessTokenService::createCookie($user)
+				);
+
+				// redirect user to user dashboard
+				$response->setStatusCode(Response::HTTP_FOUND);
+				$response->headers->set("Location", "/dashboard");
+				return $response;
+			} catch (\Exception $error) {
+				$this->addFlash("error", $error->getMessage());
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			}
+		}
+
+		return $this->render(
+			"user/login.html.twig",
+			[
+				"userLoginForm" => $userLoginForm->createView(),
+			],
+			$response
+		);
+	}
+
+	#[
+		Route(
+			"/forget-password",
+			name: "forget-password",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function forgetPassword(Request $request, AuthService $authService)
+	{
+		$response = new Response();
+
+		// check if user has already valide token
+		if (AccessTokenService::extractCookie($request->cookies)) {
+			// redirect user to user dashboard
+			$response->setStatusCode(Response::HTTP_FOUND);
+			$response->headers->set("Location", "/dashboard");
+			return $response;
+		}
+
+		$user = new User();
+		$forgetPasswordForm = $this->createForm(
+			ForgetPasswordForm::class,
+			$user
+		);
+		$forgetPasswordForm->handleRequest($request);
+
+		if (
+			$forgetPasswordForm->isSubmitted() &&
+			$forgetPasswordForm->isValid()
+		) {
+			$user = $forgetPasswordForm->getData();
+
+			try {
+				$authService->forgetPassword($user);
+
+				// redirect user to user dashboard
+				$this->addFlash("success", "Email de confirmation envoyé.");
+			} catch (\Exception $error) {
+				$this->addFlash("error", $error->getMessage());
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			}
+		}
+
+		return $this->render(
+			"user/forgetPassword.html.twig",
+			[
+				"forgetPasswordForm" => $forgetPasswordForm->createView(),
+			],
+			$response
+		);
+	}
+
+	#[
+		Route(
+			"/change-password",
+			name: "change-password",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function changePassword(
 		Request $request,
-		AuthService $authService
-	): JsonResponse {
-		try {
-			// Validate input data
-			$data = SchemaService::validateSchema(
-				json_decode($request->getContent(), true),
-				"register"
-			);
-			// Create user
-			$user = $authService->register($data);
+		AuthService $authService,
+		ForgetPasswordRepository $forgetPasswordRepository
+	) {
+		$response = new Response();
 
-			return new JsonResponse($user, Response::HTTP_CREATED);
-		} catch (\Exception $e) {
-			return new JsonResponse($e->getMessage(), $e->getCode());
+		// check if can change password
+		$forgetPassword = $request->query->get("id")
+			? $forgetPasswordRepository->getById($request->query->get("id"))
+			: null;
+
+		if (!$forgetPassword) {
+			$response->setStatusCode(Response::HTTP_FOUND);
+			$response->headers->set("Location", "/");
+			return $response;
 		}
-	}
 
-	#[Route("/login", name: "login_user", methods: "POST")]
-	public function login(Request $request, AuthService $authService): Response
-	{
-		try {
-			// Validate input data
-			$data = SchemaService::validateSchema(
-				json_decode($request->getContent(), true),
-				"login"
-			);
+		$user = new User();
+		$changePasswordForm = $this->createForm(
+			ChangePasswordForm::class,
+			$user
+		);
+		$changePasswordForm->handleRequest($request);
 
-			// get user if exists
-			$user = $authService->login($data);
-			// create token
-			$token = $authService->createToken($user);
-			// set token cookie
-			$authService->setTokenCookie($token);
+		if (
+			$changePasswordForm->isSubmitted() &&
+			$changePasswordForm->isValid()
+		) {
+			$user = $changePasswordForm->getData();
 
-			return new Response(null, Response::HTTP_ACCEPTED);
-		} catch (\Exception $e) {
-			return new JsonResponse($e->getMessage());
+			try {
+				$authService->changePassword($user, $forgetPassword);
+
+				// redirect user to user dashboard
+				$response->setStatusCode(Response::HTTP_FOUND);
+				$response->headers->set("Location", "/dashboard");
+				return $response;
+			} catch (\Exception $error) {
+				$this->addFlash("error", $error->getMessage());
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			}
 		}
-	}
 
-	#[Route("/api/users", name: "all_user", methods: "GET")]
-	public function getUsers(UserService $userService): JsonResponse
-	{
-		try {
-			$users = $userService->getAll();
-
-			return new JsonResponse($users, Response::HTTP_OK);
-		} catch (\Exception $e) {
-			return new JsonResponse(
-				$e->getMessage(),
-				Response::HTTP_INTERNAL_SERVER_ERROR
-			);
-		}
-	}
-
-	#[Route("/api/user/{id}", name: "get_user", methods: "GET")]
-	public function getUserById(
-		UserService $userService,
-		string $id
-	): JsonResponse {
-		try {
-			$user = $userService->getById($id);
-
-			return new JsonResponse($user, Response::HTTP_OK);
-		} catch (\Exception $e) {
-			return new JsonResponse(
-				$e->getMessage(),
-				$e->getCode() === 0
-					? Response::HTTP_INTERNAL_SERVER_ERROR
-					: $e->getCode()
-			);
-		}
-	}
-
-	#[Route("/api/user/{id}", name: "update_user", methods: "DELETE")]
-	public function deleteUser(UserService $userService, string $id): Response
-	{
-		try {
-			$userService->deleteById($id);
-
-			return new Response(null, Response::HTTP_NO_CONTENT);
-		} catch (\Exception $e) {
-			return new JsonResponse($e->getMessage(), $e->getCode());
-		}
+		return $this->render(
+			"user/changePassword.html.twig",
+			[
+				"changePasswordForm" => $changePasswordForm->createView(),
+			],
+			$response
+		);
 	}
 }

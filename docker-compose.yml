@@ -61,5 +61,10 @@ services:
       composer:
         condition: service_completed_successfully
 
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8888:8080
+
 volumes:
   postgres-data:

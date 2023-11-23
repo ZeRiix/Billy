@@ -55,7 +55,7 @@ class User
 	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $name = null;
 
-	#[ORM\Column(length: 100, nullable: false)]
+	#[ORM\Column(length: 320, nullable: false)]
 	private ?string $email = null;
 
 	#[ORM\Column(type: Types::TEXT, nullable: false)]

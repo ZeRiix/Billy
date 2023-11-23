@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+	{{ form(userRegisterForm) }}
+
+	{% for message in app.flashes("error") %}
+		<span>{{ message }}</span>
+	{% endfor %}
+
+	{% for message in app.flashes("success") %}
+		<span>{{ message }}</span>
+	{% endfor %}
+{% endblock %}
