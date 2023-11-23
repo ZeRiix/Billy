@@ -46,30 +46,8 @@ class CreateOrganizationFormType extends AbstractType
 					]),
 				],
 			])
-			->add("address", TextType::class, [
-				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-					"minlenght" => "2",
-					"maxlenght" => "255",
-				],
-				"label" => "Adresse",
-				"label_attr" => [
-					"class" => "form_label",
-				],
-				"constraints" => [
-					new Assert\NotBlank(message: "L'adresse est obligatoire"),
-					new Assert\Length([
-						"min" => 2,
-						"max" => 255,
-						"minMessage" =>
-							"L'adresse doit faire au moins {{ limit }} caractères",
-						"maxMessage" =>
-							"L'adresse doit faire au plus {{ limit }} caractères",
-					]),
-				],
-			])
 			->add("email", EmailType::class, [
+				"required" => false,
 				"attr" => [
 					"class" =>
 						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
@@ -95,6 +73,7 @@ class CreateOrganizationFormType extends AbstractType
 				],
 			])
 			->add("phone", TelType::class, [
+				"required" => false,
 				"attr" => [
 					"class" =>
 						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
@@ -118,6 +97,7 @@ class CreateOrganizationFormType extends AbstractType
 				],
 			])
 			->add("activity", TextType::class, [
+				"required" => false,
 				"attr" => [
 					"class" =>
 						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",

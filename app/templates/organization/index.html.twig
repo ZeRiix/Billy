@@ -63,20 +63,13 @@
 		<h1 class="text-3xl font-semibold">Créer une organisation</h1>
 		
 		{{ form_start(form) }}
-		<div class="w-fit mx-auto my-5 flex flex-col gap-10 items-center">
+		<div class="w-fit mx-auto my-5 flex flex-col gap-10 items-start">
 			<div class="flex gap-5">
 				<div class="max-w-xs flex flex-col gap-2">
 					{{ form_label(form.name) }}
 					{{ form_widget(form.name) }}
 					<div class="text-sm text-red-600">
 						{{ form_errors(form.name) }}
-					</div>
-				</div>
-				<div class="max-w-xs flex flex-col gap-2">
-					{{ form_label(form.address) }}
-					{{ form_widget(form.address) }}
-					<div class="text-sm text-red-600">
-						{{ form_errors(form.address) }}
 					</div>
 				</div>
 			</div>

@@ -62,7 +62,7 @@ class Organization
 	#[ORM\JoinColumn(nullable: false)]
 	private User $createdBy;
 
-	#[ORM\Column(length: 100, nullable: false)]
+	#[ORM\Column(length: 100, nullable: false, unique: true)]
 	private ?string $name = null;
 
 	#[ORM\Column(type: Types::TEXT)]
@@ -77,7 +77,7 @@ class Organization
 	#[ORM\Column(length: 100)]
 	private ?string $activity = null;
 
-	#[ORM\Column(length: 14, nullable: false)]
+	#[ORM\Column(length: 14, nullable: false, unique: true)]
 	private ?string $siret = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

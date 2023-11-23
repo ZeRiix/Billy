@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Organization;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\BaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Organization[]    findAll()
  * @method Organization[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OrganizationRepository extends ServiceEntityRepository
+class OrganizationRepository extends BaseRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{
@@ -36,13 +36,21 @@ class OrganizationRepository extends ServiceEntityRepository
 	//        ;
 	//    }
 
-	//    public function findOneBySomeField($value): ?Organization
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->getQuery()
-	//            ->getOneOrNullResult()
-	//        ;
-	//    }
+	public function findOneByName($value): ?Organization
+	{
+		return $this->createQueryBuilder("s")
+			->andWhere("s.name = :val")
+			->setParameter("val", $value)
+			->getQuery()
+			->getOneOrNullResult();
+	}
+
+	public function findOneBySiret($value): ?Organization
+	{
+		return $this->createQueryBuilder("s")
+			->andWhere("s.siret = :val")
+			->setParameter("val", $value)
+			->getQuery()
+			->getOneOrNullResult();
+	}
 }
