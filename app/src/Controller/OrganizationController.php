@@ -4,15 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Organization;
 use App\Form\CreateOrganizationFormType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Services\Organization\OrganizationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class OrganizationController extends AbstractController
 {
+	private OrganizationService $organizationService;
+
+	public function __construct(OrganizationService $organizationService)
+	{
+		$this->organizationService = $organizationService;
+	}
+
 	#[
 		Route(
 			"/organization",
@@ -20,35 +26,33 @@ class OrganizationController extends AbstractController
 			methods: ["GET", "POST"]
 		)
 	]
-	public function create(
-		Request $request,
-		EntityManagerInterface $manager
-	): Response {
+	public function create(Request $request): Response
+	{
 		$organization = new Organization();
 		$form = $this->createForm(
 			CreateOrganizationFormType::class,
 			$organization
 		);
+		$response = new Response();
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
+			/** @var Organization */
 			$organization = $form->getData();
-			$url =
-				"https://api.insee.fr/entreprises/sirene/V3/siret/" .
-				$organization->getSiret();
-			$client = HttpClient::create();
-			$response = $client->request("GET", $url);
-			$responseStatus = $response->getStatusCode();
-			if ($responseStatus !== Response::HTTP_OK) {
-				$this->addFlash("error", "Veuillez vérifier votre siret.");
-			} else {
-				$manager->persist($organization);
-				$manager->flush($organization);
+			try {
+				$this->organizationService->createOrganization($organization);
+				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "L'organisation à bien été créée.");
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
 			}
 		}
-
-		return $this->render("organization/index.html.twig", [
-			"form" => $form->createView(),
-		]);
+		return $this->render(
+			"organization/index.html.twig",
+			[
+				"form" => $form->createView(),
+			],
+			$response
+		);
 	}
 }
