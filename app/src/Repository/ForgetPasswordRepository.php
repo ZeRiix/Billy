@@ -19,6 +19,6 @@ class ForgetPasswordRepository extends BaseRepository
 
 	public function getByUser(User $user): ?ForgetPassword
 	{
-		return $this->findOneBy(["user_id" => $user->getId()]);
+		return $this->findOneBy(["user" => $user]);
 	}
 }

@@ -2,16 +2,14 @@
 
 namespace App\Entity;
 
+use App\Repository\ForgetPasswordRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
-// local imports
-use App\Repository\UserRegisterRepository;
-
-#[ORM\Entity(repositoryClass: UserRegisterRepository::class)]
-#[ORM\Table(name: "user_register")]
+#[ORM\Entity(repositoryClass: ForgetPasswordRepository::class)]
+#[ORM\Table(name: "forget_password")]
 #[ORM\HasLifecycleCallbacks]
 class ForgetPassword
 {
