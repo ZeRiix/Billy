@@ -66,9 +66,9 @@ services:
         arguments:
           $registry: '@doctrine'
     
-    # define Middleware
-    App\Middleware\CheckTokenMiddleware:
-        tags:
-            - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
+    App\Middleware\MustBeDisconnectMiddleware:
+        class: 'App\Middleware\MustBeDisconnectMiddleware'
+        autowire: true
+    
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

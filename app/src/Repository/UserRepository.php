@@ -6,6 +6,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 // local imports
 use App\Entity\User;
+use App\Entity\UserRegister;
 use App\Repository\BaseRepository;
 
 class UserRepository extends BaseRepository
@@ -28,14 +29,15 @@ class UserRepository extends BaseRepository
 	 * @param array $data
 	 * @return User
 	 */
-	public function create(array $data): User
+	public function create(UserRegister $userRegister): User
 	{
 		$user = new User();
 
-		$user->setFirstName($data["firstname"]);
-		$user->setName($data["name"]);
-		$user->setEmail($data["email"]);
-		$user->setPassword(password_hash($data["password"], PASSWORD_DEFAULT)); // define password hash in .env
+		$user
+			->setFirstName($userRegister->getFirstName())
+			->setName($userRegister->getName())
+			->setEmail($userRegister->getEmail())
+			->setPassword($userRegister->getPassword());
 
 		$this->save($user);
 
