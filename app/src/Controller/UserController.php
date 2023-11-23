@@ -234,7 +234,7 @@ class UserController extends AbstractController
 
 				// redirect user to user dashboard
 				$response->setStatusCode(Response::HTTP_FOUND);
-				$response->headers->set("Location", "/dashboard");
+				$response->headers->set("Location", "/login");
 				return $response;
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
