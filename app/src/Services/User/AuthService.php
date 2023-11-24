@@ -43,13 +43,11 @@ class AuthService
 			$userRegister->getEmail()
 		);
 
-		$now = new \DateTime("now");
-
 		if (
 			$userRegisterFinded &&
 			$userRegisterFinded->getCreatedAt()->getTimestamp() +
 				self::timeoutRegisterUser <
-				$now->getTimestamp()
+				(new \DateTime("now"))->getTimestamp()
 		) {
 			$this->userRegisterRepository->delete($userRegisterFinded);
 			$userRegisterFinded = null;
@@ -91,14 +89,12 @@ class AuthService
 			throw new \Exception("User register not found.");
 		}
 
-		$now = new \DateTime("now");
-
 		$this->userRegisterRepository->delete($userRegisterFinded);
 
 		if (
 			$userRegisterFinded->getCreatedAt()->getTimestamp() +
 				self::timeoutRegisterUser <
-			$now->getTimestamp()
+			(new \DateTime("now"))->getTimestamp()
 		) {
 			throw new \Exception("User register has expired.");
 		}
@@ -117,7 +113,9 @@ class AuthService
 			$user->getEmail("email")
 		);
 		if (!$findedUser) {
-			throw new \Exception("Account with email not found");
+			throw new \Exception(
+				"Soit l'email soit le mot de passe n'est pas valide"
+			);
 		}
 		// check password
 		if (
@@ -126,7 +124,9 @@ class AuthService
 				$findedUser->getPassword()
 			)
 		) {
-			throw new \Exception("Wrong password");
+			throw new \Exception(
+				"Soit l'email soit le mot de passe n'est pas valide"
+			);
 		}
 
 		return $findedUser;
@@ -143,13 +143,12 @@ class AuthService
 		$findedForgetPassword = $this->forgetPasswordRepository->getByUser(
 			$findedUser
 		);
-		$now = new \DateTime("now");
 
 		if (
 			$findedForgetPassword &&
 			$findedForgetPassword->getCreatedAt()->getTimestamp() +
 				self::timeoutRegisterUser <
-				$now->getTimestamp()
+				(new \DateTime("now"))->getTimestamp()
 		) {
 			$this->forgetPasswordRepository->delete($findedForgetPassword);
 			$findedForgetPassword = null;
@@ -183,12 +182,25 @@ class AuthService
 
 	public function changePassword(User $user, ForgetPassword $forgetPassword)
 	{
-		$forgetPassword
-			->getUser()
-			->setPassword(
-				password_hash($user->getPassword(), PASSWORD_DEFAULT)
-			);
-
 		$this->forgetPasswordRepository->delete($forgetPassword);
+
+		if (
+			$forgetPassword &&
+			$forgetPassword->getCreatedAt()->getTimestamp() +
+				self::timeoutRegisterUser <
+				(new \DateTime("now"))->getTimestamp()
+		) {
+			throw new \Exception(
+				"La demande de changement de mots de pass a expiré."
+			);
+		}
+
+		$userForgetPassword = $forgetPassword->getUser();
+
+		$userForgetPassword->setPassword(
+			password_hash($user->getPassword(), PASSWORD_DEFAULT)
+		);
+
+		$this->forgetPasswordRepository->save($userForgetPassword);
 	}
 }
