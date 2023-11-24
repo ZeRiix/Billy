@@ -16,18 +16,27 @@ class UserLoginForm extends AbstractType
 		$builder
 			->add("email", EmailType::class, [
 				"attr" => [
-					"class" => "",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
 				"label" => "Email",
 				"label_attr" => [
 					"class" => "",
 				],
 				"required" => true,
-				"constraints" => [new Assert\NotBlank(), new Assert\Email()],
+				"constraints" => [
+					new Assert\NotBlank(
+						message: "L'adresse email est obligatoire"
+					),
+					new Assert\Email(
+						message: "L'adresse email n'est pas valide"
+					),
+				],
 			])
 			->add("password", PasswordType::class, [
 				"attr" => [
-					"class" => "",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"pattern" => "[^]{8,}",
 				],
 				"label" => "Mot de passe",
@@ -36,14 +45,21 @@ class UserLoginForm extends AbstractType
 				],
 				"required" => true,
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 8]),
+					new Assert\NotBlank(
+						message: "Le mot de passe est obligatoire"
+					),
+					new Assert\Length([
+						"min" => 8,
+						"minMessage" =>
+							"Le mot de passe doit contenir au moins 8 caractères",
+					]),
 				],
 			])
 			->add("submit", SubmitType::class, [
 				"attr" => [
-					"class" => "",
-					"text" => "Créer mon compte",
+					"class" =>
+						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
+					"text" => "Se connecter",
 				],
 			]);
 	}

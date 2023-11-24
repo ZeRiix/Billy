@@ -18,7 +18,8 @@ class UserRegisterForm extends AbstractType
 		$builder
 			->add("firstName", TextType::class, [
 				"attr" => [
-					"class" => "",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"maxLenght" => "100",
 					"minLenght" => "2",
 				],
@@ -34,7 +35,8 @@ class UserRegisterForm extends AbstractType
 			])
 			->add("name", TextType::class, [
 				"attr" => [
-					"class" => "",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"maxLenght" => "100",
 					"minLenght" => "2",
 				],
@@ -50,7 +52,8 @@ class UserRegisterForm extends AbstractType
 			])
 			->add("email", EmailType::class, [
 				"attr" => [
-					"class" => "",
+					"class" =>
+						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
 				"label" => "Email",
 				"label_attr" => [
@@ -63,7 +66,8 @@ class UserRegisterForm extends AbstractType
 				"type" => PasswordType::class,
 				"first_options" => [
 					"attr" => [
-						"class" => "",
+						"class" =>
+							"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 						"pattern" => "[^]{8,}",
 					],
 					"label" => "Mot de passe",
@@ -74,10 +78,11 @@ class UserRegisterForm extends AbstractType
 				],
 				"second_options" => [
 					"attr" => [
-						"class" => "",
+						"class" =>
+							"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 						"pattern" => "[^]{8,}",
 					],
-					"label" => "Confirmé mot de passe",
+					"label" => "Confirmer mot de passe",
 					"label_attr" => [
 						"class" => "",
 					],
@@ -91,8 +96,9 @@ class UserRegisterForm extends AbstractType
 			])
 			->add("submit", SubmitType::class, [
 				"attr" => [
-					"class" => "",
-					"text" => "Créer mon compte",
+					"class" =>
+						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
+					"text" => "Valider",
 				],
 			]);
 	}
