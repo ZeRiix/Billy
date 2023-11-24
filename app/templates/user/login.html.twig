@@ -32,19 +32,42 @@
 						{{ form_widget(userLoginForm.submit) }}
 					</div>
 				</div>
-			{{ form_start(userLoginForm) }}
+			{{ form_end(userLoginForm) }}
+
+			<div class="flex gap-4 justify-center">
+				<a href="{{ path('register_user') }}" class="text-sm text-blighter-green hover:text-bgreen">Pas encore inscrit ?</a>
+				<a href="{{ path('forget-password') }}" class="text-sm text-blighter-green hover:text-bgreen">Mot de passe oublié ?</a>
+			</div>
 		</div>
 	</main>
 
-	{{ form(userLoginForm) }}
+	<div class="fixed bottom-10 left-[calc(50%-200px)] w-[400px] h-40">
+		{% for message in app.flashes("error") %}
+			<div class="w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-red-600 bg-white rounded shadow-md">
+				<div class="flex gap-3 items-center">
+						<span class="mdi mdi-alert-circle-outline text-2xl text-red-600"></span>
+					<div>
+						<span class="text-xl font-semibold">Erreur</span>
+						<p class="text-sm opacity-50">{{ message }}</p>
+					</div>
+				</div>
+				<span class="mdi mdi-close-thick text-2xl opacity-50"></span>
+			</div>
+		{% endfor %}
 
-	{% for message in app.flashes("error") %}
-		<span>{{ message }}</span>
-	{% endfor %}
-
-	{% for message in app.flashes("success") %}
-		<span>{{ message }}</span>
-	{% endfor %}
+		{% for message in app.flashes("success") %}
+			<div class="w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-green-600 bg-white rounded shadow-md">
+				<div class="flex gap-3 items-center">
+						<span class="mdi mdi-check-circle-outline text-2xl text-green-600"></span>
+					<div>
+						<span class="text-xl font-semibold">Succès !</span>
+						<p class="text-sm opacity-50">{{ message }}</p>
+					</div>
+				</div>
+				<span class="mdi mdi-close-thick text-2xl opacity-50"></span>
+			</div>
+		{% endfor %}
+	</div>
 
 	{% include 'components/home-footer.html.twig' %}
 {% endblock %}
