@@ -8,28 +8,35 @@ use App\Form\ChangePasswordForm;
 use App\Form\ForgetPasswordForm;
 use App\Form\UserLoginForm;
 use App\Form\UserRegisterForm;
+use App\Middleware\AccessTokenMiddleware;
+use App\Middleware\Middleware;
 use App\Repository\ForgetPasswordRepository;
 use App\Services\Token\AccessTokenService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Services\User\AuthService;
 
-class UserController extends AbstractController
+class UserController extends MiddlewareController
 {
 	#[Route("/register", name: "register_user", methods: ["GET", "POST"])]
+	#[
+		Middleware(
+			AccessTokenMiddleware::class,
+			"missing",
+			response: new Response(
+				status: Response::HTTP_FOUND,
+				headers: ["Location" => "/dashboard"]
+			)
+		)
+	]
 	public function register(Request $request, AuthService $authService)
 	{
-		$response = new Response();
-
-		// check if user has already valide token
-		if (AccessTokenService::extractCookie($request->cookies)) {
-			// redirect user to user dashboard
-			$response->setStatusCode(Response::HTTP_FOUND);
-			$response->headers->set("Location", "/dashboard");
-			return $response;
+		if (!Middleware::getStatus()) {
+			return Middleware::getLastResponse();
 		}
+
+		$response = new Response();
 
 		// create form
 		$userRegister = new UserRegister();
