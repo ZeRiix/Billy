@@ -24,18 +24,11 @@ class UserController extends MiddlewareController
 		Middleware(
 			AccessTokenMiddleware::class,
 			"missing",
-			response: new Response(
-				status: Response::HTTP_FOUND,
-				headers: ["Location" => "/dashboard"]
-			)
+			redirectTo: "/dashboard"
 		)
 	]
 	public function register(Request $request, AuthService $authService)
 	{
-		if (!Middleware::getStatus()) {
-			return Middleware::getLastResponse();
-		}
-
 		$response = new Response();
 
 		// create form
@@ -69,17 +62,17 @@ class UserController extends MiddlewareController
 	}
 
 	#[Route("/validate", name: "validate_user", methods: "GET")]
+	#[
+		Middleware(
+			AccessTokenMiddleware::class,
+			"missing",
+			redirectTo: "/dashboard"
+		)
+	]
 	public function validate(Request $request, AuthService $authService)
 	{
 		$response = new Response();
 		$response->setStatusCode(Response::HTTP_FOUND);
-
-		// check if user has already valide token
-		if (AccessTokenService::extractCookie($request->cookies)) {
-			// redirect user to user dashboard
-			$response->headers->set("Location", "/dashboard");
-			return $response;
-		}
 
 		try {
 			$user = $authService->validate($request->query->get("id"));
@@ -99,17 +92,16 @@ class UserController extends MiddlewareController
 	}
 
 	#[Route("/login", name: "login_user", methods: ["GET", "POST"])]
+	#[
+		Middleware(
+			AccessTokenMiddleware::class,
+			"missing",
+			redirectTo: "/dashboard"
+		)
+	]
 	public function login(Request $request, AuthService $authService)
 	{
 		$response = new Response();
-
-		// check if user has already valide token
-		if (AccessTokenService::extractCookie($request->cookies)) {
-			// redirect user to user dashboard
-			$response->setStatusCode(Response::HTTP_FOUND);
-			$response->headers->set("Location", "/dashboard");
-			return $response;
-		}
 
 		// create user form
 		$user = new User();
@@ -153,17 +145,16 @@ class UserController extends MiddlewareController
 			methods: ["GET", "POST"]
 		)
 	]
+	#[
+		Middleware(
+			AccessTokenMiddleware::class,
+			"missing",
+			redirectTo: "/dashboard"
+		)
+	]
 	public function forgetPassword(Request $request, AuthService $authService)
 	{
 		$response = new Response();
-
-		// check if user has already valide token
-		if (AccessTokenService::extractCookie($request->cookies)) {
-			// redirect user to user dashboard
-			$response->setStatusCode(Response::HTTP_FOUND);
-			$response->headers->set("Location", "/dashboard");
-			return $response;
-		}
 
 		$user = new User();
 		$forgetPasswordForm = $this->createForm(

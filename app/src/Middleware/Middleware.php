@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class Middleware
@@ -20,7 +21,8 @@ class Middleware
 		?string $input = null,
 		?string $output = null,
 		?array $options = null,
-		?Response $response = null
+		?Response $response = null,
+		?string $redirectTo = null
 	) {
 		if (!self::$status) {
 			return;
@@ -45,6 +47,12 @@ class Middleware
 
 		if (self::$lastInfo !== $info) {
 			self::$status = false;
+			if ($redirectTo) {
+				throw new HttpException(
+					Response::HTTP_FOUND,
+					headers: ["Location" => $redirectTo]
+				);
+			}
 		}
 
 		if ($output) {

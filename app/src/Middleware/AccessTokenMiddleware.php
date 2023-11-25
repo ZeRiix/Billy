@@ -17,10 +17,12 @@ class AccessTokenMiddleware extends AbstractMiddleware
 
 	public function handler(mixed $input, ?array $options): mixed
 	{
-		$token = AccessTokenService::extractCookie($this->request->cookies);
+		$contentToken = AccessTokenService::extractCookie(
+			$this->request->cookies
+		);
 
-		if ($token) {
-			return $this->output("has", $token);
+		if ($contentToken) {
+			return $this->output("has", $contentToken);
 		} else {
 			return $this->output("missing");
 		}
