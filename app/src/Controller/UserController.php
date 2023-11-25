@@ -20,23 +20,14 @@ use App\Services\User\AuthService;
 class UserController extends MiddlewareController
 {
 	#[Route("/register", name: "register_user", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			AccessTokenMiddleware::class,
-			"missing",
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(AccessTokenMiddleware::class, "missing", redirectTo: "/dashboard")]
 	public function register(Request $request, AuthService $authService)
 	{
 		$response = new Response();
 
 		// create form
 		$userRegister = new UserRegister();
-		$userRegisterForm = $this->createForm(
-			UserRegisterForm::class,
-			$userRegister
-		);
+		$userRegisterForm = $this->createForm(UserRegisterForm::class, $userRegister);
 		$userRegisterForm->handleRequest($request);
 
 		if ($userRegisterForm->isSubmitted() && $userRegisterForm->isValid()) {
@@ -62,13 +53,7 @@ class UserController extends MiddlewareController
 	}
 
 	#[Route("/validate", name: "validate_user", methods: "GET")]
-	#[
-		Middleware(
-			AccessTokenMiddleware::class,
-			"missing",
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(AccessTokenMiddleware::class, "missing", redirectTo: "/dashboard")]
 	public function validate(Request $request, AuthService $authService)
 	{
 		$response = new Response();
@@ -78,9 +63,7 @@ class UserController extends MiddlewareController
 			$user = $authService->validate($request->query->get("id"));
 
 			// give accessToken to user
-			$response->headers->setCookie(
-				AccessTokenService::createCookie($user)
-			);
+			$response->headers->setCookie(AccessTokenService::createCookie($user));
 
 			// redirect user to user dashboard
 			$response->headers->set("Location", "/dashboard");
@@ -92,13 +75,7 @@ class UserController extends MiddlewareController
 	}
 
 	#[Route("/login", name: "login_user", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			AccessTokenMiddleware::class,
-			"missing",
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(AccessTokenMiddleware::class, "missing", redirectTo: "/dashboard")]
 	public function login(Request $request, AuthService $authService)
 	{
 		$response = new Response();
@@ -115,9 +92,7 @@ class UserController extends MiddlewareController
 				$user = $authService->login($user);
 
 				// give accessToken to user
-				$response->headers->setCookie(
-					AccessTokenService::createCookie($user)
-				);
+				$response->headers->setCookie(AccessTokenService::createCookie($user));
 
 				// redirect user to user dashboard
 				$response->setStatusCode(Response::HTTP_FOUND);
@@ -138,35 +113,17 @@ class UserController extends MiddlewareController
 		);
 	}
 
-	#[
-		Route(
-			"/forget-password",
-			name: "forget-password",
-			methods: ["GET", "POST"]
-		)
-	]
-	#[
-		Middleware(
-			AccessTokenMiddleware::class,
-			"missing",
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Route("/forget-password", name: "forget-password", methods: ["GET", "POST"])]
+	#[Middleware(AccessTokenMiddleware::class, "missing", redirectTo: "/dashboard")]
 	public function forgetPassword(Request $request, AuthService $authService)
 	{
 		$response = new Response();
 
 		$user = new User();
-		$forgetPasswordForm = $this->createForm(
-			ForgetPasswordForm::class,
-			$user
-		);
+		$forgetPasswordForm = $this->createForm(ForgetPasswordForm::class, $user);
 		$forgetPasswordForm->handleRequest($request);
 
-		if (
-			$forgetPasswordForm->isSubmitted() &&
-			$forgetPasswordForm->isValid()
-		) {
+		if ($forgetPasswordForm->isSubmitted() && $forgetPasswordForm->isValid()) {
 			$user = $forgetPasswordForm->getData();
 
 			try {
@@ -189,13 +146,7 @@ class UserController extends MiddlewareController
 		);
 	}
 
-	#[
-		Route(
-			"/change-password",
-			name: "change-password",
-			methods: ["GET", "POST"]
-		)
-	]
+	#[Route("/change-password", name: "change-password", methods: ["GET", "POST"])]
 	public function changePassword(
 		Request $request,
 		AuthService $authService,
@@ -215,16 +166,10 @@ class UserController extends MiddlewareController
 		}
 
 		$user = new User();
-		$changePasswordForm = $this->createForm(
-			ChangePasswordForm::class,
-			$user
-		);
+		$changePasswordForm = $this->createForm(ChangePasswordForm::class, $user);
 		$changePasswordForm->handleRequest($request);
 
-		if (
-			$changePasswordForm->isSubmitted() &&
-			$changePasswordForm->isValid()
-		) {
+		if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
 			$user = $changePasswordForm->getData();
 
 			try {
