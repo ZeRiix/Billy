@@ -47,8 +47,7 @@ class OrganizationController extends AbstractController
 				$payloadCookie = AccessTokenService::extractCookie(
 					$request->cookies
 				);
-				die($payloadCookie);
-				$userId = $payloadCookie["data"];
+				$userId = $payloadCookie;
 				/** @var User */
 				$user = $userService->getById($userId);
 				$organization->setCreatedBy($user);
@@ -64,7 +63,10 @@ class OrganizationController extends AbstractController
 					);
 				} catch (\Exception $e) {
 					$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-					$this->addFlash("error", $e->getMessage());
+					$this->addFlash(
+						"error",
+						"Veuillez vérifier votre siret. " . $e->getMessage()
+					);
 				}
 			}
 		} else {

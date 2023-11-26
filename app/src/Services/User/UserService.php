@@ -22,18 +22,19 @@ class UserService
 	public function getAll(): array
 	{
 		/** @var User[] $users */
-		$users =  $this->userRepository->getAll();
+		$users = $this->userRepository->getAll();
 
 		$usersArray = [];
-		foreach ($users as $user) { // horrible
+		foreach ($users as $user) {
+			// horrible
 			$usersArray[] = [
-				'id' => $user->getId(),
-				'firstname' => $user->getFirstName(),
-				'name' => $user->getName(),
-				'email' => $user->getEmail(),
-				'password' => $user->getPassword(),
-				'created_at' => $user->getCreatedAt(),
-				'updated_at' => $user->getUpdatedAt()
+				"id" => $user->getId(),
+				"firstname" => $user->getFirstName(),
+				"name" => $user->getName(),
+				"email" => $user->getEmail(),
+				"password" => $user->getPassword(),
+				"created_at" => $user->getCreatedAt(),
+				"updated_at" => $user->getUpdatedAt(),
 			]; // resoudre bug get entity
 		}
 		return $usersArray;
@@ -43,23 +44,15 @@ class UserService
 	 * @param string $id
 	 * @return User|null
 	 */
-	public function getById(string $id): array
+	public function getById(string $id): User
 	{
 		/** @var User $user */
-		$user =  $this->userRepository->getById($id);
+		$user = $this->userRepository->getById($id);
 		if (!$user) {
-			throw new \Exception('User not found', Response::HTTP_NOT_FOUND);
+			throw new \Exception("User not found", Response::HTTP_NOT_FOUND);
 		}
 
-		return [ // horrible
-			'id' => $user->getId(),
-			'firstname' => $user->getFirstName(),
-			'name' => $user->getName(),
-			'email' => $user->getEmail(),
-			'password' => $user->getPassword(),
-			'created_at' => $user->getCreatedAt(),
-			'updated_at' => $user->getUpdatedAt()
-		]; // resoudre bug get entity
+		return $user;
 	}
 
 	/**
