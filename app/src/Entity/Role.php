@@ -25,7 +25,13 @@ class Role
 	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "roles")]
+	#[
+		ORM\ManyToOne(
+			targetEntity: Organization::class,
+			inversedBy: "roles",
+			cascade: ["persist"]
+		)
+	]
 	#[ORM\JoinColumn(nullable: false)]
 	private Organization $Organization;
 
@@ -179,5 +185,14 @@ class Role
 	public function setUpdatedAt(): void
 	{
 		$this->updated_at = new \DateTimeImmutable();
+	}
+
+	public function initOwner(): void
+	{
+		$this->manage_org = true;
+		$this->manage_user = true;
+		$this->manage_client = true;
+		$this->write_devis = true;
+		$this->write_factures = true;
 	}
 }

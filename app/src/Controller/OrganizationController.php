@@ -54,7 +54,8 @@ class OrganizationController extends AbstractController
 
 				try {
 					$this->organizationService->createOrganization(
-						$organization
+						$organization,
+						$user
 					);
 					$response->setStatusCode(Response::HTTP_OK);
 					$this->addFlash(
@@ -63,10 +64,7 @@ class OrganizationController extends AbstractController
 					);
 				} catch (\Exception $e) {
 					$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-					$this->addFlash(
-						"error",
-						"Veuillez vérifier votre siret. " . $e->getMessage()
-					);
+					$this->addFlash("error", $e->getMessage());
 				}
 			}
 		} else {

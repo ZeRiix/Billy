@@ -3,7 +3,10 @@
 namespace App\Services\Organization;
 
 use App\Entity\Organization;
+use App\Entity\Role;
+use App\Entity\User;
 use App\Repository\OrganizationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Response\CurlResponse;
@@ -25,12 +28,8 @@ class OrganizationService
 		$this->manager = $manager;
 	}
 
-	public function createOrganization(Organization $organization)
+	public function createOrganization(Organization $organization, User $user)
 	{
-		//check if an organization exist with name
-		$organizationByName = $this->getOrganizationByName(
-			$organization->getName()
-		);
 		//check if an organization exist with siret
 		$organizationBySiret = $this->getOrganizationBySiret(
 			$organization->getSiret()
@@ -44,20 +43,24 @@ class OrganizationService
 		$responseContent = $responseForSiret->toArray();
 		//boolean to check if siret exist
 		$isValidSiret = $this->checkSiret($responseForSiret);
-		if ($organizationByName) {
-			throw new \Exception("Une organisation avec ce nom existe déjà.");
-		} elseif ($organizationBySiret) {
+
+		if ($organizationBySiret) {
 			throw new \Exception("Une organisation avec ce siret existe déjà.");
 		} elseif ($isValidSiret === false) {
 			throw new \Exception("Veuillez vérifier votre siret.");
 		}
 
-		//setting address automatically with info of api gouv
+		//setting address automatically with info of api sirene
 		$this->setAddressForOrganization($organization, $responseContent);
+
+		//setting name automatically with info of api sirene
+		$this->setNameForOrganization($organization, $responseContent);
+
+		//create role owner for organization with the user who create it
+		$this->createRoleForOrganization($organization, $user);
 
 		//die(var_dump($organization));
 
-		/**TODO add createdBy when i can read token payload */
 		$this->manager->persist($organization);
 		$this->manager->flush($organization);
 	}
@@ -70,6 +73,40 @@ class OrganizationService
 	public function getOrganizationBySiret(string $siret): ?Organization
 	{
 		return $this->organizationRepository->findOneBySiret($siret);
+	}
+
+	private function createRoleForOrganization(
+		Organization $organization,
+		User $user
+	): void {
+		//create users's collection
+		$users = new ArrayCollection();
+		//add user that created the organization at user's list
+		$users->add($user);
+		/** @var Role */
+		//create new role
+		$role = new Role();
+		//set name as 'OWNER'
+		$role->setName("OWNER");
+		//set all perms at true
+		$role->initOwner();
+		//set created organization at role
+		$role->setOrganization($organization);
+		//add user that created the organization at role
+		$role->setUsers($users);
+
+		$this->manager->persist($role);
+		$this->manager->flush($role);
+	}
+
+	private function setNameForOrganization(
+		Organization $organization,
+		array $data
+	): void {
+		$organizationInfos = $data["etablissement"]["uniteLegale"];
+		$organizationName = $organizationInfos["denominationUniteLegale"];
+
+		$organization->setName($organizationName);
 	}
 
 	private function setAddressForOrganization(
