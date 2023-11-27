@@ -20,32 +20,6 @@ class CreateOrganizationFormType extends AbstractType
 		array $options
 	): void {
 		$builder
-			->add("name", TextType::class, [
-				"required" => true,
-				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-					"minlenght" => "2",
-					"maxlenght" => "100",
-				],
-				"label" => "Nom de l'organisation",
-				"label_attr" => [
-					"class" => "form_label",
-				],
-				"constraints" => [
-					new Assert\NotBlank(
-						message: "Le nom de l'organisation est obligatoire"
-					),
-					new Assert\Length([
-						"min" => 2,
-						"max" => 100,
-						"minMessage" =>
-							'Le nom de l\'organisation doit faire au moins {{ limit }} caractères',
-						"maxMessage" =>
-							'Le nom de l\'organisation doit faire au plus {{ limit }} caractères',
-					]),
-				],
-			])
 			->add("email", EmailType::class, [
 				"required" => false,
 				"attr" => [

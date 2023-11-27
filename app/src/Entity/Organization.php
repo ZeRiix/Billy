@@ -62,7 +62,7 @@ class Organization
 	#[ORM\JoinColumn(nullable: false)]
 	private User $createdBy;
 
-	#[ORM\Column(length: 100, nullable: false, unique: true)]
+	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $name = null;
 
 	#[ORM\Column(type: Types::TEXT)]
@@ -237,4 +237,6 @@ class Organization
 	{
 		$this->updated_at = new \DateTimeImmutable();
 	}
+
+
 }
