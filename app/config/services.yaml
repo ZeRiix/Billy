@@ -66,9 +66,5 @@ services:
         arguments:
           $registry: '@doctrine'
     
-    App\Middleware\MustBeDisconnectMiddleware:
-        class: 'App\Middleware\MustBeDisconnectMiddleware'
-        autowire: true
-    
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

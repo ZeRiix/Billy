@@ -25,7 +25,7 @@ class AccessTokenService extends TokenService
 
 	protected static function getTimeout(): int
 	{
-		return 600;
+		return 3600;
 	}
 
 	public static function extractCookie(InputBag $inputBag)
