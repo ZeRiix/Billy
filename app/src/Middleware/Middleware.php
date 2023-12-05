@@ -29,9 +29,7 @@ class Middleware
 		}
 
 		if (!isset(self::$container)) {
-			throw new Exception(
-				"Controller is not instance of MiddlewareController."
-			);
+			throw new Exception("Controller is not instance of MiddlewareController.");
 		}
 
 		$instance = self::$container->get($className);
@@ -48,10 +46,7 @@ class Middleware
 		if (self::$lastInfo !== $info) {
 			self::$status = false;
 			if ($redirectTo) {
-				throw new HttpException(
-					Response::HTTP_FOUND,
-					headers: ["Location" => $redirectTo]
-				);
+				throw new HttpException(Response::HTTP_FOUND, headers: ["Location" => $redirectTo]);
 			}
 		}
 
@@ -90,10 +85,8 @@ class Middleware
 		return self::$status;
 	}
 
-	public static function init(
-		Request $request,
-		ManagerRegistry $managerRegistry
-	) {
+	public static function init(Request $request, ManagerRegistry $managerRegistry)
+	{
 		self::$container = new DI\Container();
 		self::$container->set(Request::class, $request);
 		self::$container->set(ManagerRegistry::class, $managerRegistry);

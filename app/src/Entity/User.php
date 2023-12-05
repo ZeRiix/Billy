@@ -29,6 +29,7 @@ class User
 
 	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
+	#[ORM\JoinTable(name: "user_role")]
 	private Collection $roles;
 
 	#[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: "users")]
@@ -86,11 +87,12 @@ class User
 		return $this->roles;
 	}
 
-	public function setRoles(Collection $roles): self
+	public function addRole(Role $role)
 	{
-		$this->roles = $roles;
-
-		return $this;
+		if (!$this->roles->contains($role)) {
+			$this->roles->add($role);
+			$role->addUser($this);
+		}
 	}
 
 	public function getOrganizations(): Collection

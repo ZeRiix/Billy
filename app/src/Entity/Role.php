@@ -25,19 +25,14 @@ class Role
 	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[
-		ORM\ManyToOne(
-			targetEntity: Organization::class,
-			inversedBy: "roles",
-			cascade: ["persist"]
-		)
-	]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "roles", cascade: ["persist"])]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organization $Organization;
+	private Organization $organization;
 
 	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: "roles")]
 	#[ORM\JoinColumn(nullable: true)]
-	private Collection $users;
+	#[ORM\JoinTable(name: "user_role")]
+	private ?Collection $users;
 
 	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $name = null;
@@ -63,6 +58,11 @@ class Role
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $updated_at = null;
 
+	public function __construct()
+	{
+		$this->users = new ArrayCollection();
+	}
+
 	public function getId(): ?Uuid
 	{
 		return $this->id;
@@ -70,12 +70,12 @@ class Role
 
 	public function getOrganization(): ?Organization
 	{
-		return $this->Organization;
+		return $this->organization;
 	}
 
-	public function setOrganization(?Organization $Organization): self
+	public function setOrganization(?Organization $organization): self
 	{
-		$this->Organization = $Organization;
+		$this->organization = $organization;
 
 		return $this;
 	}
@@ -85,11 +85,12 @@ class Role
 		return $this->users;
 	}
 
-	public function setUsers(?Collection $users): self
+	public function addUser(User $user)
 	{
-		$this->users = $users;
-
-		return $this;
+		if (!$this->users->contains($user)) {
+			$this->users->add($user);
+			$user->addRole($this);
+		}
 	}
 
 	public function getName(): ?string

@@ -6,7 +6,6 @@ use App\Entity\Organization;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Response\CurlResponse;
@@ -31,15 +30,11 @@ class OrganizationService
 	public function createOrganization(Organization $organization, User $user)
 	{
 		//check if an organization exist with siret
-		$organizationBySiret = $this->getOrganizationBySiret(
-			$organization->getSiret()
-		);
+		$organizationBySiret = $this->getOrganizationBySiret($organization->getSiret());
 
 		//response of http request to gouv api to get campany infos
 		/** @var CurlResponse */
-		$responseForSiret = $this->getResponseForSiret(
-			$organization->getSiret()
-		);
+		$responseForSiret = $this->getResponseForSiret($organization->getSiret());
 		$responseContent = $responseForSiret->toArray();
 		//boolean to check if siret exist
 		$isValidSiret = $this->checkSiret($responseForSiret);
@@ -75,14 +70,8 @@ class OrganizationService
 		return $this->organizationRepository->findOneBySiret($siret);
 	}
 
-	private function createRoleForOrganization(
-		Organization $organization,
-		User $user
-	): void {
-		//create users's collection
-		$users = new ArrayCollection();
-		//add user that created the organization at user's list
-		$users->add($user);
+	private function createRoleForOrganization(Organization $organization, User $user): void
+	{
 		/** @var Role */
 		//create new role
 		$role = new Role();
@@ -92,50 +81,40 @@ class OrganizationService
 		$role->initOwner();
 		//set created organization at role
 		$role->setOrganization($organization);
+		//get users at role
 		//add user that created the organization at role
-		$role->setUsers($users);
+		$role->addUser($user);
 
+		$this->manager->persist($user);
 		$this->manager->persist($role);
-		$this->manager->flush($role);
+		$this->manager->flush();
 	}
 
-	private function setNameForOrganization(
-		Organization $organization,
-		array $data
-	): void {
+	private function setNameForOrganization(Organization $organization, array $data): void
+	{
 		$organizationInfos = $data["etablissement"]["uniteLegale"];
 		$organizationName = $organizationInfos["denominationUniteLegale"];
 
 		$organization->setName($organizationName);
 	}
 
-	private function setAddressForOrganization(
-		Organization $organization,
-		array $data
-	): void {
+	private function setAddressForOrganization(Organization $organization, array $data): void
+	{
 		$organizationInfos = $data["etablissement"]["adresseEtablissement"];
-		//die(var_dump($organizationInfos));
 		$streetNumber = $organizationInfos["numeroVoieEtablissement"];
 		$streetType = strtolower($organizationInfos["typeVoieEtablissement"]);
 		$streetWording = $organizationInfos["libelleVoieEtablissement"];
 		$cityWording = $organizationInfos["libelleCommuneEtablissement"];
 		$organizationAddress =
-			$streetNumber .
-			" " .
-			$streetType .
-			" " .
-			$streetWording .
-			", " .
-			$cityWording;
-		//die($organizationAddress);
+			$streetNumber . " " . $streetType . " " . $streetWording . ", " . $cityWording;
 		$organization->setAddress($organizationAddress);
 	}
 
 	private function getResponseForSiret(string $siret): CurlResponse
 	{
-		$apiSiretUrl = self::URL_API_SIRET . $siret;
+		$apiSiretUrl = $_ENV["API_SIRENE_URI"] . $siret;
 		$client = HttpClient::create();
-		$bearerToken = $_ENV["API_SIRENE_URL"];
+		$bearerToken = $_ENV["API_SIRENE_TOKEN"];
 		$headers = [
 			"headers" => [
 				"Authorization" => "Bearer " . $bearerToken,
