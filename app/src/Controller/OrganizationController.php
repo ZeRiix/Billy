@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 class OrganizationController extends MiddlewareController
 {
 	#[Route("/organization", name: "app_organization", methods: ["GET", "POST"])]
-	#[Middleware(AccessTokenMiddleware::class, "has", redirectTo: "/login")]
+	#[Middleware(AccessTokenMiddleware::class, "has", output: "userId", redirectTo: "/login")]
 	public function create(
 		Request $request,
 		UserService $userService,
@@ -32,10 +32,8 @@ class OrganizationController extends MiddlewareController
 		if ($form->isSubmitted() && $form->isValid()) {
 			/** @var Organization */
 			$organization = $form->getData();
-			$payloadCookie = AccessTokenService::extractCookie($request->cookies);
-			$userId = $payloadCookie;
 			/** @var User */
-			$user = $userService->getById($userId);
+			$user = $userService->getById(Middleware::$floor["userId"]);
 			$organization->setCreatedBy($user);
 
 			try {

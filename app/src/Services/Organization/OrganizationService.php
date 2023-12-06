@@ -52,9 +52,7 @@ class OrganizationService
 		$this->setNameForOrganization($organization, $responseContent);
 
 		//create role owner for organization with the user who create it
-		$this->createRoleForOrganization($organization, $user);
-
-		//die(var_dump($organization));
+		$this->createOwnerRoleForOrganization($organization, $user);
 
 		$this->manager->persist($organization);
 		$this->manager->flush($organization);
@@ -70,23 +68,22 @@ class OrganizationService
 		return $this->organizationRepository->findOneBySiret($siret);
 	}
 
-	private function createRoleForOrganization(Organization $organization, User $user): void
+	private function createOwnerRoleForOrganization(Organization $organization, User $user): void
 	{
 		/** @var Role */
 		//create new role
-		$role = new Role();
+		$ownerRole = new Role();
 		//set name as 'OWNER'
-		$role->setName("OWNER");
+		$ownerRole->setName("OWNER");
 		//set all perms at true
-		$role->initOwner();
+		$ownerRole->initOwner();
 		//set created organization at role
-		$role->setOrganization($organization);
-		//get users at role
+		$ownerRole->setOrganization($organization);
 		//add user that created the organization at role
-		$role->addUser($user);
+		$ownerRole->addUser($user);
 
 		$this->manager->persist($user);
-		$this->manager->persist($role);
+		$this->manager->persist($ownerRole);
 		$this->manager->flush();
 	}
 
