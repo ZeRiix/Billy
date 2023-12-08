@@ -43,34 +43,13 @@ class Service
 	#[ORM\Column(type: Types::TEXT)]
 	private ?string $description = null;
 
-	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
+	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
 	private ?string $total_ht = null;
 
-	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
+	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
 	private ?string $total_ttc = null;
 
-	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
+	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
 	private $discount = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

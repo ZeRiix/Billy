@@ -21,28 +21,23 @@ class RoleRepository extends ServiceEntityRepository
 		parent::__construct($registry, Role::class);
 	}
 
-	//    /**
-	//     * @return Role[] Returns an array of Role objects
-	//     */
-	//    public function findByExampleField($value): array
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->orderBy('s.id', 'ASC')
-	//            ->setMaxResults(10)
-	//            ->getQuery()
-	//            ->getResult()
-	//        ;
-	//    }
+	/**
+	 * @param array $data<name string, manage_org bool, manage_user bool, manage_client bool, write_devis bool, write_factures bool, organization Organization>
+	 * @return Role
+	 */
+	public function create(array $data): Role
+	{
+		$role = new Role();
+		$role->setName($data["name"]);
+		$role->setManageOrg($data["manage_org"]);
+		$role->setManageUser($data["manage_user"]);
+		$role->setManageClient($data["manage_client"]);
+		$role->setWriteDevis($data["write_devis"]);
+		$role->setWriteFactures($data["write_factures"]);
+		$role->setOrganization($data["organization"]);
+		$role->addUser($data["user"]);
+		$this->save($role);
 
-	//    public function findOneBySomeField($value): ?Role
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->getQuery()
-	//            ->getOneOrNullResult()
-	//        ;
-	//    }
+		return $role;
+	}
 }

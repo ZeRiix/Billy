@@ -2,109 +2,93 @@
 
 namespace App\Services\Organization;
 
-use App\Entity\Organization;
-use App\Entity\Role;
-use App\Entity\User;
-use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Response\CurlResponse;
 use Symfony\Component\HttpFoundation\Response;
+// local imports
+use App\Entity\Organization;
+use App\Entity\User;
+use App\Repository\OrganizationRepository;
+use App\Repository\RoleRepository;
 
 class OrganizationService
 {
 	private OrganizationRepository $organizationRepository;
 
-	private EntityManagerInterface $manager;
-
-	private const URL_API_SIRET = "https://api.insee.fr/entreprises/sirene/V3/siret/";
+	private RoleRepository $roleRepository;
 
 	public function __construct(
 		OrganizationRepository $organizationRepository,
-		EntityManagerInterface $manager
+		RoleRepository $roleRepository
 	) {
 		$this->organizationRepository = $organizationRepository;
-		$this->manager = $manager;
+		$this->roleRepository = $roleRepository;
 	}
 
-	public function createOrganization(Organization $organization, User $user)
+	public function create(Organization $organization, User $user)
 	{
-		//check if an organization exist with siret
-		$organizationBySiret = $this->getOrganizationBySiret($organization->getSiret());
-
-		//response of http request to gouv api to get campany infos
-		/** @var CurlResponse */
-		$responseForSiret = $this->getResponseForSiret($organization->getSiret());
-		$responseContent = $responseForSiret->toArray();
-		//boolean to check if siret exist
-		$isValidSiret = $this->checkSiret($responseForSiret);
-
-		if ($organizationBySiret) {
+		// check name is already registered
+		if ($this->organizationRepository->findOneByName($organization->getName())) {
+			throw new \Exception("Une organisation avec ce nom existe déjà.");
+		}
+		// check siret is already registered
+		if ($this->organizationRepository->findOneBySiret($organization->getSiret())) {
 			throw new \Exception("Une organisation avec ce siret existe déjà.");
-		} elseif ($isValidSiret === false) {
+		}
+		// check if user is already owner of an organization
+		if ($this->roleRepository->findOneBy(["user" => $user, "name" => "OWNER"])) {
+			throw new \Exception("Vous êtes déjà propriétaire d'une organisation.");
+		}
+		// check siret is valid
+		$responseForSiret = $this->getResponseForSiret($organization->getSiret());
+		if (!$this->checkSiret($responseForSiret)) {
 			throw new \Exception("Veuillez vérifier votre siret.");
 		}
+		$responseForSiret = $responseForSiret->toArray();
 
-		//setting address automatically with info of api sirene
-		$this->setAddressForOrganization($organization, $responseContent);
-
-		//setting name automatically with info of api sirene
-		$this->setNameForOrganization($organization, $responseContent);
-
-		//create role owner for organization with the user who create it
-		$this->createOwnerRoleForOrganization($organization, $user);
-
-		$this->manager->persist($organization);
-		$this->manager->flush($organization);
+		// set name and address for organization
+		$organization->setName($this->constructNameForOrganization($responseForSiret));
+		// set address for organization
+		$organization->setAddress($this->constructAddressForOrganization($responseForSiret));
+		// set organization created by
+		$organization->setCreatedBy($user);
+		// set owner for organization
+		$this->setOwner($organization, $user);
+		// save organization
+		$this->organizationRepository->save($organization);
 	}
 
-	public function getOrganizationByName(string $name): ?Organization
+	private function setOwner(Organization $organization, User $user)
 	{
-		return $this->organizationRepository->findOneByName($name);
+		// create role owner for organization with the user who create it
+		$this->roleRepository->create([
+			"name" => "OWNER",
+			"manage_org" => true,
+			"manage_user" => true,
+			"manage_client" => true,
+			"write_devis" => true,
+			"write_factures" => true,
+			"organization" => $organization,
+			"user" => $user,
+		]);
 	}
 
-	public function getOrganizationBySiret(string $siret): ?Organization
-	{
-		return $this->organizationRepository->findOneBySiret($siret);
-	}
-
-	private function createOwnerRoleForOrganization(Organization $organization, User $user): void
-	{
-		/** @var Role */
-		//create new role
-		$ownerRole = new Role();
-		//set name as 'OWNER'
-		$ownerRole->setName("OWNER");
-		//set all perms at true
-		$ownerRole->initOwner();
-		//set created organization at role
-		$ownerRole->setOrganization($organization);
-		//add user that created the organization at role
-		$ownerRole->addUser($user);
-
-		$this->manager->persist($user);
-		$this->manager->persist($ownerRole);
-		$this->manager->flush();
-	}
-
-	private function setNameForOrganization(Organization $organization, array $data): void
+	private function constructNameForOrganization(array $data): string
 	{
 		$organizationInfos = $data["etablissement"]["uniteLegale"];
-		$organizationName = $organizationInfos["denominationUniteLegale"];
-
-		$organization->setName($organizationName);
+		return $organizationInfos["denominationUniteLegale"];
 	}
 
-	private function setAddressForOrganization(Organization $organization, array $data): void
+	private function constructAddressForOrganization(array $data): string
 	{
 		$organizationInfos = $data["etablissement"]["adresseEtablissement"];
 		$streetNumber = $organizationInfos["numeroVoieEtablissement"];
 		$streetType = strtolower($organizationInfos["typeVoieEtablissement"]);
 		$streetWording = $organizationInfos["libelleVoieEtablissement"];
 		$cityWording = $organizationInfos["libelleCommuneEtablissement"];
-		$organizationAddress =
-			$streetNumber . " " . $streetType . " " . $streetWording . ", " . $cityWording;
-		$organization->setAddress($organizationAddress);
+
+		return $streetNumber . " " . $streetType . " " . $streetWording . ", " . $cityWording;
 	}
 
 	private function getResponseForSiret(string $siret): CurlResponse

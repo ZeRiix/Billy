@@ -6,11 +6,9 @@ use App\Entity\Organization;
 use App\Entity\User;
 use App\Form\CreateOrganizationFormType;
 use App\Services\Organization\OrganizationService;
-use App\Services\Token\AccessTokenService;
 use App\Services\User\UserService;
 use App\Middleware\AccessTokenMiddleware;
 use App\Middleware\Middleware;
-use App\Repository\RoleRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,9 +33,8 @@ class OrganizationController extends MiddlewareController
 			/** @var User */
 			$user = $userService->getById(Middleware::$floor["userId"]);
 			$organization->setCreatedBy($user);
-
 			try {
-				$organizationService->createOrganization($organization, $user);
+				$organizationService->create($organization, $user);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "L'organisation à bien été créée.");
 			} catch (\Exception $e) {

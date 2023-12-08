@@ -21,36 +21,13 @@ class OrganizationRepository extends BaseRepository
 		parent::__construct($registry, Organization::class);
 	}
 
-	//    /**
-	//     * @return Organization[] Returns an array of Organization objects
-	//     */
-	//    public function findByExampleField($value): array
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->orderBy('s.id', 'ASC')
-	//            ->setMaxResults(10)
-	//            ->getQuery()
-	//            ->getResult()
-	//        ;
-	//    }
-
 	public function findOneByName($value): ?Organization
 	{
-		return $this->createQueryBuilder("s")
-			->andWhere("s.name = :val")
-			->setParameter("val", $value)
-			->getQuery()
-			->getOneOrNullResult();
+		return $this->findOneBy(["name" => $value]);
 	}
 
 	public function findOneBySiret($value): ?Organization
 	{
-		return $this->createQueryBuilder("s")
-			->andWhere("s.siret = :val")
-			->setParameter("val", $value)
-			->getQuery()
-			->getOneOrNullResult();
+		return $this->findOneBy(["siret" => $value]);
 	}
 }

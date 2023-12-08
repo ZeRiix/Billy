@@ -187,13 +187,4 @@ class Role
 	{
 		$this->updated_at = new \DateTimeImmutable();
 	}
-
-	public function initOwner(): void
-	{
-		$this->manage_org = true;
-		$this->manage_user = true;
-		$this->manage_client = true;
-		$this->write_devis = true;
-		$this->write_factures = true;
-	}
 }

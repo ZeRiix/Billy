@@ -44,21 +44,11 @@ class Organization
 	#[ORM\OneToMany(targetEntity: Client::class, mappedBy: "Organization")]
 	private Collection $clients;
 
-	#[
-		ORM\ManyToMany(
-			targetEntity: Organization::class,
-			inversedBy: "Organizations"
-		)
-	]
+	#[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: "Organizations")]
 	#[ORM\JoinColumn(nullable: true)]
 	private Collection $users;
 
-	#[
-		ORM\ManyToOne(
-			targetEntity: User::class,
-			inversedBy: "createdOrganizations"
-		)
-	]
+	#[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdOrganizations")]
 	#[ORM\JoinColumn(nullable: false)]
 	private User $createdBy;
 
@@ -237,6 +227,4 @@ class Organization
 	{
 		$this->updated_at = new \DateTimeImmutable();
 	}
-
-
 }
