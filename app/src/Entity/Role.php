@@ -93,6 +93,14 @@ class Role
 		}
 	}
 
+	public function removeUser(User $user)
+	{
+		if ($this->users->contains($user)) {
+			$this->users->removeElement($user);
+			$user->removeRole($this);
+		}
+	}
+
 	public function getName(): ?string
 	{
 		return $this->name;

@@ -2,26 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\Organization;
-use App\Entity\User;
-use App\Form\CreateOrganizationFormType;
-use App\Services\Organization\OrganizationService;
-use App\Services\User\UserService;
-use App\Middleware\AccessTokenMiddleware;
-use App\Middleware\Middleware;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+// local imports
+use App\Entity\Organization;
+use App\Form\CreateOrganizationFormType;
+use App\Services\Organization\OrganizationService;
+use App\Middleware\Middleware;
+use App\Middleware\SelfUserMiddleware;
 
 class OrganizationController extends MiddlewareController
 {
 	#[Route("/organization", name: "app_organization", methods: ["GET", "POST"])]
-	#[Middleware(AccessTokenMiddleware::class, "has", output: "userId", redirectTo: "/login")]
-	public function create(
-		Request $request,
-		UserService $userService,
-		OrganizationService $organizationService
-	): Response {
+	#[Middleware(SelfUserMiddleware::class, "has", output: "user", redirectTo: "/login")]
+	public function create(Request $request, OrganizationService $organizationService): Response
+	{
 		$response = new Response();
 		$organization = new Organization();
 		$form = $this->createForm(CreateOrganizationFormType::class, $organization);
@@ -30,11 +26,8 @@ class OrganizationController extends MiddlewareController
 		if ($form->isSubmitted() && $form->isValid()) {
 			/** @var Organization */
 			$organization = $form->getData();
-			/** @var User */
-			$user = $userService->getById(Middleware::$floor["userId"]);
-			$organization->setCreatedBy($user);
 			try {
-				$organizationService->create($organization, $user);
+				$organizationService->create($organization, Middleware::$floor["user"]);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "L'organisation à bien été créée.");
 			} catch (\Exception $e) {

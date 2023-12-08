@@ -95,6 +95,14 @@ class User
 		}
 	}
 
+	public function removeRole(Role $role)
+	{
+		if ($this->roles->contains($role)) {
+			$this->roles->removeElement($role);
+			$role->removeUser($this);
+		}
+	}
+
 	public function getOrganizations(): Collection
 	{
 		return $this->Organizations;

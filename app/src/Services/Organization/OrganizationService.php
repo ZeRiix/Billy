@@ -2,7 +2,6 @@
 
 namespace App\Services\Organization;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Response\CurlResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,24 +53,9 @@ class OrganizationService
 		// set organization created by
 		$organization->setCreatedBy($user);
 		// set owner for organization
-		$this->setOwner($organization, $user);
+		$this->roleRepository->setOwner($user, $organization);
 		// save organization
 		$this->organizationRepository->save($organization);
-	}
-
-	private function setOwner(Organization $organization, User $user)
-	{
-		// create role owner for organization with the user who create it
-		$this->roleRepository->create([
-			"name" => "OWNER",
-			"manage_org" => true,
-			"manage_user" => true,
-			"manage_client" => true,
-			"write_devis" => true,
-			"write_factures" => true,
-			"organization" => $organization,
-			"user" => $user,
-		]);
 	}
 
 	private function constructNameForOrganization(array $data): string
@@ -111,5 +95,10 @@ class OrganizationService
 			return false;
 		}
 		return true;
+	}
+
+	public function delete(Organization $organization)
+	{
+		$this->organizationRepository->delete($organization);
 	}
 }
