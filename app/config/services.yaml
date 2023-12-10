@@ -48,9 +48,11 @@ services:
         class: 'App\Repository\FactureRepository'
         parent: 'App\Repository\BaseRepository'
 
-    App\Repository\OrganisationRepository:
-        class: 'App\Repository\OrganisationRepository'
+    App\Repository\OrganizationRepository:
+        class: 'App\Repository\OrganizationRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\RoleRepository:
         class: 'App\Repository\RoleRepository'

@@ -25,15 +25,15 @@ class ClientRepository extends BaseRepository
 	{
 		$client = new Client();
 
-		$client->setFirstName($data['firstName']);
-		$client->setName($data['name']);
-		$client->setAdress($data['adress']);
-		$client->setEmail($data['email']);
-		$client->setPhone($data['phone']);
-		$client->setAdress($data['adress']);
-		$client->setActivity($data['activity']);
-		$client->setOrganisation($data['organisation']);
-		
+		$client->setFirstName($data["firstName"]);
+		$client->setName($data["name"]);
+		$client->setAddress($data["address"]);
+		$client->setEmail($data["email"]);
+		$client->setPhone($data["phone"]);
+		$client->setAddress($data["address"]);
+		$client->setActivity($data["activity"]);
+		$client->setOrganization($data["Organization"]);
+
 		$this->save($client);
 
 		return $client;

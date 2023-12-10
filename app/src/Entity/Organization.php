@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 // local imports
-use App\Repository\OrganisationRepository;
+use App\Repository\OrganizationRepository;
 use App\Entity\Role;
 use App\Entity\Service;
 use App\Entity\Devis;
@@ -18,37 +18,37 @@ use App\Entity\Facture;
 use App\Entity\Client;
 use App\Entity\User;
 
-#[ORM\Entity(repositoryClass: OrganisationRepository::class)]
-#[ORM\Table(name: '`organisation`')]
+#[ORM\Entity(repositoryClass: OrganizationRepository::class)]
+#[ORM\Table(name: "`Organization`")]
 #[ORM\HasLifecycleCallbacks]
-class Organisation
+class Organization
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'organisation')]
+	#[ORM\OneToMany(targetEntity: Role::class, mappedBy: "Organization")]
 	private Collection $roles;
 
-	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'organisation')]
+	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "Organization")]
 	private Collection $services;
 
-	#[ORM\OneToMany(targetEntity: Devis::class, mappedBy: 'organisation')]
+	#[ORM\OneToMany(targetEntity: Devis::class, mappedBy: "Organization")]
 	private Collection $devis;
 
-	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: 'organisation')]
+	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "Organization")]
 	private Collection $factures;
 
-	#[ORM\OneToMany(targetEntity: Client::class, mappedBy: 'organisation')]
+	#[ORM\OneToMany(targetEntity: Client::class, mappedBy: "Organization")]
 	private Collection $clients;
 
-	#[ORM\ManyToMany(targetEntity: Organisation::class, inversedBy: 'organisations')]
+	#[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: "Organizations")]
 	#[ORM\JoinColumn(nullable: true)]
 	private Collection $users;
 
-	#[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'createdOrganisations')]
+	#[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdOrganizations")]
 	#[ORM\JoinColumn(nullable: false)]
 	private User $createdBy;
 
@@ -56,18 +56,18 @@ class Organisation
 	private ?string $name = null;
 
 	#[ORM\Column(type: Types::TEXT)]
-	private ?string $adress = null;
+	private ?string $address = null;
 
 	#[ORM\Column(length: 255)]
 	private ?string $email = null;
 
-	#[ORM\Column(length: 20)]
+	#[ORM\Column(length: 10)]
 	private ?string $phone = null;
 
 	#[ORM\Column(length: 100)]
 	private ?string $activity = null;
 
-	#[ORM\Column(length: 14, nullable: false)]
+	#[ORM\Column(length: 14, nullable: false, unique: true)]
 	private ?string $siret = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -145,14 +145,14 @@ class Organisation
 		return $this;
 	}
 
-	public function getAdress(): ?string
+	public function getAddress(): ?string
 	{
-		return $this->adress;
+		return $this->address;
 	}
 
-	public function setAdress(?string $adress): static
+	public function setAddress(?string $address): static
 	{
-		$this->adress = $adress;
+		$this->address = $address;
 
 		return $this;
 	}

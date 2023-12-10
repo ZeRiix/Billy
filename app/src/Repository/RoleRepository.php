@@ -2,47 +2,44 @@
 
 namespace App\Repository;
 
-use App\Entity\Role;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends RoleEntityRepository<Role>
- *
- * @method Role|null find($id, $lockMode = null, $lockVersion = null)
- * @method Role|null findOneBy(array $criteria, array $orderBy = null)
- * @method Role[]    findAll()
- * @method Role[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class RoleRepository extends ServiceEntityRepository
+// local imports
+use App\Repository\BaseRepository;
+use App\Entity\Organization;
+use App\Entity\Role;
+use App\Entity\User;
+
+class RoleRepository extends BaseRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Role::class);
 	}
 
-	//    /**
-	//     * @return Role[] Returns an array of Role objects
-	//     */
-	//    public function findByExampleField($value): array
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->orderBy('s.id', 'ASC')
-	//            ->setMaxResults(10)
-	//            ->getQuery()
-	//            ->getResult()
-	//        ;
-	//    }
+	public function setOwner(User $user, Organization $organization): Role
+	{
+		$role = new Role();
+		$role->setName("OWNER");
+		$role->setManageOrg(true);
+		$role->setManageUser(true);
+		$role->setManageClient(true);
+		$role->setWriteDevis(true);
+		$role->setWriteFactures(true);
+		$role->setOrganization($organization);
+		$role->addUser($user);
+		$this->save($role);
 
-	//    public function findOneBySomeField($value): ?Role
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->getQuery()
-	//            ->getOneOrNullResult()
-	//        ;
-	//    }
+		return $role;
+	}
+
+	public function getRolesForOrganization(Organization $org): array
+	{
+		return $this->findBy(["organization" => $org]);
+	}
+
+	public function getUserRolesForOrganization(Organization $org, User $user): array
+	{
+		return $this->findBy(["organization" => $org, "user" => $user]);
+	}
 }

@@ -11,34 +11,34 @@ use Symfony\Component\Uid\Uuid;
 
 // local imports
 use App\Repository\DevisRepository;
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\Service;
 use App\Entity\Facture;
 use App\Entity\Client;
 
 #[ORM\Entity(repositoryClass: DevisRepository::class)]
-#[ORM\Table(name: '`devis`')]
+#[ORM\Table(name: "`devis`")]
 #[ORM\HasLifecycleCallbacks]
 class Devis
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organisation::class, inversedBy: 'devis')]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "devis")]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organisation $organisation;
+	private Organization $Organization;
 
-	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'devis')]
+	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "devis")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $services;
 
-	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: 'devis')]
+	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "devis")]
 	private Collection $factures;
 
-	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'devis')]
+	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: "devis")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Client $client;
 
@@ -54,13 +54,34 @@ class Devis
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $is_signed = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private ?string $total_ht = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private ?string $total_ttc = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[
+		ORM\Column(
+			type: Types::DECIMAL,
+			nullable: false,
+			precision: 10,
+			scale: 2
+		)
+	]
 	private $discount = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -80,14 +101,14 @@ class Devis
 		return $this->id;
 	}
 
-	public function getOrganisation(): ?Organisation
+	public function getOrganization(): ?Organization
 	{
-		return $this->organisation;
+		return $this->Organization;
 	}
 
-	public function setOrganisation(?Organisation $organisation): self
+	public function setOrganization(?Organization $Organization): self
 	{
-		$this->organisation = $organisation;
+		$this->Organization = $Organization;
 
 		return $this;
 	}

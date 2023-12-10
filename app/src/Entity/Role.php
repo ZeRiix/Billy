@@ -11,27 +11,28 @@ use Doctrine\Common\Collections\Collection;
 
 //local imports
 use App\Repository\RoleRepository;
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
-#[ORM\Table(name: '`role`')]
+#[ORM\Table(name: "`role`")]
 #[ORM\HasLifecycleCallbacks]
 class Role
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organisation::class, inversedBy: 'roles')]
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "roles", cascade: ["persist"])]
 	#[ORM\JoinColumn(nullable: false)]
-	private Organisation $organisation;
+	private Organization $organization;
 
-	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
+	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: "roles")]
 	#[ORM\JoinColumn(nullable: true)]
-	private Collection $users;
+	#[ORM\JoinTable(name: "user_role")]
+	private ?Collection $users;
 
 	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $name = null;
@@ -57,19 +58,24 @@ class Role
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $updated_at = null;
 
+	public function __construct()
+	{
+		$this->users = new ArrayCollection();
+	}
+
 	public function getId(): ?Uuid
 	{
 		return $this->id;
 	}
 
-	public function getOrganisation(): ?Organisation
+	public function getOrganization(): ?Organization
 	{
-		return $this->organisation;
+		return $this->organization;
 	}
 
-	public function setOrganisation(?Organisation $organisation): self
+	public function setOrganization(?Organization $organization): self
 	{
-		$this->organisation = $organisation;
+		$this->organization = $organization;
 
 		return $this;
 	}
@@ -79,11 +85,20 @@ class Role
 		return $this->users;
 	}
 
-	public function setUsers(?Collection $users): self
+	public function addUser(User $user)
 	{
-		$this->users = $users;
+		if (!$this->users->contains($user)) {
+			$this->users->add($user);
+			$user->addRole($this);
+		}
+	}
 
-		return $this;
+	public function removeUser(User $user)
+	{
+		if ($this->users->contains($user)) {
+			$this->users->removeElement($user);
+			$user->removeRole($this);
+		}
 	}
 
 	public function getName(): ?string
