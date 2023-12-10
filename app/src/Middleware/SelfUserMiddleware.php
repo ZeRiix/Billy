@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class SelfUserMiddleware extends AbstractMiddleware
 {
@@ -15,12 +16,7 @@ class SelfUserMiddleware extends AbstractMiddleware
 
 	public function handler(mixed $input, ?array $options): mixed
 	{
-		new Middleware(
-			AccessTokenMiddleware::class,
-			"has",
-			output: "userId",
-			redirectTo: "/login"
-		);
+		new Middleware(AccessTokenMiddleware::class, "has", output: "userId", redirectTo: "/login");
 
 		$user = $this->userRepository->getById(Middleware::$floor["userId"]);
 		if ($user) {

@@ -52,6 +52,9 @@ class Role
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $write_factures = null;
 
+	#[ORM\Column(type: Types::BOOLEAN)]
+	private ?bool $manage_service = null;
+
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
 

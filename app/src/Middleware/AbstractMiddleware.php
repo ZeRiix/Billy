@@ -2,8 +2,8 @@
 
 namespace App\Middleware;
 
-use Exception;
-use Symfony\Component\BrowserKit\Response;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 abstract class AbstractMiddleware
 {
@@ -27,5 +27,10 @@ abstract class AbstractMiddleware
 	public function getData()
 	{
 		return $this->data;
+	}
+
+	public function redirectTo(string $redirectTo)
+	{
+		throw new HttpException(Response::HTTP_FOUND, headers: ["Location" => $redirectTo]);
 	}
 }

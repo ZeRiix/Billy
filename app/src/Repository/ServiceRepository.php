@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Organization;
 use App\Entity\Service;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,33 +17,26 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ServiceRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Service::class);
-    }
+	public function __construct(ManagerRegistry $registry)
+	{
+		parent::__construct($registry, Service::class);
+	}
 
-//    /**
-//     * @return Service[] Returns an array of Service objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+	/**
+	 * @return Service[] Returns an array of Service objects
+	 */
+	public function findByName(Organization $organization, string $name): ?Service
+	{
+		return $this->findOneBy(["organization" => $organization, "name" => $name]);
+	}
 
-//    public function findOneBySomeField($value): ?Service
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+	//    public function findOneBySomeField($value): ?Service
+	//    {
+	//        return $this->createQueryBuilder('s')
+	//            ->andWhere('s.exampleField = :val')
+	//            ->setParameter('val', $value)
+	//            ->getQuery()
+	//            ->getOneOrNullResult()
+	//        ;
+	//    }
 }
