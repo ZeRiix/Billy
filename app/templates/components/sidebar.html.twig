@@ -1,18 +1,18 @@
-<aside class="w-64 px-10 py-5 h-screen flex flex-col bg-darker-green fixed">
-	<a href="/dashboard" class="w-24 mx-auto mt-4 mb-9 aspect-square">
+<aside class="w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green fixed">
+	<a href="{{ path('dashboard') }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">
 		<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="h-full rounded-lg">
 	</a>
 	<div class="h-full flex flex-col justify-between text-white/50">
 		<nav>
 			<ul class="flex flex-col gap-6">
 				<li>
-					<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+					<a href="{{ path('dashboard_my_organization') }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 						<span class="mdi mdi-briefcase-outline text-2xl"></span>
 						Ma société
 					</a>
 				</li>
 				<li>
-					<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+					<a href="{{ path('dashboard_organizations') }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 						<span class="mdi mdi-domain text-2xl"></span>
 						Mes entreprises
 					</a>
@@ -25,12 +25,12 @@
 					</div>
 					<ul class="content hidden mt-3 flex flex-col gap-2">
 						<li>
-							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg transition-all duration-300 hover:text-white hover:bg-lighter-green">
+							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg transition-all duration-300 hover:text-white hover:bg-blighter-green">
 								Lien 1
 							</a>
 						</li>
 						<li>
-							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg transition-all duration-300 hover:text-white hover:bg-lighter-green">
+							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg transition-all duration-300 hover:text-white hover:bg-blighter-green">
 								Lien 2
 							</a>
 						</li>
