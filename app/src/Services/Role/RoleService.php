@@ -26,10 +26,12 @@ class RoleService
 		$this->organizationRepository = $organizationRepository;
 	}
 
-	public function getAll(Organization $organization): array
+	public function getAll(string $organization): array
 	{
+		// get organization
+		$org = $this->organizationRepository->findOneById($organization);
 		// get all roles for organization
-		$roles = $this->roleRepository->getAllForOrganization($organization);
+		$roles = $this->roleRepository->getRolesForOrganization($org);
 		// parse roles to array
 		$rolesArray = [];
 		foreach ($roles as $role) {
