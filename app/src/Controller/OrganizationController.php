@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 // local imports
 use App\Entity\Organization;
 use App\Form\CreateOrganizationFormType;
+use App\Middleware\AccessTokenMiddleware;
 use App\Services\Organization\OrganizationService;
 use App\Middleware\Middleware;
 use App\Middleware\SelfUserMiddleware;
@@ -15,7 +16,7 @@ use App\Middleware\SelfUserMiddleware;
 class OrganizationController extends MiddlewareController
 {
 	#[Route("/organization", name: "app_organization", methods: ["GET", "POST"])]
-	#[Middleware(SelfUserMiddleware::class, "has", output: "user", redirectTo: "/login")]
+	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
 	public function create(Request $request, OrganizationService $organizationService): Response
 	{
 		$response = new Response();

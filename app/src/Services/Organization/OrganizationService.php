@@ -36,7 +36,8 @@ class OrganizationService
 			throw new \Exception("Une organisation avec ce siret existe déjà.");
 		}
 		// check if user is already owner of an organization
-		if ($this->roleRepository->findOneBy(["user" => $user, "name" => "OWNER"])) {
+		$isOwner = $this->roleRepository->findOneBy(["name" => "OWNER"]);
+		if ($isOwner && $isOwner->getUsers()->contains($user)) {
 			throw new \Exception("Vous êtes déjà propriétaire d'une organisation.");
 		}
 		// check siret is valid
@@ -52,6 +53,8 @@ class OrganizationService
 		$organization->setAddress($this->constructAddressForOrganization($responseForSiret));
 		// set organization created by
 		$organization->setCreatedBy($user);
+		// set user in organization
+		$organization->addUser($user);
 		// set owner for organization
 		$this->roleRepository->setOwner($user, $organization);
 		// save organization

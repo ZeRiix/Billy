@@ -44,8 +44,9 @@ class Organization
 	#[ORM\OneToMany(targetEntity: Client::class, mappedBy: "Organization")]
 	private Collection $clients;
 
-	#[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: "Organizations")]
+	#[ORM\ManyToMany(targetEntity: User::class, inversedBy: "organizations")]
 	#[ORM\JoinColumn(nullable: true)]
+	#[ORM\JoinTable(name: "user_organizations")]
 	private Collection $users;
 
 	#[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdOrganizations")]
@@ -129,6 +130,24 @@ class Organization
 	public function setCreatedBy(?User $createdBy): self
 	{
 		$this->createdBy = $createdBy;
+
+		return $this;
+	}
+
+	public function addUser(User $user): self
+	{
+		if (!$this->users->contains($user)) {
+			$this->users->add($user);
+		}
+
+		return $this;
+	}
+
+	public function removeUser(User $user): self
+	{
+		if ($this->users->contains($user)) {
+			$this->users->removeElement($user);
+		}
 
 		return $this;
 	}

@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use Doctrine\Persistence\ManagerRegistry;
-
 // local imports
 use App\Repository\BaseRepository;
 use App\Entity\Organization;
@@ -40,6 +39,14 @@ class RoleRepository extends BaseRepository
 
 	public function getUserRolesForOrganization(Organization $org, User $user): array
 	{
-		return $this->findBy(["organization" => $org, "user" => $user]);
+		return $this->createQueryBuilder("role")
+			->innerJoin("role.organization", "org")
+			->innerJoin("role.users", "user")
+			->where("org = :organization")
+			->andWhere("user = :user")
+			->setParameter("organization", $org)
+			->setParameter("user", $user)
+			->getQuery()
+			->getResult();
 	}
 }
