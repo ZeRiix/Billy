@@ -24,8 +24,12 @@ class RoleController extends MiddlewareController
 		$role = $roleService->checkPermission(
 			Middleware::$floor["user"],
 			$request->get("OrganizationId"),
-			"create_role"
+			"manage_org"
 		);
+		if ($role === false) {
+			$this->addFlash("error", "Vous n'avez pas la permission de créer un rôle.");
+			return $this->redirectToRoute("app_organization");
+		}
 		$response = new Response();
 		$role = new Role();
 		$form = $this->createForm(CreateRoleForm::class, $role);
@@ -61,8 +65,12 @@ class RoleController extends MiddlewareController
 		$role = $roleService->checkPermission(
 			Middleware::$floor["user"],
 			$request->get("OrganizationId"),
-			"create_role"
+			"manage_user"
 		);
+		if ($role === false) {
+			$this->addFlash("error", "Vous n'avez pas la permission de donner un rôle.");
+			return $this->redirectToRoute("app_organization");
+		}
 		$response = new Response();
 		$giveRoleData = new GiveRoleData();
 		$form = $this->createForm(GiveRoleForm::class, $giveRoleData, [
