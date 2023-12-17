@@ -5,9 +5,11 @@ let autoClose;
 // Auto close flash messages after 5 seconds
 if(flashesBox){
 	autoClose = setTimeout(() => {
-		flashes.forEach((flash) => {
-	  flash.remove();
-		});
+		flashes[0].style.opacity = 0;
+		setTimeout(() => {
+			flashes[0].remove();
+		}
+		, 700);
 	}, 5000);
 }
 
@@ -16,7 +18,11 @@ const closeBtns = document.querySelectorAll(".close-btn");
 // Close flash message on click
 closeBtns.forEach((closeBtn) => {
 	closeBtn.addEventListener("click", (e) => {
-		e.target.parentElement.remove();
+		e.target.parentElement.style.opacity = 0;
+		setTimeout(() => {
+			e.target.parentElement.remove();
+		}
+		, 700);
 		clearTimeout(autoClose);
 	});
 });
