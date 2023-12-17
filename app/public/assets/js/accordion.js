@@ -1,5 +1,3 @@
-console.log("accordion.js loaded");
-
 document.addEventListener("DOMContentLoaded", function(){
 	const accordionHeaders = document.querySelectorAll(".accordion");
 
