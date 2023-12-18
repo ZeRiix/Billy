@@ -16,13 +16,7 @@ abstract class TokenService
 	{
 		$name = explode("\\", static::class);
 		$name = array_pop($name);
-		$name = strtolower(
-			preg_replace(
-				["/([a-z\d])([A-Z])/", "/([^_])([A-Z][a-z])/"],
-				"$1_$2",
-				$name
-			)
-		);
+		$name = strtolower(preg_replace(["/([a-z\d])([A-Z])/", "/([^_])([A-Z][a-z])/"], "$1_$2", $name));
 
 		return $name;
 	}
@@ -49,10 +43,7 @@ abstract class TokenService
 	{
 		$jws = new JWS(self::createHeader(), "OpenSSL");
 		$jws->setPayload(self::createPayload($data));
-		$jws->sign(
-			openssl_pkey_get_private(static::getPrivateKey()),
-			static::getPassword()
-		);
+		$jws->sign(openssl_pkey_get_private(static::getPrivateKey()), static::getPassword());
 		$token = $jws->getTokenString();
 
 		return $token;
@@ -66,10 +57,7 @@ abstract class TokenService
 
 		// horrible
 		$jws = SimpleJWS::load($token);
-		$jws->verify(
-			openssl_pkey_get_public(static::getPublicKey()),
-			static::getPassword()
-		);
+		$jws->verify(openssl_pkey_get_public(static::getPublicKey()), static::getPassword());
 
 		$payload = $jws->getPayload();
 

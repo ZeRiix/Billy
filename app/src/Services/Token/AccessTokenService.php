@@ -8,6 +8,13 @@ use Symfony\Component\HttpFoundation\InputBag;
 
 class AccessTokenService extends TokenService
 {
+	static string $path = "/";
+
+	public static function getName()
+	{
+		return self::name();
+	}
+
 	protected static function getPublicKey(): string
 	{
 		return "file://" . __DIR__ . "/../../../config/jwt/public.pem";
@@ -39,7 +46,7 @@ class AccessTokenService extends TokenService
 			self::name(),
 			self::generateToken($user->getId()),
 			time() + self::getTimeout(),
-			"/"
+			self::$path
 		);
 	}
 }

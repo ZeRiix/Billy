@@ -22,7 +22,8 @@ class Middleware
 		?string $output = null,
 		?array $options = null,
 		?Response $response = null,
-		?string $redirectTo = null
+		?string $redirectTo = null,
+		?HttpException $httpException = null
 	) {
 		if (!self::$status) {
 			return;
@@ -47,6 +48,8 @@ class Middleware
 			self::$status = false;
 			if ($redirectTo) {
 				throw new HttpException(Response::HTTP_FOUND, headers: ["Location" => $redirectTo]);
+			} elseif ($httpException) {
+				throw $httpException;
 			}
 		}
 
