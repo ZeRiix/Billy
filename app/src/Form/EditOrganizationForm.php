@@ -2,11 +2,11 @@
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\File;
 
 class EditOrganizationForm extends AbstractType
@@ -53,7 +53,7 @@ class EditOrganizationForm extends AbstractType
 					"class" => "form-label",
 				],
 			])
-			->add("image", UploadedFile::class, [
+			->add("image", FileType::class, [
 				"required" => false,
 				"attr" => [
 					"class" =>
