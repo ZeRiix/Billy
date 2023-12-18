@@ -35,18 +35,26 @@ services:
     App\Repository\ClientRepository:
         class: 'App\Repository\ClientRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\CommandeRepository:
         class: 'App\Repository\CommandeRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\DevisRepository:
         class: 'App\Repository\DevisRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\FactureRepository:
         class: 'App\Repository\FactureRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\OrganizationRepository:
         class: 'App\Repository\OrganizationRepository'
@@ -57,10 +65,14 @@ services:
     App\Repository\RoleRepository:
         class: 'App\Repository\RoleRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\ServiceRepository:
         class: 'App\Repository\ServiceRepository'
         parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
 
     App\Repository\UserRepository:
         class: 'App\Repository\UserRepository'

@@ -19,5 +19,14 @@
   "editor.formatOnSave": true,
   "prettier.documentSelectors": ["**/*.php"],
 
-  "intelephense.format.enable": false
+    "emmet.includeLanguages": {
+        "twig": "html"
+    },
+    "editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+    "editor.formatOnSave": true,
+    "prettier.documentSelectors": ["**/*.php"],
+
+    "intelephense.format.enable": false
 }

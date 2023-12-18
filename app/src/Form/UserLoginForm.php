@@ -25,19 +25,15 @@ class UserLoginForm extends AbstractType
 				],
 				"required" => true,
 				"constraints" => [
-					new Assert\NotBlank(
-						message: "L'adresse email est obligatoire"
-					),
-					new Assert\Email(
-						message: "L'adresse email n'est pas valide"
-					),
+					new Assert\NotBlank(message: "L'adresse email est obligatoire"),
+					new Assert\Email(message: "L'adresse email n'est pas valide"),
 				],
 			])
 			->add("password", PasswordType::class, [
 				"attr" => [
 					"class" =>
 						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-					"pattern" => "[^]{8,}",
+					// "pattern" => "[^]{8,}",
 				],
 				"label" => "Mot de passe",
 				"label_attr" => [
@@ -45,13 +41,10 @@ class UserLoginForm extends AbstractType
 				],
 				"required" => true,
 				"constraints" => [
-					new Assert\NotBlank(
-						message: "Le mot de passe est obligatoire"
-					),
+					new Assert\NotBlank(message: "Le mot de passe est obligatoire"),
 					new Assert\Length([
 						"min" => 8,
-						"minMessage" =>
-							"Le mot de passe doit contenir au moins 8 caractères",
+						"minMessage" => "Le mot de passe doit contenir au moins 8 caractères",
 					]),
 				],
 			])
@@ -59,8 +52,8 @@ class UserLoginForm extends AbstractType
 				"attr" => [
 					"class" =>
 						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-					"text" => "Se connecter",
 				],
+				"label" => "Se connecter",
 			]);
 	}
 }

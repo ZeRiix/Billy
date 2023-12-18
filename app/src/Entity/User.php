@@ -32,9 +32,10 @@ class User
 	#[ORM\JoinTable(name: "user_role")]
 	private Collection $roles;
 
-	#[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: "users")]
+	#[ORM\ManyToMany(targetEntity: Organization::class, mappedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
-	private Collection $Organizations;
+	#[ORM\JoinTable(name: "user_organizations")]
+	private Collection $organizations;
 
 	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "user")]
 	#[ORM\JoinColumn(nullable: false)]
@@ -71,7 +72,7 @@ class User
 	public function __construct()
 	{
 		$this->roles = new ArrayCollection();
-		$this->Organizations = new ArrayCollection();
+		$this->organizations = new ArrayCollection();
 		$this->services = new ArrayCollection();
 		$this->factures = new ArrayCollection();
 		$this->createdOrganizations = new ArrayCollection();
@@ -105,12 +106,12 @@ class User
 
 	public function getOrganizations(): Collection
 	{
-		return $this->Organizations;
+		return $this->organizations;
 	}
 
 	public function setOrganizations(Collection $Organizations): self
 	{
-		$this->Organizations = $Organizations;
+		$this->organizations = $Organizations;
 
 		return $this;
 	}

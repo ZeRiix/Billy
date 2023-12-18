@@ -68,7 +68,7 @@ class UserRegisterForm extends AbstractType
 					"attr" => [
 						"class" =>
 							"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-						"pattern" => "[^]{8,}",
+						// "pattern" => "[^]{8,}",
 					],
 					"label" => "Mot de passe",
 					"label_attr" => [
@@ -80,7 +80,7 @@ class UserRegisterForm extends AbstractType
 					"attr" => [
 						"class" =>
 							"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-						"pattern" => "[^]{8,}",
+						// "pattern" => "[^]{8,}",
 					],
 					"label" => "Confirmer mot de passe",
 					"label_attr" => [
@@ -89,17 +89,14 @@ class UserRegisterForm extends AbstractType
 					"required" => true,
 				],
 				"invalid_message" => "Les mots de passe ne correspondent pas.",
-				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 8]),
-				],
+				"constraints" => [new Assert\NotBlank(), new Assert\Length(["min" => 8])],
 			])
 			->add("submit", SubmitType::class, [
 				"attr" => [
 					"class" =>
 						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-					"text" => "Valider",
 				],
+				"label" => "S'inscrire",
 			]);
 	}
 }

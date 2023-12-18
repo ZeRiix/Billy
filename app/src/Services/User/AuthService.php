@@ -36,17 +36,14 @@ class AuthService
 	public function register(UserRegister $userRegister)
 	{
 		if ($this->userRepository->getByEmail($userRegister->getEmail())) {
-			throw new \Exception("Cette adresse email est déjà utilisé.");
+			throw new \Exception("Cette adresse email est déjà utilisée.");
 		}
 
-		$userRegisterFinded = $this->userRegisterRepository->getByEmail(
-			$userRegister->getEmail()
-		);
+		$userRegisterFinded = $this->userRegisterRepository->getByEmail($userRegister->getEmail());
 
 		if (
 			$userRegisterFinded &&
-			$userRegisterFinded->getCreatedAt()->getTimestamp() +
-				self::timeoutRegisterUser <
+			$userRegisterFinded->getCreatedAt()->getTimestamp() + self::timeoutRegisterUser <
 				(new \DateTime("now"))->getTimestamp()
 		) {
 			$this->userRegisterRepository->delete($userRegisterFinded);
@@ -54,12 +51,10 @@ class AuthService
 		}
 
 		if ($userRegisterFinded) {
-			throw new \Exception("Un email à déjà été envoyé a cette adresse.");
+			throw new \Exception("Un email à déjà été envoyé à cette adresse.");
 		}
 
-		$userRegister->setPassword(
-			password_hash($userRegister->getPassword(), PASSWORD_DEFAULT)
-		);
+		$userRegister->setPassword(password_hash($userRegister->getPassword(), PASSWORD_DEFAULT));
 		$this->userRegisterRepository->save($userRegister);
 
 		try {
@@ -70,33 +65,30 @@ class AuthService
 			);
 		} catch (\Exception $error) {
 			$this->userRegisterRepository->delete($userRegister);
-			throw new \Exception(
-				"Il y a ue un problème lors dde l'envoie du mail."
-			);
+			throw new \Exception("Il y a eu un problème lors de l'envoie de l'email.");
 		}
 	}
 
 	public function validate(?string $id)
 	{
 		if (!$id) {
-			throw new \Exception("Missig id.");
+			throw new \Exception("Missing id");
 		}
 
 		/** @var UserRegister $userRegisterFinded */
 		$userRegisterFinded = $this->userRegisterRepository->getById($id);
 
 		if (!$userRegisterFinded) {
-			throw new \Exception("User register not found.");
+			throw new \Exception("User register not found");
 		}
 
 		$this->userRegisterRepository->delete($userRegisterFinded);
 
 		if (
-			$userRegisterFinded->getCreatedAt()->getTimestamp() +
-				self::timeoutRegisterUser <
+			$userRegisterFinded->getCreatedAt()->getTimestamp() + self::timeoutRegisterUser <
 			(new \DateTime("now"))->getTimestamp()
 		) {
-			throw new \Exception("User register has expired.");
+			throw new \Exception("User register has expired");
 		}
 
 		return $this->userRepository->create($userRegisterFinded);
@@ -109,24 +101,13 @@ class AuthService
 	public function login(User $user): User
 	{
 		// check if user
-		$findedUser = $this->userRepository->getByEmail(
-			$user->getEmail("email")
-		);
+		$findedUser = $this->userRepository->getByEmail($user->getEmail("email"));
 		if (!$findedUser) {
-			throw new \Exception(
-				"Soit l'email soit le mot de passe n'est pas valide"
-			);
+			throw new \Exception("L'email ou le mot de passe n'est pas valide.");
 		}
 		// check password
-		if (
-			!password_verify(
-				$user->getPassword("password"),
-				$findedUser->getPassword()
-			)
-		) {
-			throw new \Exception(
-				"Soit l'email soit le mot de passe n'est pas valide"
-			);
+		if (!password_verify($user->getPassword("password"), $findedUser->getPassword())) {
+			throw new \Exception("L'email ou le mot de passe n'est pas valide.");
 		}
 
 		return $findedUser;
@@ -140,14 +121,11 @@ class AuthService
 			throw new \Exception("Cette adresse email n'existe pas.");
 		}
 
-		$findedForgetPassword = $this->forgetPasswordRepository->getByUser(
-			$findedUser
-		);
+		$findedForgetPassword = $this->forgetPasswordRepository->getByUser($findedUser);
 
 		if (
 			$findedForgetPassword &&
-			$findedForgetPassword->getCreatedAt()->getTimestamp() +
-				self::timeoutRegisterUser <
+			$findedForgetPassword->getCreatedAt()->getTimestamp() + self::timeoutRegisterUser <
 				(new \DateTime("now"))->getTimestamp()
 		) {
 			$this->forgetPasswordRepository->delete($findedForgetPassword);
@@ -155,9 +133,7 @@ class AuthService
 		}
 
 		if ($findedForgetPassword) {
-			throw new \Exception(
-				"Un email de récupération à déjà été envoyé a cette adresse."
-			);
+			throw new \Exception("Un email de récupération a déjà été envoyé à cette adresse.");
 		}
 
 		$forgetPassword = new ForgetPassword();
@@ -168,15 +144,11 @@ class AuthService
 			MailService::send(
 				$findedUser->getEmail(),
 				"récupération de mot de passe",
-				$_ENV["HOST"] .
-					"/change-password?id=" .
-					$forgetPassword->getId()
+				$_ENV["HOST"] . "/change-password?id=" . $forgetPassword->getId()
 			);
 		} catch (\Exception $error) {
 			$this->forgetPasswordRepository->delete($forgetPassword);
-			throw new \Exception(
-				"Il y a ue un problème lors dde l'envoie du mail."
-			);
+			throw new \Exception("Il y a eu un problème lors de l'envoie de l'email.");
 		}
 	}
 
@@ -186,20 +158,15 @@ class AuthService
 
 		if (
 			$forgetPassword &&
-			$forgetPassword->getCreatedAt()->getTimestamp() +
-				self::timeoutRegisterUser <
+			$forgetPassword->getCreatedAt()->getTimestamp() + self::timeoutRegisterUser <
 				(new \DateTime("now"))->getTimestamp()
 		) {
-			throw new \Exception(
-				"La demande de changement de mots de pass a expiré."
-			);
+			throw new \Exception("La demande de changement de mots de passe a expiré.");
 		}
 
 		$userForgetPassword = $forgetPassword->getUser();
 
-		$userForgetPassword->setPassword(
-			password_hash($user->getPassword(), PASSWORD_DEFAULT)
-		);
+		$userForgetPassword->setPassword(password_hash($user->getPassword(), PASSWORD_DEFAULT));
 
 		$this->forgetPasswordRepository->save($userForgetPassword);
 	}

@@ -15,10 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateOrganizationFormType extends AbstractType
 {
-	public function buildForm(
-		FormBuilderInterface $builder,
-		array $options
-	): void {
+	public function buildForm(FormBuilderInterface $builder, array $options): void
+	{
 		$builder
 			->add("email", EmailType::class, [
 				"required" => false,
@@ -33,16 +31,13 @@ class CreateOrganizationFormType extends AbstractType
 					"class" => "form-label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(
-						message: "L'adresse email est obligatoire"
-					),
+					new Assert\NotBlank(message: "L'adresse email est obligatoire"),
 					new Assert\Length([
 						"min" => 2,
 						"max" => 180,
 						"minMessage" =>
 							"L'adresse email doit faire au moins {{ limit }} caractères",
-						"maxMessage" =>
-							"L'adresse email doit faire au plus {{ limit }} caractères",
+						"maxMessage" => "L'adresse email doit faire au plus {{ limit }} caractères",
 					]),
 				],
 			])
@@ -59,9 +54,7 @@ class CreateOrganizationFormType extends AbstractType
 					"class" => "form-label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(
-						message: "Le téléphone est obligatoire"
-					),
+					new Assert\NotBlank(message: "Le téléphone est obligatoire"),
 					new Assert\Length([
 						"min" => 10,
 						"max" => 10,
@@ -83,9 +76,7 @@ class CreateOrganizationFormType extends AbstractType
 					"class" => "form_label",
 				],
 				"constraints" => [
-					new Assert\NotBlank(
-						message: "Le secteur d'activité est obligatoire"
-					),
+					new Assert\NotBlank(message: "Le secteur d'activité est obligatoire"),
 					new Assert\Length([
 						"min" => 2,
 						"max" => 100,
@@ -113,8 +104,7 @@ class CreateOrganizationFormType extends AbstractType
 					new Assert\Length([
 						"min" => 14,
 						"max" => 14,
-						"exactMessage" =>
-							"Le siret doit faire {{ limit }} caractères",
+						"exactMessage" => "Le siret doit faire {{ limit }} caractères",
 					]),
 				],
 			])
@@ -123,7 +113,7 @@ class CreateOrganizationFormType extends AbstractType
 					"class" =>
 						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
 				],
-				"label" => "Créer",
+				"label" => "Ajouter",
 			]);
 	}
 
