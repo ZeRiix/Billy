@@ -5,7 +5,7 @@ namespace App\Service\Middleware;
 use App\Entity\User;
 use App\Entity\Organization;
 use App\Middleware\AbstractMiddleware;
-use App\Middleware\AccessTokenMiddleware;
+use App\Middleware\SelfUserMiddleware;
 use App\Middleware\Middleware;
 use App\Repository\OrganizationRepository;
 use App\Services\Role\RoleService;
@@ -36,14 +36,14 @@ class UserCanCreateServiceMiddleware extends AbstractMiddleware
 		$pathAccessToken = AccessTokenService::$path;
 
 		new Middleware(
-			AccessTokenMiddleware::class,
+			SelfUserMiddleware::class,
 			"exist",
 			output: "user",
 			httpException: new HttpException(
 				Response::HTTP_FOUND,
 				headers: [
 					"Location" => "/login",
-					"Set-Cookie" => "$nameAccessToken=deleted; path=$pathAccessToken; expires=Thu, 01 Jan 1970 00:00:00 GMT",
+					"Set-Cookie" => "$nameAccessToken=; path=$pathAccessToken; expires=Thu, 01 Jan 1970 00:00:00 GMT",
 				]
 			)
 		);
@@ -55,10 +55,6 @@ class UserCanCreateServiceMiddleware extends AbstractMiddleware
 		}
 		/** @var User */
 		$user = Middleware::$floor["user"];
-
-		if ($organization->getUsers()->contains($user)) {
-			return $this->output("userNotBelongs");
-		}
 
 		Middleware::$floor["organization"] = $organization;
 

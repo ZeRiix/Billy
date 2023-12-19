@@ -5,8 +5,8 @@ namespace App\Service\Middleware;
 use App\Entity\User;
 use App\Entity\Service;
 use App\Middleware\AbstractMiddleware;
-use App\Middleware\AccessTokenMiddleware;
 use App\Middleware\Middleware;
+use App\Middleware\SelfUserMiddleware;
 use App\Repository\ServiceRepository;
 use App\Services\Role\RoleService;
 use App\Services\Token\AccessTokenService;
@@ -36,7 +36,7 @@ class UserCanUpdateServiceMiddleware extends AbstractMiddleware
 		$pathAccessToken = AccessTokenService::$path;
 
 		new Middleware(
-			AccessTokenMiddleware::class,
+			SelfUserMiddleware::class,
 			"exist",
 			output: "user",
 			httpException: new HttpException(
@@ -60,11 +60,7 @@ class UserCanUpdateServiceMiddleware extends AbstractMiddleware
 		$organization = $service->getOrganization();
 
 		if ($organization->getId() !== $organizationId) {
-			return $this->output("idIsNotSame");
-		}
-
-		if ($organization->getUsers()->contains($user)) {
-			return $this->output("userNotBelongs");
+			$this->redirectTo("/organization/$organizationId");
 		}
 
 		Middleware::$floor["service"] = $service;

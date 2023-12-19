@@ -33,9 +33,7 @@ class Service
 	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "service")]
 	private Collection $commandes;
 
-	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: "services")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Devis $devis;
+	//add to late manyToMany devis
 
 	#[ORM\Column(length: 100)]
 	private ?string $name = null;
@@ -43,13 +41,13 @@ class Service
 	#[ORM\Column(type: Types::TEXT)]
 	private ?string $description = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
 	private ?string $total_ht = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
 	private ?string $total_ttc = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
+	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
 	private $discount = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -83,18 +81,6 @@ class Service
 	public function getCommandes(): Collection
 	{
 		return $this->commandes;
-	}
-
-	public function getDevis(): ?Devis
-	{
-		return $this->devis;
-	}
-
-	public function setDevis(?Devis $devis): self
-	{
-		$this->devis = $devis;
-
-		return $this;
 	}
 
 	public function getName(): ?string

@@ -89,7 +89,7 @@ class RoleService
 			if ($role->getWriteFactures() && $permission === "write_factures") {
 				return true;
 			}
-			if ($role->getManagerService() && $permission === "manager_service") {
+			if ($role->getManageService() && $permission === "manage_service") {
 				return true;
 			}
 		}

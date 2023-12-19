@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Service[]    findAll()
  * @method Service[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ServiceRepository extends ServiceEntityRepository
+class ServiceRepository extends BaseRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{
@@ -27,7 +27,7 @@ class ServiceRepository extends ServiceEntityRepository
 	 */
 	public function findByName(Organization $organization, string $name): ?Service
 	{
-		return $this->findOneBy(["organization" => $organization, "name" => $name]);
+		return $this->findOneBy(["Organization" => $organization, "name" => $name]);
 	}
 
 	//    public function findOneBySomeField($value): ?Service
