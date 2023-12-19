@@ -72,7 +72,7 @@ class OrganizationService
 		$this->organizationRepository->save($organization);
 	}
 
-	public static function constructNameForOrganization(array $data): string
+	public static function constructNameForOrganization(array $data): ?string
 	{
 		$organizationInfos = $data["etablissement"]["uniteLegale"];
 		return $organizationInfos["denominationUniteLegale"];
@@ -192,9 +192,7 @@ class OrganizationService
 		// check if user is owner of organization
 		$owner = $organization->getCreatedBy();
 		if ($owner->getId() === $user->getId()) {
-			throw new \Exception(
-				"Vous ne pouvez pas quitter l'organisation en tant que propriétaire."
-			);
+			throw new \Exception("Vous ne pouvez pas quitter l'organisation en tant que propriétaire.");
 		}
 		// remove user from organization
 		$organization->removeUser($user);
