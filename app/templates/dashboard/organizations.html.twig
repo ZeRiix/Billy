@@ -28,91 +28,19 @@
 					</tr>
 				</thead>
 				<tbody class="w-full flex flex-col justify-between items-center overflow-y-scroll" style="max-height: 560px;">
+				{% for organization in organizations %}
 					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
+						<td class="w-full p-6">{{ organization.name }}</td>
+						<td class="w-full p-6">{{ organization.address }}</td>
+						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">{{ organization.email }}</a></td>
+						<td class="w-full p-6">{{ organization.phone }}</td>
+						<td class="w-full p-6">{{ organization.siret }}</td>
+						<td class="w-full p-6">{{ organization.activity }}</td>
 						<td class="w-full p-6 text-xl">
-							<a href="#"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
-							<a href="#"><span class="mdi mdi-pencil text-bgreen"></span></a>
-							<a href="#"><span class="mdi mdi-trash-can-outline text-red-600"></span></a>
+							<a href="/organization/{{ organization.id }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
 						</td>
 					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6">MatMat Inc.</td>
-						<td class="w-full p-6">15 rue du Ketchup</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">contact@mat.com</a></td>
-						<td class="w-full p-6">06 07 08 09 10</td>
-						<td class="w-full p-6">123 456 789 00010</td>
-						<td class="w-full p-6">Kiffe</td>
-						<td class="w-full p-6"></td>
-					</tr>
+				{% endfor %}
 				</tbody>
 			</table>
 		</div>

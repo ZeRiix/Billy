@@ -47,7 +47,7 @@ class OrganizationController extends MiddlewareController
 		}
 
 		return $this->render(
-			"organization/index.html.twig",
+			"organization/create.html.twig",
 			[
 				"form" => $form->createView(),
 			],
@@ -279,6 +279,25 @@ class OrganizationController extends MiddlewareController
 			"organization/edit.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
+				"organizationHaveImage" => $organizationHaveImage,
+			],
+			$response
+		);
+	}
+
+	#[Route("/organization/{id}", name: "app_organization_get_id", methods: ["GET"])]
+	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	public function getOrganizationById(Organization $organization): Response
+	{
+		$response = new Response();
+		$organizationHaveImage = file_exists(
+			$_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg"
+		);
+
+		return $this->render(
+			"organization/index.html.twig",
+			[
 				"organization" => $organization,
 				"organizationHaveImage" => $organizationHaveImage,
 			],

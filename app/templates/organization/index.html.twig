@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une organisation{% endblock %}
+{% block title %}Organization {{ organization.name }}{% endblock %}
 
 {% block body %}
 
@@ -10,48 +10,20 @@
 
 <main class="pt-20 pl-64 min-h-screen bg-bdark-white">
 	<div class="px-10 py-5">
-		<h1 class="mb-14 text-3xl font-semibold">Ajouter une organisation</h1>
-		<div class="p-14 rounded-xl bg-white">
-			{{ form_start(form) }}
-			<div class="flex flex-col gap-10 items-start">
-				<div class="flex gap-5">
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(form.email) }}
-						{{ form_widget(form.email) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(form.email) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(form.phone) }}
-						{{ form_widget(form.phone) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(form.phone) }}
-						</div>
-					</div>
-				</div>
-				<div class="flex gap-5">
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(form.activity) }}
-						{{ form_widget(form.activity) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(form.activity) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(form.siret) }}
-						{{ form_widget(form.siret) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(form.siret) }}
-						</div>
-					</div>
-				</div>	
-				<div class="w-full flex justify-end">
-					{{ form_widget(form.submit) }}
-				</div>		
-			</div>
-
-			{{ form_end(form) }}
+		<h1 class="mb-14 text-3xl font-semibold">Organization {{ organization.name }}</h1>
+		<div>Nom de l'organization : {{ organization.name }}</div>
+		<div>Addresse : {{ organization.address }}</div>
+		<div>Email : {{ organization.email }}</div>
+		<div>Tel : {{ organization.phone }}</div>
+		<div>Activité : {{ organization.activity }}</div>
+		<div>Siret : {{ organization.siret }}</div>
+		<div>L'organization à été créee par : {{ organization.createdBy.firstName ~ " " ~ organization.createdBy.name }}</div>
+		<div>
+			{% if organizationHaveImage %}
+				<img class="w-[250px]" src="{{ asset('storage/images/organizations/' ~ organization.id ~ '.jpeg') }}" alt="{{ "Image" ~  " " ~ organization.name }}">
+			{% else %}
+				<span>Vous n'avez pas encore de logo, ajoutez-en un !</span>
+			{% endif %}
 		</div>
 	</div>
 </main>

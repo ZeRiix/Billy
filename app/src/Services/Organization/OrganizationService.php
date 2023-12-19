@@ -87,8 +87,25 @@ class OrganizationService
 
 	public static function constructNameForOrganization(array $data): ?string
 	{
-		$organizationInfos = $data["etablissement"]["uniteLegale"];
-		return $organizationInfos["denominationUniteLegale"];
+		$organizationName = null;
+		$uniteLegaleInfos = $data["etablissement"]["uniteLegale"];
+		$periodeEtablissementInfos = $data["etablissement"]["periodesEtablissement"][0];
+
+		if ($periodeEtablissementInfos["denominationUsuelleEtablissement"] !== null) {
+			$organizationName = $periodeEtablissementInfos["denominationUsuelleEtablissement"];
+		} elseif ($uniteLegaleInfos["denominationUniteLegale"] !== null) {
+			$organizationName = $uniteLegaleInfos["denominationUniteLegale"];
+		} elseif ($uniteLegaleInfos["prenom1UniteLegale"] !== null) {
+			$organizationName =
+				$uniteLegaleInfos["nomUniteLegale"] . " " . $uniteLegaleInfos["prenom1UniteLegale"];
+		} elseif ($uniteLegaleInfos["prenomUsuelUniteLegale"] !== null) {
+			$organizationName =
+				$uniteLegaleInfos["nomUniteLegale"] .
+				" " .
+				$uniteLegaleInfos["prenomUsuelUniteLegale"];
+		}
+
+		return $organizationName;
 	}
 
 	public static function constructAddressForOrganization(array $data): string

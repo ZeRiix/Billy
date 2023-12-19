@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Services\Organization\OrganizationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Middleware\Middleware;
+use App\Middleware\SelfUserMiddleware;
 
-class DashboardController extends AbstractController // TODO: need to be connected to access this route
+class DashboardController extends MiddlewareController
 {
 	#[Route("/dashboard", name: "dashboard")]
 	public function index(): Response
@@ -24,11 +27,22 @@ class DashboardController extends AbstractController // TODO: need to be connect
 		]);
 	}
 
-	#[Route("/dashboard/organizations", name: "dashboard_organizations")]
-	public function organizations(): Response
+	#[Route("/dashboard/organizations", name: "dashboard_organizations", methods: ["GET"])]
+	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	public function organizations(OrganizationService $organizationService): Response
 	{
-		return $this->render("dashboard/organizations.html.twig", [
-			"controller_name" => "DashboardController",
-		]);
+		$response = new Response();
+		$organizations = [];
+		$organizations = $organizationService->getAllOrganizationsByUser(
+			Middleware::$floor["user"]
+		);
+		$response->setStatusCode(Response::HTTP_OK);
+		return $this->render(
+			"dashboard/organizations.html.twig",
+			[
+				"organizations" => $organizations,
+			],
+			$response
+		);
 	}
 }
