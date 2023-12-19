@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Form;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -17,8 +19,7 @@ class EditOrganizationForm extends AbstractType
 			->add("activity", TextType::class, [
 				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
+					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "100",
 				],
@@ -30,8 +31,7 @@ class EditOrganizationForm extends AbstractType
 			->add("email", EmailType::class, [
 				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
+					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "255",
 				],
@@ -43,8 +43,7 @@ class EditOrganizationForm extends AbstractType
 			->add("phone", TelType::class, [
 				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
+					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "10",
 					"maxlenght" => "10",
 				],
@@ -56,8 +55,7 @@ class EditOrganizationForm extends AbstractType
 			->add("image", FileType::class, [
 				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
+					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
 				"label" => "Image",
 				"constraints" => [

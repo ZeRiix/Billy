@@ -29,6 +29,28 @@ class OrganizationRepository extends BaseRepository
 		return $this->findOneBy(["siret" => $value]);
 	}
 
+	public function organizationContainsUser(Organization $organization, User $user): bool
+	{
+		$conn = $this->getEntityManager()->getConnection();
+		$sql =
+			"SELECT user_id FROM user_organizations WHERE user_id = :user_id AND organization_id = :organization_id";
+		//die($sql);
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"user_id" => $user->getId(),
+			"organization_id" => $organization->getId(),
+		]);
+		$result = $res->fetchAllAssociative();
+
+		//die(var_dump($result));
+
+		if (count($result) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public function findById($value): ?Organization
 	{
 		return $this->findOneBy(["id" => $value]);
