@@ -8,6 +8,8 @@
 /var/
 /vendor/
 /node_modules/
+composer.lock
+migrations
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
