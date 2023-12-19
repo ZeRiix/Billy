@@ -17,8 +17,7 @@ class CreateRoleForm extends AbstractType
 			->add("name", null, [
 				"label" => "Nom du rôle",
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
+					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
 			])
 			->add("manage_org", CheckboxType::class, [
@@ -51,6 +50,13 @@ class CreateRoleForm extends AbstractType
 			])
 			->add("write_factures", CheckboxType::class, [
 				"label" => "Écrire des factures",
+				"required" => false,
+				"attr" => [
+					"class" => "form-check-input",
+				],
+			])
+			->add("manage_service", CheckboxType::class, [
+				"label" => "Gérer les services",
 				"required" => false,
 				"attr" => [
 					"class" => "form-check-input",

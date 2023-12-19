@@ -25,6 +25,7 @@ class RoleRepository extends BaseRepository
 		$role->setManageClient(true);
 		$role->setWriteDevis(true);
 		$role->setWriteFactures(true);
+		$role->setManageService(true);
 		$role->setOrganization($organization);
 		$role->addUser($user);
 		$this->save($role);
@@ -45,6 +46,16 @@ class RoleRepository extends BaseRepository
 			->where("org = :organization")
 			->andWhere("user = :user")
 			->setParameter("organization", $org)
+			->setParameter("user", $user)
+			->getQuery()
+			->getResult();
+	}
+
+	public function getRolesForUser(User $user): array
+	{
+		return $this->createQueryBuilder("role")
+			->innerJoin("role.users", "user")
+			->where("user = :user")
 			->setParameter("user", $user)
 			->getQuery()
 			->getResult();

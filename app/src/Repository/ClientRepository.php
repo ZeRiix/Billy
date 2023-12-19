@@ -38,4 +38,9 @@ class ClientRepository extends BaseRepository
 
 		return $client;
 	}
+
+	public function findOneBySiret(string $siret): ?Client
+	{
+		return $this->findOneBy(["siret" => $siret]);
+	}
 }

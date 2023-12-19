@@ -49,6 +49,9 @@ class User
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $createdOrganizations;
 
+	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "user")]
+	private Collection $invite_users;
+
 	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $firstName = null;
 
@@ -76,6 +79,7 @@ class User
 		$this->services = new ArrayCollection();
 		$this->factures = new ArrayCollection();
 		$this->createdOrganizations = new ArrayCollection();
+		$this->invite_users = new ArrayCollection();
 	}
 
 	public function getId(): ?Uuid
@@ -129,6 +133,11 @@ class User
 	public function getCreatedOrganizations(): Collection
 	{
 		return $this->createdOrganizations;
+	}
+
+	public function getInviteUsers(): Collection
+	{
+		return $this->invite_users;
 	}
 
 	public function getFirstName(): ?string

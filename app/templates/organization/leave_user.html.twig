@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quitter l'organisation{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Quitter l'organisation</h1>
+        {{ form_start(form) }}
+        {{ form_row(form.submit) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

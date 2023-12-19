@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Organization;
 use App\Repository\BaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 class OrganizationRepository extends BaseRepository
 {
@@ -16,6 +17,11 @@ class OrganizationRepository extends BaseRepository
 	public function findOneByName($value): ?Organization
 	{
 		return $this->findOneBy(["name" => $value]);
+	}
+
+	public function findUserInOrganization(User $user): ?Organization
+	{
+		return $this->findOneBy(["users" => $user]);
 	}
 
 	public function findOneBySiret($value): ?Organization

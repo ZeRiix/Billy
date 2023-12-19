@@ -8,29 +8,28 @@ use Symfony\Component\HttpFoundation\Response;
 // local imports
 use App\Middleware\Middleware;
 use App\Middleware\SelfUserMiddleware;
+use App\Middleware\PermissionMiddleware;
 use App\Services\Role\RoleService;
-use App\Form\CreateRoleForm;
 use App\Entity\Role;
+// form
 use App\Form\GiveRoleForm;
 use App\Form\GiveRoleData;
 use App\Form\DeleteRoleForm;
+use App\Form\CreateRoleForm;
 
 class RoleController extends MiddlewareController
 {
 	#[Route("/role/{OrganizationId}/create", name: "app_role", methods: ["GET", "POST"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	#[
+		Middleware(
+			PermissionMiddleware::class,
+			"exist",
+			options: ["permission" => "manage_org"],
+			redirectTo: "/dashboard"
+		)
+	]
 	public function create(Request $request, RoleService $roleService): Response
 	{
-		// check permissions
-		$role = $roleService->checkPermission(
-			Middleware::$floor["user"],
-			$request->get("OrganizationId"),
-			"manage_org"
-		);
-		if ($role === false) {
-			$this->addFlash("error", "Vous n'avez pas la permission de créer un rôle.");
-			return $this->redirectToRoute("app_organization");
-		}
 		$response = new Response();
 		$role = new Role();
 		$form = $this->createForm(CreateRoleForm::class, $role);
@@ -40,7 +39,7 @@ class RoleController extends MiddlewareController
 			/** @var Role */
 			$role = $form->getData();
 			try {
-				$roleService->create($role, $request->get("OrganizationId"));
+				$roleService->create($role, Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "Le rôle à bien été créé.");
 			} catch (\Exception $e) {
@@ -59,19 +58,16 @@ class RoleController extends MiddlewareController
 	}
 
 	#[Route("/role/{OrganizationId}/give", name: "app_role_give", methods: ["GET", "POST"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	#[
+		Middleware(
+			PermissionMiddleware::class,
+			"exist",
+			options: ["permission" => "manage_user"],
+			redirectTo: "/dashboard"
+		)
+	]
 	public function giveRoleToUser(Request $request, RoleService $roleService): Response
 	{
-		// check permissions
-		$role = $roleService->checkPermission(
-			Middleware::$floor["user"],
-			$request->get("OrganizationId"),
-			"manage_user"
-		);
-		if ($role === false) {
-			$this->addFlash("error", "Vous n'avez pas la permission de donner un rôle.");
-			return $this->redirectToRoute("app_organization");
-		}
 		$response = new Response();
 		$giveRoleData = new GiveRoleData();
 		$form = $this->createForm(GiveRoleForm::class, $giveRoleData, [
@@ -101,19 +97,16 @@ class RoleController extends MiddlewareController
 	}
 
 	#[Route("/role/{OrganizationId}/delete", name: "app_role_delete", methods: ["GET", "POST"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	#[
+		Middleware(
+			PermissionMiddleware::class,
+			"exist",
+			options: ["permission" => "manage_user"],
+			redirectTo: "/dashboard"
+		)
+	]
 	public function delete(Request $request, RoleService $roleService): Response
 	{
-		// check permissions
-		$role = $roleService->checkPermission(
-			Middleware::$floor["user"],
-			$request->get("OrganizationId"),
-			"manage_user"
-		);
-		if ($role === false) {
-			$this->addFlash("error", "Vous n'avez pas la permission de supprimer un rôle.");
-			return $this->redirectToRoute("app_organization");
-		}
 		$response = new Response();
 		$form = $this->createForm(DeleteRoleForm::class, null, [
 			"organization_id" => $request->get("OrganizationId"),
@@ -139,22 +132,19 @@ class RoleController extends MiddlewareController
 		);
 	}
 
-	#[Route("/role/{OrganizationId}", name: "app_role_list", methods: ["GET"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
-	public function list(Request $request, RoleService $roleService): Response
+	#[Route("/roles/{OrganizationId}", name: "app_role_list", methods: ["GET"])]
+	#[
+		Middleware(
+			PermissionMiddleware::class,
+			"exist",
+			options: ["permission" => "manage_user"],
+			redirectTo: "/dashboard"
+		)
+	]
+	public function list(RoleService $roleService): Response
 	{
-		// check permissions
-		$role = $roleService->checkPermission(
-			Middleware::$floor["user"],
-			$request->get("OrganizationId"),
-			"manage_org"
-		);
-		if ($role === false) {
-			$this->addFlash("error", "Vous n'avez pas la permission de lister les rôles.");
-			return $this->redirectToRoute("app_organization");
-		}
 		$response = new Response();
-		$roles = $roleService->getAll($request->get("OrganizationId"));
+		$roles = $roleService->getAll(Middleware::$floor["organization"]);
 		return $this->render(
 			"role/list_role.html.twig",
 			[

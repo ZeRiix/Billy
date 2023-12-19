@@ -14,24 +14,17 @@ class RoleService
 {
 	private RoleRepository $roleRepository;
 	private UserRepository $userRepository;
-	private OrganizationRepository $organizationRepository;
 
-	public function __construct(
-		RoleRepository $roleRepository,
-		UserRepository $userRepository,
-		OrganizationRepository $organizationRepository
-	) {
+	public function __construct(RoleRepository $roleRepository, UserRepository $userRepository)
+	{
 		$this->roleRepository = $roleRepository;
 		$this->userRepository = $userRepository;
-		$this->organizationRepository = $organizationRepository;
 	}
 
-	public function getAll(string $organization): array
+	public function getAll(Organization $organization): array
 	{
-		// get organization
-		$org = $this->organizationRepository->findOneById($organization);
 		// get all roles for organization
-		$roles = $this->roleRepository->getRolesForOrganization($org);
+		$roles = $this->roleRepository->getRolesForOrganization($organization);
 		// parse roles to array
 		$rolesArray = [];
 		foreach ($roles as $role) {
@@ -45,12 +38,10 @@ class RoleService
 		return $rolesArray;
 	}
 
-	public function create(Role $role, string $organization): Role
+	public function create(Role $role, Organization $organization): Role
 	{
-		//get Organization
-		$org = $this->organizationRepository->findOneById($organization);
 		// create role
-		$role->setOrganization($org);
+		$role->setOrganization($organization);
 		$this->roleRepository->save($role);
 
 		return $role;
@@ -76,12 +67,11 @@ class RoleService
 		$this->roleRepository->delete($role);
 	}
 
-	public function checkPermission(User $user, string $organization, string $permission): bool
+	public function checkPermission(User $user, Organization $organization, string $permission): bool
 	{
-		// get organization
-		$org = $this->organizationRepository->findOneById($organization);
 		// get roles for user and organization
-		$roles = $this->roleRepository->getUserRolesForOrganization($org, $user);
+		/** @var Role $role */
+		$roles = $this->roleRepository->getUserRolesForOrganization($organization, $user);
 		// check if user has permission
 		foreach ($roles as $role) {
 			if ($role->getManageOrg() && $permission === "manage_org") {
@@ -99,7 +89,25 @@ class RoleService
 			if ($role->getWriteFactures() && $permission === "write_factures") {
 				return true;
 			}
+			if ($role->getManagerService() && $permission === "manager_service") {
+				return true;
+			}
 		}
 		return false;
+	}
+
+	public function getOrganizationIsOwner(User $user)
+	{
+		// get roles for user and organization
+		$roles = $this->roleRepository->getRolesForUser($user);
+		$organizations = [];
+		// check if user has permission
+		foreach ($roles as $role) {
+			/** @var Role $role **/
+			if ($role->getName() === "OWNER") {
+				$organizations[] = $role->getOrganization();
+			}
+		}
+		return $organizations;
 	}
 }
