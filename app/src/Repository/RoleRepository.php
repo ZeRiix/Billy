@@ -25,6 +25,7 @@ class RoleRepository extends BaseRepository
 		$role->setManageClient(true);
 		$role->setWriteDevis(true);
 		$role->setWriteFactures(true);
+		$role->setManageService(true);
 		$role->setOrganization($organization);
 		$role->addUser($user);
 		$this->save($role);

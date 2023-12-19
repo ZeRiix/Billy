@@ -67,12 +67,10 @@ class RoleService
 		$this->roleRepository->delete($role);
 	}
 
-	public function checkPermission(
-		User $user,
-		Organization $organization,
-		string $permission
-	): bool {
+	public function checkPermission(User $user, Organization $organization, string $permission): bool
+	{
 		// get roles for user and organization
+		/** @var Role $role */
 		$roles = $this->roleRepository->getUserRolesForOrganization($organization, $user);
 		// check if user has permission
 		foreach ($roles as $role) {
@@ -89,6 +87,9 @@ class RoleService
 				return true;
 			}
 			if ($role->getWriteFactures() && $permission === "write_factures") {
+				return true;
+			}
+			if ($role->getManagerService() && $permission === "manager_service") {
 				return true;
 			}
 		}

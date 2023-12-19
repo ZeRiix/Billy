@@ -176,6 +176,18 @@ class Role
 		return $this;
 	}
 
+	public function getManageService(): ?bool
+	{
+		return $this->manage_service;
+	}
+
+	public function setManageService(?bool $manage_service): static
+	{
+		$this->manage_service = $manage_service;
+
+		return $this;
+	}
+
 	public function getCreatedAt(): ?\DateTimeImmutable
 	{
 		return $this->created_at;
