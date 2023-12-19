@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes organizations{% endblock %}
+
+{% block body %}
+{% for organization in organizations %}
+<span>{{ organization.name }}</span><br>
+<span>{{ organization.address }}</span><br>
+<span>{{ organization.email }}</span><br>
+<span>{{ organization.phone }}</span><br>
+<span>{{ organization.activity }}</span><br>
+<span>{{ organization.siret }}</span>
+{% endfor %}
+{% endblock %}

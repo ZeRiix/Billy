@@ -17,6 +17,7 @@ use App\Entity\Devis;
 use App\Entity\Facture;
 use App\Entity\Client;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[ORM\Table(name: "`Organization`")]
@@ -73,6 +74,8 @@ class Organization
 
 	#[ORM\Column(length: 14, nullable: false, unique: true)]
 	private ?string $siret = null;
+
+	private ?UploadedFile $image = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -229,6 +232,18 @@ class Organization
 	public function setSiret(?string $siret): static
 	{
 		$this->siret = $siret;
+
+		return $this;
+	}
+
+	public function getImage(): ?UploadedFile
+	{
+		return $this->image;
+	}
+
+	public function setImage(UploadedFile $image): self
+	{
+		$this->image = $image;
 
 		return $this;
 	}

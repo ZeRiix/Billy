@@ -10,6 +10,7 @@ use App\Entity\Organization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
+use App\Services\File\FileUploaderService;
 use App\Repository\UserRepository;
 use App\Services\MailService;
 use App\Repository\InviteOrganizationRepository;
@@ -20,6 +21,8 @@ class OrganizationService
 
 	private RoleRepository $roleRepository;
 
+	private FileUploaderService $fileUploaderService;
+
 	private UserRepository $userRepository;
 
 	private InviteOrganizationRepository $inviteOrganizationRepository;
@@ -27,6 +30,7 @@ class OrganizationService
 	public function __construct(
 		OrganizationRepository $organizationRepository,
 		RoleRepository $roleRepository,
+		FileUploaderService $fileUploaderService,
 		UserRepository $userRepository,
 		InviteOrganizationRepository $inviteOrganizationRepository
 	) {
@@ -34,6 +38,15 @@ class OrganizationService
 		$this->roleRepository = $roleRepository;
 		$this->userRepository = $userRepository;
 		$this->inviteOrganizationRepository = $inviteOrganizationRepository;
+		$this->fileUploaderService = $fileUploaderService;
+	}
+
+	public function modify(Organization $organization)
+	{
+		if ($organization->getImage() !== null) {
+			$this->fileUploaderService->uploadImage($organization->getImage(), $organization);
+		}
+		$this->organizationRepository->save($organization);
 	}
 
 	public function create(Organization $organization, User $user)
@@ -208,5 +221,10 @@ class OrganizationService
 			}
 		}
 		return false;
+	}
+
+	public function getAllOrganizationsByUser(User $user): array
+	{
+		return $this->organizationRepository->findAllByUser($user);
 	}
 }

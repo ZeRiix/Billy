@@ -19,6 +19,8 @@ use App\Form\InviteUserForm;
 use App\Middleware\GetOrganizationMiddleware;
 use App\Form\LeaveOrganizationByForm;
 use App\Form\LeaveOrganizationForm;
+use App\Repository\OrganizationRepository;
+use EditOrganizationForm;
 
 class OrganizationController extends MiddlewareController
 {
@@ -210,6 +212,75 @@ class OrganizationController extends MiddlewareController
 			"organization/leave_user_by.html.twig",
 			[
 				"form" => $form->createView(),
+			],
+			$response
+		);
+	}
+
+	#[Route("/organizations", name: "app_organizations_by_user", methods: ["GET"])]
+	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	public function getOrganizationsByUser(OrganizationService $organizationService): Response
+	{
+		$response = new Response();
+		$organizations = [];
+		$organizations = $organizationService->getAllOrganizationsByUser(
+			Middleware::$floor["user"]
+		);
+
+		return $this->render(
+			"organization/organizations.html.twig",
+			[
+				"organizations" => $organizations,
+			],
+			$response
+		);
+	}
+
+	#[Route("/organization/edit/{id}", name: "app_organization_edit", methods: ["POST", "GET"])]
+	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	public function edit(
+		Request $request,
+		OrganizationService $organizationService,
+		RoleService $roleService,
+		Organization $organization
+	): Response {
+		// check permissions
+		$role = $roleService->checkPermission(
+			Middleware::$floor["user"],
+			$request->get("id"),
+			"manage_org"
+		);
+		if ($role === false) {
+			$this->addFlash("error", "Vous n'avez pas la permission de modifier une organisation.");
+			return $this->redirectToRoute("app_organization");
+		}
+
+		$response = new Response();
+		$form = $this->createForm(EditOrganizationForm::class, $organization);
+		$form->handleRequest($request);
+		$organizationHaveImage = file_exists(
+			$_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg"
+		);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			/** @var Organization */
+			$organization = $form->getData();
+			try {
+				$organizationService->modify($organization);
+				$response->setStatusCode(Response::HTTP_OK);
+				$this->addFlash("success", "L'organisation à bien été modifiée.");
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+
+		return $this->render(
+			"organization/edit.html.twig",
+			[
+				"form" => $form->createView(),
+				"organization" => $organization,
+				"organizationHaveImage" => $organizationHaveImage,
 			],
 			$response
 		);
