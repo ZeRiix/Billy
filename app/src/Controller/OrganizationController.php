@@ -122,7 +122,13 @@ class OrganizationController extends MiddlewareController
 		);
 	}
 
-	#[Route("/organization/{OrganizationId}/{UserId}/join", name: "organization_join_user", methods: ["GET"])]
+	#[
+		Route(
+			"/organization/{OrganizationId}/user/{UserId}/join",
+			name: "organization_join_user",
+			methods: ["GET"]
+		)
+	]
 	#[Middleware(GetOrganizationMiddleware::class, "exist", output: "organization", redirectTo: "/dashboard")]
 	public function join(Request $request, OrganizationService $organizationService): Response
 	{
