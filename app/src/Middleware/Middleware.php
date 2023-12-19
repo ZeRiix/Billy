@@ -20,7 +20,7 @@ class Middleware
 		?string $info = null,
 		?string $input = null,
 		?string $output = null,
-		?mixed $options = null,
+		mixed $options = null,
 		?Response $response = null,
 		?string $redirectTo = null,
 		?HttpException $httpException = null
