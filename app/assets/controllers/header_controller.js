@@ -5,12 +5,15 @@ export default class extends Controller{
 	path = window.location.pathname;
 
 	patterns = [
-		{pattern: /\/organizations/, path: "Organisations"},
-		{pattern: /^\/organization$/, path: "Ajouter un organisation"},
+		{pattern: /\/organizations/, pathname: "Organisations", path: "organizations"},
+		{pattern: /^\/organization$/, pathname: "Ajouter un organisation", path: "organization"},
+		// contain "/organization" and "/edit"
+		{pattern: /\/organization\/\d+\/edit/, pathname: "Modifier un organisation", path: "organization"},
 	]; 
 
 	connect(){
 		this.createPath();
+		this.isLastPath();
 	}
 
 	createPath(){
@@ -26,9 +29,14 @@ export default class extends Controller{
 				}
 
 				const pathEl = document.createElement("li");
-	
+
 				pathEl.className = "path";
-				pathEl.appendChild(document.createTextNode(pattern.path));
+
+				const pathLink = document.createElement("a");
+
+				pathLink.href = `/${pattern.path}`;
+				pathLink.appendChild(document.createTextNode(pattern.pathname));
+				pathEl.appendChild(pathLink);
 				this.element.appendChild(pathEl);
 			}
 		});
@@ -40,6 +48,10 @@ export default class extends Controller{
 		const paths = document.querySelectorAll(".path");
 		const lastPath = paths[paths.length - 1];
 	
+		paths.forEach(path => {
+			path.classList.remove("text-blighter-grey");
+		});
+
 		lastPath.classList.add("text-blighter-grey");
 	}
 }
