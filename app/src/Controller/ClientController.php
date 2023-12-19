@@ -13,14 +13,7 @@ use App\Services\Client\ClientService;
 class ClientController extends MiddlewareController
 {
 	#[Route("/client/{OrganizationId}", name: "app_client", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_client"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function create(Request $request, ClientService $clientService): Response
 	{
 		$response = new Response();
@@ -51,14 +44,7 @@ class ClientController extends MiddlewareController
 	}
 
 	#[Route("/client/{OrganizationId}/delete", name: "client_delete", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_client"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function delete(Request $request, ClientService $clientService): Response
 	{
 		$response = new Response();
@@ -94,14 +80,7 @@ class ClientController extends MiddlewareController
 	}
 
 	#[Route("/clients/{OrganizationId}", name: "clients", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_client"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function getAll(ClientService $clientService): Response
 	{
 		$response = new Response();
@@ -119,14 +98,7 @@ class ClientController extends MiddlewareController
 	}
 
 	#[Route("/client/{OrganizationId}/{ClientId}", name: "client", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_client"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function get(Request $request, ClientService $clientService): Response
 	{
 		$response = new Response();

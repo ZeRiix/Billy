@@ -96,14 +96,7 @@ class OrganizationController extends MiddlewareController
 			methods: ["GET", "POST"]
 		)
 	]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_user"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function invite(Request $request, OrganizationService $organizationService): Response
 	{
 		$response = new Response();
@@ -181,14 +174,7 @@ class OrganizationController extends MiddlewareController
 			methods: ["GET, POST"]
 		)
 	]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_user"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function leave_user_by(Request $request, OrganizationService $organizationService): Response
 	{
 		$response = new Response();
@@ -223,9 +209,7 @@ class OrganizationController extends MiddlewareController
 	{
 		$response = new Response();
 		$organizations = [];
-		$organizations = $organizationService->getAllOrganizationsByUser(
-			Middleware::$floor["user"]
-		);
+		$organizations = $organizationService->getAllOrganizationsByUser(Middleware::$floor["user"]);
 
 		return $this->render(
 			"organization/organizations.html.twig",
@@ -236,31 +220,20 @@ class OrganizationController extends MiddlewareController
 		);
 	}
 
-	#[Route("/organization/edit/{id}", name: "app_organization_edit", methods: ["POST", "GET"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	#[Route("/organization/{OrganizationId}/edit", name: "app_organization_edit", methods: ["POST", "GET"])]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_org")]
 	public function edit(
 		Request $request,
 		OrganizationService $organizationService,
-		RoleService $roleService,
-		Organization $organization
+		RoleService $roleService
 	): Response {
-		// check permissions
-		$role = $roleService->checkPermission(
-			Middleware::$floor["user"],
-			$request->get("id"),
-			"manage_org"
-		);
-		if ($role === false) {
-			$this->addFlash("error", "Vous n'avez pas la permission de modifier une organisation.");
-			return $this->redirectToRoute("app_organization");
-		}
+		/** @var \Entity\Organization $organization */
+		$organization = Middleware::$floor["organization"];
 
 		$response = new Response();
 		$form = $this->createForm(EditOrganizationForm::class, $organization);
 		$form->handleRequest($request);
-		$organizationHaveImage = file_exists(
-			$_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg"
-		);
+		$organizationHaveImage = file_exists($_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg");
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			/** @var Organization */
@@ -291,9 +264,7 @@ class OrganizationController extends MiddlewareController
 	public function getOrganizationById(Organization $organization): Response
 	{
 		$response = new Response();
-		$organizationHaveImage = file_exists(
-			$_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg"
-		);
+		$organizationHaveImage = file_exists($_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg");
 
 		return $this->render(
 			"organization/index.html.twig",

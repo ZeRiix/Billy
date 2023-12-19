@@ -17,10 +17,10 @@ class Middleware
 
 	public function __construct(
 		string $className,
-		string $info,
+		?string $info = null,
 		?string $input = null,
 		?string $output = null,
-		?array $options = null,
+		?mixed $options = null,
 		?Response $response = null,
 		?string $redirectTo = null,
 		?HttpException $httpException = null

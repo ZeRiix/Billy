@@ -20,14 +20,7 @@ use App\Form\CreateRoleForm;
 class RoleController extends MiddlewareController
 {
 	#[Route("/role/{OrganizationId}/create", name: "app_role", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_org"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_org")]
 	public function create(Request $request, RoleService $roleService): Response
 	{
 		$response = new Response();
@@ -58,14 +51,7 @@ class RoleController extends MiddlewareController
 	}
 
 	#[Route("/role/{OrganizationId}/give", name: "app_role_give", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_user"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function giveRoleToUser(Request $request, RoleService $roleService): Response
 	{
 		$response = new Response();
@@ -97,14 +83,7 @@ class RoleController extends MiddlewareController
 	}
 
 	#[Route("/role/{OrganizationId}/delete", name: "app_role_delete", methods: ["GET", "POST"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_user"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function delete(Request $request, RoleService $roleService): Response
 	{
 		$response = new Response();
@@ -133,14 +112,7 @@ class RoleController extends MiddlewareController
 	}
 
 	#[Route("/roles/{OrganizationId}", name: "app_role_list", methods: ["GET"])]
-	#[
-		Middleware(
-			PermissionMiddleware::class,
-			"exist",
-			options: ["permission" => "manage_user"],
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function list(RoleService $roleService): Response
 	{
 		$response = new Response();

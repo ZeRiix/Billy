@@ -13,24 +13,29 @@ class PermissionMiddleware extends AbstractMiddleware
 		$this->roleService = $roleService;
 	}
 
-	public function handler(mixed $input, ?array $options): mixed
+	public function handler(mixed $input, mixed $options): mixed
 	{
 		new Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login");
+
 		new Middleware(
 			GetOrganizationMiddleware::class,
 			"exist",
 			output: "organization",
 			redirectTo: "/dashboard"
 		);
+
 		$role = $this->roleService->checkPermission(
 			Middleware::$floor["user"],
 			Middleware::$floor["organization"],
-			$options["permission"]
+			$options
 		);
+
+		$orgId = Middleware::$floor["organization"]->getId();
+
 		if ($role) {
-			return $this->output("exist", $role);
+			return $this->output("has");
 		} else {
-			return $this->output("You dont have permission");
+			$this->redirectTo("/organization/$orgId");
 		}
 	}
 }
