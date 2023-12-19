@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ServiceController extends MiddlewareController
 {
-	#[Route("/organization/{organization_id}/service", name: "create_service", methods: ["GET", "POST"])]
+	#[Route("/organization/{organizationId}/service", name: "create_service", methods: ["GET", "POST"])]
 	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
 	public function create(Request $request, ServiceService $serviceService)
 	{
@@ -52,7 +52,7 @@ class ServiceController extends MiddlewareController
 
 	#[
 		Route(
-			"/organization/{organization_id}/service/{service_id}",
+			"/organization/{organizationId}/service/{serviceId}",
 			name: "update_service",
 			methods: ["GET", "POST"]
 		)

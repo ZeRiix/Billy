@@ -8,6 +8,7 @@ use App\Middleware\AbstractMiddleware;
 use App\Middleware\AccessTokenMiddleware;
 use App\Middleware\Middleware;
 use App\Repository\OrganizationRepository;
+use App\Services\Role\RoleService;
 use App\Services\Token\AccessTokenService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,11 +18,16 @@ class UserCanCreateServiceMiddleware extends AbstractMiddleware
 {
 	private OrganizationRepository $organizationRepository;
 	private Request $request;
+	private RoleService $roleService;
 
-	public function __construct(OrganizationRepository $organizationRepository, Request $request)
-	{
+	public function __construct(
+		OrganizationRepository $organizationRepository,
+		Request $request,
+		RoleService $roleService
+	) {
 		$this->organizationRepository = $organizationRepository;
 		$this->request = $request;
+		$this->roleService = $roleService;
 	}
 
 	public function handler(mixed $input, ?array $options): mixed
@@ -41,7 +47,7 @@ class UserCanCreateServiceMiddleware extends AbstractMiddleware
 				]
 			)
 		);
-		$orgId = $this->request->attributes->get("organization_id");
+		$orgId = $this->request->attributes->get("organizationId");
 		/** @var Organization $organization */
 		$organization = $this->organizationRepository->getById($orgId);
 		if (!$organization) {
@@ -56,7 +62,11 @@ class UserCanCreateServiceMiddleware extends AbstractMiddleware
 
 		Middleware::$floor["organization"] = $organization;
 
-		//checkeck permission
+		$has = $this->roleService->checkPermission($user, $organization, "manage_service");
+
+		if (!$has) {
+			$this->redirectTo("/organization/$orgId");
+		}
 
 		return $this->output("validate");
 	}
