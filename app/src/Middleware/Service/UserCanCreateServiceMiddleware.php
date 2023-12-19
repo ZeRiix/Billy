@@ -47,7 +47,7 @@ class UserCanCreateServiceMiddleware extends AbstractMiddleware
 				]
 			)
 		);
-		$orgId = $this->request->attributes->get("organizationId");
+		$orgId = $this->request->attributes->get("OrganizationId");
 		/** @var Organization $organization */
 		$organization = $this->organizationRepository->getById($orgId);
 		if (!$organization) {

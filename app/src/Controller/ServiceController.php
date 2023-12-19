@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ServiceController extends MiddlewareController
 {
-	#[Route("/organization/{organizationId}/services", name: "services", methods: ["GET"])]
+	#[Route("/organization/{OrganizationId}/services", name: "services", methods: ["GET"])]
 	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
 	public function index()
 	{
@@ -32,7 +32,7 @@ class ServiceController extends MiddlewareController
 		]);
 	}
 
-	#[Route("/organization/{organizationId}/service", name: "create_service", methods: ["GET", "POST"])]
+	#[Route("/organization/{OrganizationId}/service", name: "create_service", methods: ["GET", "POST"])]
 	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
 	public function create(Request $request, ServiceService $serviceService)
 	{
@@ -72,7 +72,7 @@ class ServiceController extends MiddlewareController
 
 	#[
 		Route(
-			"/organization/{organizationId}/service/{serviceId}",
+			"/organization/{OrganizationId}/service/{serviceId}",
 			name: "update_service",
 			methods: ["GET", "POST"]
 		)

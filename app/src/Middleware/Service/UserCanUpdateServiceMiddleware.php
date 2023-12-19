@@ -49,7 +49,7 @@ class UserCanUpdateServiceMiddleware extends AbstractMiddleware
 		);
 
 		$serviceId = $this->request->attributes->get("serviceId");
-		$organizationId = $this->request->attributes->get("organizationId");
+		$organizationId = $this->request->attributes->get("OrganizationId");
 		/** @var Service $service */
 		$service = $this->serviceRepository->getById($serviceId);
 		if (!$service) {

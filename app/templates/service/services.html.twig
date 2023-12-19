@@ -12,7 +12,7 @@
 	<div class="px-10 py-5">
 		<div class="mb-14 flex justify-between items-center">
 			<h1 class="text-3xl font-semibold">Liste des services</h1>
-			<a href="{{ path('create_service', { organizationId: organization.id } ) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
+			<a href="{{ path('create_service', { OrganizationId: organization.id } ) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
 		</div>
 		<div class="w-full border rounded-xl bg-white overflow-hidden">
 			<table class="w-full text-left border-collapse">
@@ -29,7 +29,7 @@
 						<td class="w-full p-6">{{ service.name }}</td>
 						<td class="w-full p-6">{{ service.description }}</td>
 						<td class="w-full p-6 text-xl">
-							<a href="{{ path('update_service', { organizationId: organization.id, serviceId: service.id } ) }}"><span class="mdi mdi-pencil text-bgreen"></span></a>
+							<a href="{{ path('update_service', { OrganizationId: organization.id, serviceId: service.id } ) }}"><span class="mdi mdi-pencil text-bgreen"></span></a>
 						</td>
 					</tr>
 					{% endfor %}

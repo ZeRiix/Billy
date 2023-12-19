@@ -37,9 +37,7 @@
 						<td class="w-full p-6">{{ organization.siret }}</td>
 						<td class="w-full p-6">{{ organization.activity }}</td>
 						<td class="w-full p-6 text-xl">
-							{# <a href="/organization/{{ organization.id }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a> #}
-							<a href="{{ path('app_organization_edit', { OrganizationId: organization.id } ) }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
-							<a href="#"><span class="mdi mdi-pencil text-bgreen"></span></a>
+							<a href="{{ path('app_organization_get_id', { OrganizationId: organization.id }) }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
 						</td>
 					</tr>
 				{% endfor %}
