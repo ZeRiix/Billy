@@ -110,4 +110,12 @@ class RoleService
 		}
 		return $organizations;
 	}
+
+	public function update(Role $role, Organization $organization)
+	{
+		if ($role->getOrganization() !== $organization) {
+			throw new \Exception("Ce role n'existe pas");
+		}
+		$this->roleRepository->save($role);
+	}
 }

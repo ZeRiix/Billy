@@ -55,11 +55,13 @@ abstract class TokenService
 			return null;
 		}
 
-		// horrible
-		$jws = SimpleJWS::load($token);
-		$jws->verify(openssl_pkey_get_public(static::getPublicKey()), static::getPassword());
-
-		$payload = $jws->getPayload();
+		try {
+			$jws = SimpleJWS::load($token);
+			$jws->verify(openssl_pkey_get_public(static::getPublicKey()), static::getPassword());
+			$payload = $jws->getPayload();
+		} catch (\Exception) {
+			return null;
+		}
 
 		if (!isset($payload["name"]) || $payload["name"] !== self::name()) {
 			return null;

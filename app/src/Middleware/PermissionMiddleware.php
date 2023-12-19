@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use App\Services\Role\RoleService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class PermissionMiddleware extends AbstractMiddleware
 {
