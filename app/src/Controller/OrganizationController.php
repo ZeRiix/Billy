@@ -19,8 +19,8 @@ use App\Form\InviteUserForm;
 use App\Middleware\GetOrganizationMiddleware;
 use App\Form\LeaveOrganizationByForm;
 use App\Form\LeaveOrganizationForm;
-use App\Repository\OrganizationRepository;
-use EditOrganizationForm;
+use App\Form\EditOrganizationForm;
+use App\Middleware\OrganizationContainsUserMiddleware;
 
 class OrganizationController extends MiddlewareController
 {
@@ -228,11 +228,8 @@ class OrganizationController extends MiddlewareController
 
 	#[Route("/organization/{OrganizationId}/edit", name: "app_organization_edit", methods: ["POST", "GET"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_org")]
-	public function edit(
-		Request $request,
-		OrganizationService $organizationService,
-		RoleService $roleService
-	): Response {
+	public function edit(Request $request, OrganizationService $organizationService): Response
+	{
 		/** @var \Entity\Organization $organization */
 		$organization = Middleware::$floor["organization"];
 
@@ -265,11 +262,12 @@ class OrganizationController extends MiddlewareController
 		);
 	}
 
-	#[Route("/organization/{id}", name: "app_organization_get_id", methods: ["GET"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
-	public function getOrganizationById(Organization $organization): Response
+	#[Route("/organization/{OrganizationId}", name: "app_organization_get_id", methods: ["GET"])]
+	#[Middleware(OrganizationContainsUserMiddleware::class, "has")]
+	public function getOrganizationById(): Response
 	{
 		$response = new Response();
+		$organization = Middleware::$floor["organization"];
 		$organizationHaveImage = file_exists($_ENV["UPLOAD_IMAGE_PATH"] . $organization->getId() . ".jpeg");
 
 		return $this->render(
