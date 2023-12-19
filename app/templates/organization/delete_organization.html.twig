@@ -1,0 +1,10 @@
+{{ form_start(form) }}
+
+    <div>
+        {{ form_label(form.organization, 'Sélectionnez l\'organisation à supprimer') }}
+        {{ form_widget(form.organization) }}
+    </div>
+
+    {{ form_row(form.submit) }}
+
+{{ form_end(form) }}

@@ -54,6 +54,9 @@ class Client
 	#[ORM\Column(length: 100, nullable: false)]
 	private ?string $activity = null;
 
+	#[ORM\Column(length: 14, nullable: false, unique: true)]
+	private ?string $siret = null;
+
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
 
@@ -161,6 +164,18 @@ class Client
 	public function setActivity(?string $activity): static
 	{
 		$this->activity = $activity;
+
+		return $this;
+	}
+
+	public function getSiret(): ?string
+	{
+		return $this->siret;
+	}
+
+	public function setSiret(?string $siret): static
+	{
+		$this->siret = $siret;
 
 		return $this;
 	}

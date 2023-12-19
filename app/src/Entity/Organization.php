@@ -44,6 +44,9 @@ class Organization
 	#[ORM\OneToMany(targetEntity: Client::class, mappedBy: "Organization")]
 	private Collection $clients;
 
+	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "organization")]
+	private Collection $invite_organizations;
+
 	#[ORM\ManyToMany(targetEntity: User::class, inversedBy: "organizations")]
 	#[ORM\JoinColumn(nullable: true)]
 	#[ORM\JoinTable(name: "user_organizations")]
@@ -85,6 +88,7 @@ class Organization
 		$this->factures = new ArrayCollection();
 		$this->clients = new ArrayCollection();
 		$this->users = new ArrayCollection();
+		$this->invite_organizations = new ArrayCollection();
 	}
 
 	public function getId(): ?Uuid
@@ -120,6 +124,11 @@ class Organization
 	public function getUsers(): Collection
 	{
 		return $this->users;
+	}
+
+	public function getInviteOrganizations(): Collection
+	{
+		return $this->invite_organizations;
 	}
 
 	public function getCreatedBy(): ?User

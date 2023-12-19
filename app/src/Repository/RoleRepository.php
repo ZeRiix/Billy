@@ -49,4 +49,14 @@ class RoleRepository extends BaseRepository
 			->getQuery()
 			->getResult();
 	}
+
+	public function getRolesForUser(User $user): array
+	{
+		return $this->createQueryBuilder("role")
+			->innerJoin("role.users", "user")
+			->where("user = :user")
+			->setParameter("user", $user)
+			->getQuery()
+			->getResult();
+	}
 }

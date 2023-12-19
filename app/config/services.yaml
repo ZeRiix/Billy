@@ -80,5 +80,11 @@ services:
         arguments:
           $registry: '@doctrine'
     
+    App\Repository\InviteOrganizationRepository:
+        class: 'App\Repository\InviteOrganizationRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+    
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
