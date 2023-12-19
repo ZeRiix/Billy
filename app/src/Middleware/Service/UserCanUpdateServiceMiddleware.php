@@ -59,7 +59,7 @@ class UserCanUpdateServiceMiddleware extends AbstractMiddleware
 		$user = Middleware::$floor["user"];
 		$organization = $service->getOrganization();
 
-		if ($organization->getId() !== $organizationId) {
+		if ($organization->getId() != $organizationId) {
 			$this->redirectTo("/organization/$organizationId");
 		}
 

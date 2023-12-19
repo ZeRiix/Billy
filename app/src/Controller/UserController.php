@@ -35,7 +35,7 @@ class UserController extends MiddlewareController
 
 			try {
 				$authService->register($userRegister);
-				$this->addFlash("success", "Email de confirmation envoyé.");
+				$this->addFlash("success", "Un email de confirmation a été envoyé.");
 				$response->setStatusCode(Response::HTTP_CREATED);
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
@@ -130,7 +130,7 @@ class UserController extends MiddlewareController
 				$authService->forgetPassword($user);
 
 				// redirect user to user dashboard
-				$this->addFlash("success", "Email de confirmation envoyé.");
+				$this->addFlash("success", "Un email de confirmation a été envoyé.");
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);

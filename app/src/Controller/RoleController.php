@@ -41,7 +41,7 @@ class RoleController extends MiddlewareController
 			try {
 				$roleService->create($role, Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle à bien été créé.");
+				$this->addFlash("success", "Le rôle a bien été créé.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -80,7 +80,7 @@ class RoleController extends MiddlewareController
 			try {
 				$roleService->give($data->getUser(), $data->getRole());
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle à bien été donné à l'utilisateur.");
+				$this->addFlash("success", "Le rôle a bien été donné à l'utilisateur.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -117,7 +117,7 @@ class RoleController extends MiddlewareController
 			try {
 				$roleService->delete($data["role"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle à bien été supprimé.");
+				$this->addFlash("success", "Le rôle a bien été supprimé.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());

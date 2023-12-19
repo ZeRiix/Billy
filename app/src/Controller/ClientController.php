@@ -34,7 +34,7 @@ class ClientController extends MiddlewareController
 			try {
 				$clientService->create(Middleware::$floor["organization"], $client);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le client à bien été créé.");
+				$this->addFlash("success", "Le client a bien été créé.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -77,7 +77,7 @@ class ClientController extends MiddlewareController
 			try {
 				$clientService->delete(Middleware::$floor["organization"], $client);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le client à bien été supprimé.");
+				$this->addFlash("success", "Le client a bien été supprimé.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -131,10 +131,7 @@ class ClientController extends MiddlewareController
 	{
 		$response = new Response();
 		// get client
-		$client = $clientService->get(
-			Middleware::$floor["organization"],
-			$request->get("ClientId")
-		);
+		$client = $clientService->get(Middleware::$floor["organization"], $request->get("ClientId"));
 
 		return $this->render(
 			"client/client.html.twig",

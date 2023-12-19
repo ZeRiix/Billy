@@ -20,7 +20,7 @@ class ServiceService
 	{
 		$findedService = $this->serviceRepository->findByName($organization, $service->getName());
 		if ($findedService) {
-			throw new Exception("Name already use.");
+			throw new Exception("Le nom est déjà utilisé.");
 		}
 
 		$service->setOrganization($organization);
@@ -31,8 +31,8 @@ class ServiceService
 	public function updateService(Organization $organization, Service $service)
 	{
 		$findedService = $this->serviceRepository->findByName($organization, $service->getName());
-		if ($findedService) {
-			throw new Exception("Name already use.");
+		if ($findedService && $findedService->getId() !== $service->getId()) {
+			throw new Exception("Le nom est déjà utilisé.");
 		}
 
 		$service->setOrganization($organization);

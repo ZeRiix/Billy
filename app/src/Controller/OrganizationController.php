@@ -37,7 +37,7 @@ class OrganizationController extends MiddlewareController
 			try {
 				$organizationService->create($organization, Middleware::$floor["user"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'organisation à bien été créée.");
+				$this->addFlash("success", "L'organisation a bien été créée.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -71,7 +71,7 @@ class OrganizationController extends MiddlewareController
 			try {
 				$organizationService->delete($data["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'organisation à bien été supprimée.");
+				$this->addFlash("success", "L'organisation a bien été supprimée.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -112,7 +112,7 @@ class OrganizationController extends MiddlewareController
 			try {
 				$organizationService->invite($data["email"], Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'utilisateur à bien été invité.");
+				$this->addFlash("success", "L'utilisateur a bien été invité.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -127,28 +127,15 @@ class OrganizationController extends MiddlewareController
 		);
 	}
 
-	#[
-		Route(
-			"/organization/{OrganizationId}/{UserId}/join",
-			name: "organization_join_user",
-			methods: ["GET"]
-		)
-	]
-	#[
-		Middleware(
-			GetOrganizationMiddleware::class,
-			"exist",
-			output: "organization",
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Route("/organization/{OrganizationId}/{UserId}/join", name: "organization_join_user", methods: ["GET"])]
+	#[Middleware(GetOrganizationMiddleware::class, "exist", output: "organization", redirectTo: "/dashboard")]
 	public function join(Request $request, OrganizationService $organizationService): Response
 	{
 		$response = new Response();
 		try {
 			$organizationService->join($request->get("UserId"), Middleware::$floor["organization"]);
 			$response->setStatusCode(Response::HTTP_OK);
-			$this->addFlash("success", "L'utilisateur à bien rejoint l'organisation.");
+			$this->addFlash("success", "L'utilisateur a bien rejoint l'organisation.");
 		} catch (\Exception $e) {
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 			$this->addFlash("error", $e->getMessage());
@@ -157,21 +144,8 @@ class OrganizationController extends MiddlewareController
 		return $this->redirectToRoute("app_organization");
 	}
 
-	#[
-		Route(
-			"/organization/{OrganizationId}/leave",
-			name: "organization_leave_user",
-			methods: ["GET, POST"]
-		)
-	]
-	#[
-		Middleware(
-			GetOrganizationMiddleware::class,
-			"exist",
-			output: "organization",
-			redirectTo: "/dashboard"
-		)
-	]
+	#[Route("/organization/{OrganizationId}/leave", name: "organization_leave_user", methods: ["GET, POST"])]
+	#[Middleware(GetOrganizationMiddleware::class, "exist", output: "organization", redirectTo: "/dashboard")]
 	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
 	public function leave(Request $request, OrganizationService $organizationService): Response
 	{
@@ -180,12 +154,9 @@ class OrganizationController extends MiddlewareController
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			try {
-				$organizationService->leave(
-					Middleware::$floor["user"],
-					Middleware::$floor["organization"]
-				);
+				$organizationService->leave(Middleware::$floor["user"], Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'utilisateur à bien quitté l'organisation.");
+				$this->addFlash("success", "L'utilisateur a bien quitté l'organisation.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -216,10 +187,8 @@ class OrganizationController extends MiddlewareController
 			redirectTo: "/dashboard"
 		)
 	]
-	public function leave_user_by(
-		Request $request,
-		OrganizationService $organizationService
-	): Response {
+	public function leave_user_by(Request $request, OrganizationService $organizationService): Response
+	{
 		$response = new Response();
 		$form = $this->createForm(LeaveOrganizationByForm::class, null, [
 			"users" => Middleware::$floor["organization"]->getUsers(),
@@ -230,7 +199,7 @@ class OrganizationController extends MiddlewareController
 			try {
 				$organizationService->leave($data["user"], Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'utilisateur à bien quitté l'organisation.");
+				$this->addFlash("success", "L'utilisateur a bien quitté l'organisation.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());

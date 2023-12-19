@@ -6,6 +6,7 @@ use App\Controller\MiddlewareController;
 use App\Entity\Organization;
 use App\Entity\Service;
 use App\Form\CreateServiceForm;
+use App\Form\UpdateServiceForm;
 use App\Middleware\Middleware;
 use App\Service\Middleware\UserCanCreateServiceMiddleware;
 use App\Service\Middleware\UserCanUpdateServiceMiddleware;
@@ -16,6 +17,21 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ServiceController extends MiddlewareController
 {
+	#[Route("/organization/{organizationId}/services", name: "services", methods: ["GET"])]
+	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
+	public function index()
+	{
+		/** @var Organization $organization */
+		$organization = Middleware::$floor["organization"];
+
+		$services = $organization->getServices();
+
+		return $this->render("service/services.html.twig", [
+			"organization" => $organization,
+			"services" => $services,
+		]);
+	}
+
 	#[Route("/organization/{organizationId}/service", name: "create_service", methods: ["GET", "POST"])]
 	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
 	public function create(Request $request, ServiceService $serviceService)
@@ -33,8 +49,12 @@ class ServiceController extends MiddlewareController
 
 			try {
 				$serviceService->createService($organization, $service);
-				$this->addFlash("success", "Service créer.");
-				$response->setStatusCode(Response::HTTP_CREATED);
+				$this->addFlash("success", "Le service a bien été créé.");
+
+				// Redirect to services page
+				$response->setStatusCode(Response::HTTP_FOUND);
+				$response->headers->set("Location", "/organization/" . $organization->getId() . "/services");
+				return $response;
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -64,7 +84,7 @@ class ServiceController extends MiddlewareController
 
 		/** @var Service $service */
 		$service = Middleware::$floor["service"];
-		$updateServiceForm = $this->createForm(CreateServiceForm::class, $service);
+		$updateServiceForm = $this->createForm(UpdateServiceForm::class, $service);
 		$updateServiceForm->handleRequest($request);
 
 		if ($updateServiceForm->isSubmitted() && $updateServiceForm->isValid()) {
@@ -74,8 +94,12 @@ class ServiceController extends MiddlewareController
 
 			try {
 				$serviceService->updateService($organization, $service);
-				$this->addFlash("success", "Service mie a jour.");
-				$response->setStatusCode(Response::HTTP_CREATED);
+				$this->addFlash("success", "Le service à bien été mis à jour.");
+
+				// Redirect to services page
+				$response->setStatusCode(Response::HTTP_FOUND);
+				$response->headers->set("Location", "/organization/" . $organization->getId() . "/services");
+				return $response;
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);

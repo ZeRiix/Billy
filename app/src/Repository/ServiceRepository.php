@@ -23,7 +23,7 @@ class ServiceRepository extends BaseRepository
 	}
 
 	/**
-	 * @return Service[] Returns an array of Service objects
+	 * @return Service Returns an array of Service objects
 	 */
 	public function findByName(Organization $organization, string $name): ?Service
 	{
