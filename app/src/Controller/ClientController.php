@@ -8,17 +8,23 @@ use Symfony\Component\HttpFoundation\Response;
 // local imports
 use App\Middleware\Middleware;
 use App\Middleware\PermissionMiddleware;
+use App\Service\Middleware\UserCanUpdateClientMiddleware;
 use App\Services\Client\ClientService;
+use App\Entity\Client;
+// form
+use App\Form\CreateClientForm;
+use App\Form\UpdateClientForm;
 
 class ClientController extends MiddlewareController
 {
-	#[Route("/client/{OrganizationId}", name: "app_client", methods: ["GET", "POST"])]
+	#[Route("/organization/{OrganizationId}/client", name: "app_client", methods: ["GET", "POST"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function create(Request $request, ClientService $clientService): Response
 	{
 		$response = new Response();
 
-		$form = $this->createForm(CreateClientForm::class, null);
+		$client = new Client();
+		$form = $this->createForm(CreateClientForm::class, $client);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
@@ -35,7 +41,7 @@ class ClientController extends MiddlewareController
 		}
 
 		return $this->render(
-			"client/index.html.twig",
+			"client/create_client.html.twig",
 			[
 				"form" => $form->createView(),
 			],
@@ -43,43 +49,15 @@ class ClientController extends MiddlewareController
 		);
 	}
 
-	#[Route("/client/{OrganizationId}/delete", name: "client_delete", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
-	public function delete(Request $request, ClientService $clientService): Response
+	#[Route("/organization/{OrganizationId}/client/{ClientId}", name: "client_delete", methods: ["DELETE"])]
+	#[Middleware(UserCanUpdateClientMiddleware::class, "exist", output: "client")]
+	public function delete(ClientService $clientService): void
 	{
-		$response = new Response();
-
-		// gets clients
-		$clients = $clientService->getAll(Middleware::$floor["organization"]);
-
-		$form = $this->createForm(DeleteClientForm::class, null, [
-			"clients" => $clients,
-		]);
-		$form->handleRequest($request);
-
-		if ($form->isSubmitted() && $form->isValid()) {
-			/** @var Client */
-			$client = $form->getData();
-			try {
-				$clientService->delete(Middleware::$floor["organization"], $client);
-				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le client a bien été supprimé.");
-			} catch (\Exception $e) {
-				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-				$this->addFlash("error", $e->getMessage());
-			}
-		}
-
-		return $this->render(
-			"client/delete.html.twig",
-			[
-				"form" => $form->createView(),
-			],
-			$response
-		);
+		$clientService->delete(Middleware::$floor["organization"], Middleware::$floor["client"]);
+		$this->redirectToRoute("/organization/" . Middleware::$floor["organization"]->getId() . "/clients");
 	}
 
-	#[Route("/clients/{OrganizationId}", name: "clients", methods: ["GET", "POST"])]
+	#[Route("/organization/{OrganizationId}/clients", name: "clients", methods: ["GET", "POST"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function getAll(ClientService $clientService): Response
 	{
@@ -97,18 +75,32 @@ class ClientController extends MiddlewareController
 		);
 	}
 
-	#[Route("/client/{OrganizationId}/{ClientId}", name: "client", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
-	public function get(Request $request, ClientService $clientService): Response
+	#[Route("/organization/{OrganizationId}/client/{ClientId}", name: "app_client", methods: ["GET", "POST"])]
+	#[Middleware(UserCanUpdateClientMiddleware::class, "exist", output: "client")]
+	public function update(Request $request, ClientService $clientService): Response
 	{
 		$response = new Response();
-		// get client
-		$client = $clientService->get(Middleware::$floor["organization"], $request->get("ClientId"));
+
+		$form = $this->createForm(UpdateClientForm::class, Middleware::$floor["client"]);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			/** @var Client */
+			$client = $form->getData();
+			try {
+				$clientService->update(Middleware::$floor["organization"], $client);
+				$response->setStatusCode(Response::HTTP_OK);
+				$this->addFlash("success", "Le client à bien été modifiée.");
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
 
 		return $this->render(
-			"client/client.html.twig",
+			"client/update_client.html.twig",
 			[
-				"client" => $client,
+				"form" => $form->createView(),
 			],
 			$response
 		);

@@ -7,19 +7,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 // local imports
 use App\Middleware\Middleware;
-use App\Middleware\SelfUserMiddleware;
 use App\Middleware\PermissionMiddleware;
+use App\Middleware\Role\UserCanUpdateRoleMiddleware;
 use App\Services\Role\RoleService;
 use App\Entity\Role;
 // form
 use App\Form\GiveRoleForm;
 use App\Form\GiveRoleData;
-use App\Form\DeleteRoleForm;
 use App\Form\CreateRoleForm;
+use App\Form\UpdateRoleForm;
 
 class RoleController extends MiddlewareController
 {
-	#[Route("/role/{OrganizationId}/create", name: "app_role", methods: ["GET", "POST"])]
+	#[Route("/organization/{OrganizationId}/role", name: "app_role", methods: ["GET", "POST"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_org")]
 	public function create(Request $request, RoleService $roleService): Response
 	{
@@ -50,7 +50,7 @@ class RoleController extends MiddlewareController
 		);
 	}
 
-	#[Route("/role/{OrganizationId}/give", name: "app_role_give", methods: ["GET", "POST"])]
+	#[Route("/organization/{OrganizationId}/role/give", name: "app_role_give", methods: ["GET", "POST"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function giveRoleToUser(Request $request, RoleService $roleService): Response
 	{
@@ -82,36 +82,15 @@ class RoleController extends MiddlewareController
 		);
 	}
 
-	#[Route("/role/{OrganizationId}/delete", name: "app_role_delete", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
-	public function delete(Request $request, RoleService $roleService): Response
+	#[Route("/organization/{OrganizationId}/role/{roleId}", name: "app_role_delete", methods: ["DELETE"])]
+	#[Middleware(UserCanUpdateRoleMiddleware::class, "exist", output: "role")]
+	public function delete(RoleService $roleService): void
 	{
-		$response = new Response();
-		$form = $this->createForm(DeleteRoleForm::class, null, [
-			"organization_id" => $request->get("OrganizationId"),
-		]);
-		$form->handleRequest($request);
-		if ($form->isSubmitted() && $form->isValid()) {
-			$data = $form->getData();
-			try {
-				$roleService->delete($data["role"]);
-				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle a bien été supprimé.");
-			} catch (\Exception $e) {
-				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-				$this->addFlash("error", $e->getMessage());
-			}
-		}
-		return $this->render(
-			"role/delete_role.html.twig",
-			[
-				"form" => $form->createView(),
-			],
-			$response
-		);
+		$roleService->delete(Middleware::$floor["role"]);
+		$this->redirectToRoute("/organization/" . Middleware::$floor["organization"]->getId() . "/roles");
 	}
 
-	#[Route("/roles/{OrganizationId}", name: "app_role_list", methods: ["GET"])]
+	#[Route("/organization/{OrganizationId}/roles", name: "app_role_list", methods: ["GET"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
 	public function list(RoleService $roleService): Response
 	{
@@ -121,6 +100,48 @@ class RoleController extends MiddlewareController
 			"role/list_role.html.twig",
 			[
 				"roles" => $roles,
+			],
+			$response
+		);
+	}
+
+	#[
+		Route(
+			"/organization/{OrganizationId}/role/{roleId}",
+			name: "app_role_update",
+			methods: ["GET", "POST"]
+		)
+	]
+	#[Middleware(UserCanUpdateRoleMiddleware::class, "exist", output: "role")]
+	public function update(Request $request, RoleService $roleService): Response
+	{
+		$response = new Response();
+		if (Middleware::$floor["role"]->getName() === "OWNER") {
+			$this->redirectToRoute(
+				route: "/organization/" . Middleware::$floor["organization"]->getId(),
+				status: Response::HTTP_UNAUTHORIZED
+			);
+		}
+		$form = $this->createForm(UpdateRoleForm::class, Middleware::$floor["role"]);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			/** @var Role $role */
+			$role = $form->getData();
+			try {
+				$roleService->update($role, Middleware::$floor["organization"]);
+				$response->setStatusCode(Response::HTTP_OK);
+				$this->addFlash("success", "Le rôle à bien été modifiée");
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+
+		return $this->render(
+			"role/update_role.html.twig",
+			[
+				"form" => $form->createView(),
 			],
 			$response
 		);

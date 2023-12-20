@@ -9,20 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Client;
 use App\Entity\Organization;
 use App\Repository\ClientRepository;
-use App\Repository\OrganizationRepository;
 use App\Services\Organization\OrganizationService;
 
 class ClientService
 {
 	private ClientRepository $clientRepository;
-	private OrganizationRepository $organizationRepository;
+	private OrganizationService $organizationService;
 
-	public function __construct(
-		ClientRepository $clientRepository,
-		OrganizationRepository $organizationRepository
-	) {
+	public function __construct(ClientRepository $clientRepository, OrganizationService $organizationService)
+	{
 		$this->clientRepository = $clientRepository;
-		$this->organizationRepository = $organizationRepository;
+		$this->organizationService = $organizationService;
 	}
 
 	public function create(Organization $organization, Client $client)
@@ -32,22 +29,18 @@ class ClientService
 			throw new \Exception("Un client avec ce siret existe déjà.");
 		}
 		// check siret is valid and get data client
-		$responseForSiret = OrganizationService::getResponseForSiret(
-			$client->getSiret()
-		)->toArray();
+		$responseForSiret = $this->organizationService::getResponseForSiret($client->getSiret())->toArray();
 
 		// set response data to client
 		$client->setOrganization($organization);
-		$client->setName(OrganizationService::constructNameForOrganization($responseForSiret));
-		$client->setAddress(
-			OrganizationService::constructAddressForOrganization($responseForSiret)
-		);
+		$client->setName($this->organizationService::constructNameForOrganization($responseForSiret));
+		$client->setAddress($this->organizationService::constructAddressForOrganization($responseForSiret));
 		$this->clientRepository->save($client);
 	}
 
 	public function getAll(Organization $organization): array
 	{
-		return $this->clientRepository->findBy(["organization" => $organization]);
+		return $this->clientRepository->findBy(["Organization" => $organization]);
 	}
 
 	public function get(Organization $organization, string $clientId): Client
@@ -66,5 +59,13 @@ class ClientService
 			throw new \Exception("Ce client n'appartient pas à votre organisation.");
 		}
 		$this->clientRepository->delete($client);
+	}
+
+	public function update(Organization $organization, Client $client)
+	{
+		if ($client->getOrganization() !== $organization) {
+			throw new \Exception("Ce client n'appartient pas à votre organisation.");
+		}
+		$this->clientRepository->save($client);
 	}
 }

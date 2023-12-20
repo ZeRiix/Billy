@@ -12,6 +12,8 @@ use App\Middleware\SelfUserMiddleware;
 use App\Entity\Organization;
 use App\Services\Role\RoleService;
 use App\Services\Organization\OrganizationService;
+use App\Middleware\Organization\UserCanLeaveOrganizationMiddleware;
+use App\Middleware\OrganizationContainsUserMiddleware;
 // form
 use App\Form\CreateOrganizationFormType;
 use App\Form\DeleteOrganizationForm;
@@ -20,7 +22,6 @@ use App\Middleware\GetOrganizationMiddleware;
 use App\Form\LeaveOrganizationByForm;
 use App\Form\LeaveOrganizationForm;
 use App\Form\EditOrganizationForm;
-use App\Middleware\OrganizationContainsUserMiddleware;
 
 class OrganizationController extends MiddlewareController
 {
@@ -28,6 +29,13 @@ class OrganizationController extends MiddlewareController
 	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
 	public function create(Request $request, OrganizationService $organizationService): Response
 	{
+		// check is owner
+		$org = $organizationService->getCreateBy(Middleware::$floor["user"]);
+		if ($org) {
+			return $this->redirectToRoute("app_organization_get_id", [
+				"id" => $org->getId(),
+			]);
+		}
 		$response = new Response();
 		$organization = new Organization();
 		$form = $this->createForm(CreateOrganizationFormType::class, $organization);
@@ -107,7 +115,12 @@ class OrganizationController extends MiddlewareController
 			try {
 				$organizationService->invite($data["email"], Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'utilisateur a bien été invité.");
+				$this->addFlash(
+					"success",
+					"L'utilisateur a bien été invité dans l'organisation :" .
+						Middleware::$floor["organization"]->getName() .
+						"."
+				);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -134,20 +147,26 @@ class OrganizationController extends MiddlewareController
 	{
 		$response = new Response();
 		try {
-			$organizationService->join($request->get("UserId"), Middleware::$floor["organization"]);
+			$organizationService->join(Middleware::$floor["organization"], $request->get("UserId"));
 			$response->setStatusCode(Response::HTTP_OK);
 			$this->addFlash("success", "L'utilisateur a bien rejoint l'organisation.");
 		} catch (\Exception $e) {
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 			$this->addFlash("error", $e->getMessage());
 		}
-
-		return $this->redirectToRoute("app_organization");
+		return $this->redirectToRoute("app_organization_get_id", [
+			"id" => Middleware::$floor["organization"]->getId(),
+		]);
 	}
 
-	#[Route("/organization/{OrganizationId}/leave", name: "organization_leave_user", methods: ["GET, POST"])]
-	#[Middleware(GetOrganizationMiddleware::class, "exist", output: "organization", redirectTo: "/dashboard")]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	#[
+		Route(
+			"/organization/{OrganizationId}/leave",
+			name: "organization_leave_user",
+			methods: ["GET", "POST"]
+		)
+	]
+	#[Middleware(UserCanLeaveOrganizationMiddleware::class)]
 	public function leave(Request $request, OrganizationService $organizationService): Response
 	{
 		$response = new Response();
@@ -157,7 +176,7 @@ class OrganizationController extends MiddlewareController
 			try {
 				$organizationService->leave(Middleware::$floor["user"], Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'utilisateur a bien quitté l'organisation.");
+				$this->addFlash("success", "Vous avez bien quitté l'organisation.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -175,9 +194,9 @@ class OrganizationController extends MiddlewareController
 
 	#[
 		Route(
-			"/organization/{OrganizationId}/leave/{UserId}",
+			"/organization/{OrganizationId}/user/{UserId}/leave",
 			name: "organization_leave_user_by",
-			methods: ["GET, POST"]
+			methods: ["GET", "POST"]
 		)
 	]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
