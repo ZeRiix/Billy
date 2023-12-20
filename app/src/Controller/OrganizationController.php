@@ -15,6 +15,7 @@ use App\Services\Role\RoleService;
 use App\Services\Organization\OrganizationService;
 use App\Middleware\Organization\UserCanLeaveOrganizationMiddleware;
 use App\Middleware\OrganizationContainsUserMiddleware;
+use App\Middleware\Organization\RedirectOwnerOnListOrganizationMiddleware;
 // form
 use App\Form\CreateOrganizationFormType;
 use App\Form\DeleteOrganizationForm;
@@ -27,7 +28,7 @@ use App\Form\EditOrganizationForm;
 class OrganizationController extends MiddlewareController
 {
 	#[Route("/organization", name: "app_organization", methods: ["GET", "POST"])]
-	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
+	#[Middleware(RedirectOwnerOnListOrganizationMiddleware::class, "notexist")]
 	public function create(Request $request, OrganizationService $organizationService): Response
 	{
 		$response = new Response();
