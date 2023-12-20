@@ -75,7 +75,13 @@ class ClientController extends MiddlewareController
 		);
 	}
 
-	#[Route("/organization/{OrganizationId}/client/{ClientId}", name: "app_client", methods: ["GET", "POST"])]
+	#[
+		Route(
+			"/organization/{OrganizationId}/client/{ClientId}",
+			name: "app_client_update",
+			methods: ["GET", "POST"]
+		)
+	]
 	#[Middleware(UserCanUpdateClientMiddleware::class, "exist", output: "client")]
 	public function update(Request $request, ClientService $clientService): Response
 	{
