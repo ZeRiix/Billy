@@ -17,7 +17,7 @@ use App\Form\UpdateClientForm;
 
 class ClientController extends MiddlewareController
 {
-	#[Route("/client/{OrganizationId}", name: "app_client", methods: ["GET", "POST"])]
+	#[Route("/organization/{OrganizationId}/client", name: "app_client", methods: ["GET", "POST"])]
 	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
 	public function create(Request $request, ClientService $clientService): Response
 	{
@@ -49,9 +49,9 @@ class ClientController extends MiddlewareController
 		);
 	}
 
-	#[Route("/client/{OrganizationId}/delete", name: "client_delete", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
-	public function delete(Request $request, ClientService $clientService): Response
+	#[Route("/organization/{OrganizationId}/client/{ClientId}", name: "client_delete", methods: ["DELETE"])]
+	#[Middleware(UserCanUpdateClientMiddleware::class, "exist", output: "client")]
+	public function delete(ClientService $clientService): void
 	{
 		$clientService->delete(Middleware::$floor["organization"], Middleware::$floor["client"]);
 		$this->redirectToRoute("/organization/" . Middleware::$floor["organization"]->getId() . "/clients");
@@ -70,23 +70,6 @@ class ClientController extends MiddlewareController
 			"client/clients.html.twig",
 			[
 				"clients" => $clients,
-			],
-			$response
-		);
-	}
-
-	#[Route("/client/{OrganizationId}/{ClientId}", name: "client", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_client")]
-	public function get(Request $request, ClientService $clientService): Response
-	{
-		$response = new Response();
-		// get client
-		$client = $clientService->get(Middleware::$floor["organization"], $request->get("ClientId"));
-
-		return $this->render(
-			"client/client.html.twig",
-			[
-				"client" => $client,
 			],
 			$response
 		);

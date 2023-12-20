@@ -14,8 +14,8 @@ use App\Entity\Role;
 // form
 use App\Form\GiveRoleForm;
 use App\Form\GiveRoleData;
-use App\Form\DeleteRoleForm;
 use App\Form\CreateRoleForm;
+use App\Form\UpdateRoleForm;
 
 class RoleController extends MiddlewareController
 {
@@ -116,6 +116,12 @@ class RoleController extends MiddlewareController
 	public function update(Request $request, RoleService $roleService): Response
 	{
 		$response = new Response();
+		if (Middleware::$floor["role"]->getName() === "OWNER") {
+			$this->redirectToRoute(
+				route: "/organization/" . Middleware::$floor["organization"]->getId(),
+				status: Response::HTTP_UNAUTHORIZED
+			);
+		}
 		$form = $this->createForm(UpdateRoleForm::class, Middleware::$floor["role"]);
 		$form->handleRequest($request);
 
@@ -125,11 +131,19 @@ class RoleController extends MiddlewareController
 			try {
 				$roleService->update($role, Middleware::$floor["organization"]);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle à bien été donné à l'utilisateur.");
+				$this->addFlash("success", "Le rôle à bien été modifiée");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
 			}
 		}
+
+		return $this->render(
+			"role/update_role.html.twig",
+			[
+				"form" => $form->createView(),
+			],
+			$response
+		);
 	}
 }

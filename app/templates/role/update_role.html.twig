@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update role{% endblock %}
+{% block body %}
+{{ form_start(form) }}
+
+	{{ form_row(form.name) }}
+	{{ form_row(form.manage_org) }}
+	{{ form_row(form.manage_user) }}
+	{{ form_row(form.manage_client) }}
+	{{ form_row(form.write_devis) }}
+	{{ form_row(form.write_factures) }}
+	{{ form_row(form.manage_service) }}
+
+	{{ form_row(form.submit) }}
+
+{{ form_end(form) }}
+{% endblock %}

@@ -7,6 +7,7 @@ use Symfony\Component\HttpClient\Response\CurlResponse;
 use Symfony\Component\HttpFoundation\Response;
 // local imports
 use App\Entity\Organization;
+use App\Entity\InviteOrganization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
@@ -14,6 +15,7 @@ use App\Services\File\FileUploaderService;
 use App\Repository\UserRepository;
 use App\Services\MailService;
 use App\Repository\InviteOrganizationRepository;
+use function Symfony\Component\Clock\now;
 
 class OrganizationService
 {
@@ -100,9 +102,7 @@ class OrganizationService
 				$uniteLegaleInfos["nomUniteLegale"] . " " . $uniteLegaleInfos["prenom1UniteLegale"];
 		} elseif ($uniteLegaleInfos["prenomUsuelUniteLegale"] !== null) {
 			$organizationName =
-				$uniteLegaleInfos["nomUniteLegale"] .
-				" " .
-				$uniteLegaleInfos["prenomUsuelUniteLegale"];
+				$uniteLegaleInfos["nomUniteLegale"] . " " . $uniteLegaleInfos["prenomUsuelUniteLegale"];
 		}
 
 		return $organizationName;
@@ -164,6 +164,16 @@ class OrganizationService
 		if ($userInOrg) {
 			throw new \Exception("L'utilisateur est déjà dans l'organisation.");
 		}
+		// check if invited user is already in organization
+		/** @var InviteOrganization $invitation */
+		$invitation = $this->inviteOrganizationRepository->findOneBy(["user" => $user]);
+		if ($invitation) {
+			if (date($invitation->getCreatedAt()->getTimestamp()) + 604800 >= date(now()->getTimestamp())) {
+				throw new \Exception("Cette utilisateur a déja été invité.");
+			}
+			// delete last invitation
+			$this->inviteOrganizationRepository->delete($invitation);
+		}
 		// save invitation
 		$this->inviteOrganizationRepository->create($organization, $user);
 
@@ -179,22 +189,20 @@ class OrganizationService
 				$_ENV["HOST"] .
 				"/organization/" .
 				$organization->getId() .
-				"/" .
+				"/user/" .
 				$user->getId() .
 				"/join"
 		);
 	}
 
-	public function join(string $org, string $user): void
+	public function join(Organization $organization, string $user): void
 	{
-		// get the organization
-		$organization = $this->organizationRepository->findOneById($org);
 		// get the user
 		$user = $this->userRepository->findOneById($user);
 		// check if user is already in organization
 		$userInOrg = $this->checkIsInOrganization($user, $organization);
-		if (!$userInOrg) {
-			throw new \Exception("L'utilisateur n'est pas dans l'organisation.");
+		if ($userInOrg) {
+			throw new \Exception("Vous êtes déja dans l'organisation.");
 		}
 		// check if user has an invitation
 		$invite = $this->inviteOrganizationRepository->getInviteOrganizationByOrganizationAndUser(
@@ -204,16 +212,16 @@ class OrganizationService
 		if ($invite === null) {
 			throw new \Exception("L'utilisateur n'a pas d'invitation pour cette organisation.");
 		}
+		// delete invitation
+		$this->inviteOrganizationRepository->delete($invite);
 
 		// add user to organization
 		$organization->addUser($user);
 		$this->organizationRepository->save($organization);
 	}
 
-	public function leave(string $userId, Organization $organization): void
+	public function leave(User $user, Organization $organization): void
 	{
-		// get the user
-		$user = $this->userRepository->findOneById($userId);
 		// check if user is in organization
 		$userInOrg = $this->checkIsInOrganization($user, $organization);
 		if (!$userInOrg) {
@@ -243,5 +251,10 @@ class OrganizationService
 	public function getAllOrganizationsByUser(User $user): array
 	{
 		return $this->organizationRepository->findAllByUser($user);
+	}
+
+	public function getCreateBy(User $user): Organization
+	{
+		return $this->organizationRepository->findOneBy(["createdBy" => $user]);
 	}
 }
