@@ -7,24 +7,30 @@ use App\Services\Role\RoleService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Test\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\TwigFunction;
 
 abstract class MiddlewareController extends AbstractController
 {
 	private RoleService $roleService;
+	private Request $request;
 
 	public function __construct(
 		RequestStack $requestStack,
 		ManagerRegistry $managerRegistry,
 		RoleService $roleService
 	) {
-		Middleware::init($requestStack->getMainRequest(), $managerRegistry);
+		$this->request = $requestStack->getMainRequest();
+		Middleware::init($this->request, $managerRegistry);
 		$this->roleService = $roleService;
 	}
 
 	protected function renderView(string $view, array $parameters = []): string
 	{
+		if ($this->request->query->get("error")) {
+			$this->addFlash("error", $this->request->query->get("error"));
+		}
 		if (!$this->container->has("twig")) {
 			throw new \LogicException(
 				'You cannot use the "renderView" method if the Twig Bundle is not available. Try running "composer require symfony/twig-bundle".'

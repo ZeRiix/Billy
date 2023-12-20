@@ -10,6 +10,7 @@ use App\Middleware\Middleware;
 use App\Middleware\PermissionMiddleware;
 use App\Middleware\SelfUserMiddleware;
 use App\Entity\Organization;
+use App\Entity\User;
 use App\Services\Role\RoleService;
 use App\Services\Organization\OrganizationService;
 use App\Middleware\Organization\UserCanLeaveOrganizationMiddleware;
@@ -29,13 +30,6 @@ class OrganizationController extends MiddlewareController
 	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
 	public function create(Request $request, OrganizationService $organizationService): Response
 	{
-		// check is owner
-		$org = $organizationService->getCreateBy(Middleware::$floor["user"]);
-		if ($org) {
-			return $this->redirectToRoute("app_organization_get_id", [
-				"id" => $org->getId(),
-			]);
-		}
 		$response = new Response();
 		$organization = new Organization();
 		$form = $this->createForm(CreateOrganizationFormType::class, $organization);
@@ -51,6 +45,10 @@ class OrganizationController extends MiddlewareController
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
+			} finally {
+				return $this->redirectToRoute("app_organization_get_id", [
+					"OrganizationId" => $organization->getId(),
+				]);
 			}
 		}
 
@@ -117,7 +115,7 @@ class OrganizationController extends MiddlewareController
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash(
 					"success",
-					"L'utilisateur a bien été invité dans l'organisation :" .
+					"L'utilisateur a bien été invité dans l'organisation : " .
 						Middleware::$floor["organization"]->getName() .
 						"."
 				);
@@ -155,7 +153,7 @@ class OrganizationController extends MiddlewareController
 			$this->addFlash("error", $e->getMessage());
 		}
 		return $this->redirectToRoute("app_organization_get_id", [
-			"id" => Middleware::$floor["organization"]->getId(),
+			"OrganizationId" => Middleware::$floor["organization"]->getId(),
 		]);
 	}
 
@@ -230,16 +228,27 @@ class OrganizationController extends MiddlewareController
 
 	#[Route("/organizations", name: "app_organizations_by_user", methods: ["GET"])]
 	#[Middleware(SelfUserMiddleware::class, "exist", output: "user", redirectTo: "/login")]
-	public function getOrganizationsByUser(OrganizationService $organizationService): Response
+	public function organizations(OrganizationService $organizationService): Response
 	{
+		$canCreate = false;
+		$org = $organizationService->getCreatedBy(Middleware::$floor["user"]);
+		if ($org) {
+			$canCreate = true;
+		}
 		$response = new Response();
 		$organizations = [];
-		$organizations = $organizationService->getAllOrganizationsByUser(Middleware::$floor["user"]);
-
+		//Faire un getOrganizations depuis le User en question
+		/** @var User $user */
+		$user = Middleware::$floor["user"];
+		/** @var Organization[] $organizations */
+		$organizations = $user->getOrganizations();
+		//die(var_dump($organizations));
+		$response->setStatusCode(Response::HTTP_OK);
 		return $this->render(
 			"organization/organizations.html.twig",
 			[
 				"organizations" => $organizations,
+				"canCreate" => $canCreate,
 			],
 			$response
 		);

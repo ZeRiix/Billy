@@ -3,7 +3,6 @@
 namespace App\Middleware;
 
 use App\Repository\OrganizationRepository;
-use Symfony\Component\HttpFoundation\Request;
 
 class OrganizationContainsUserMiddleware extends AbstractMiddleware
 {
@@ -30,7 +29,7 @@ class OrganizationContainsUserMiddleware extends AbstractMiddleware
 		if ($has) {
 			return $this->output("has");
 		} else {
-			return $this->redirectTo("/organizations");
+			return $this->redirectTo("/organizations?error=Vous n'êtes pas membre de cette organisation.");
 		}
 	}
 }

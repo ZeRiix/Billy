@@ -248,12 +248,7 @@ class OrganizationService
 		return false;
 	}
 
-	public function getAllOrganizationsByUser(User $user): array
-	{
-		return $this->organizationRepository->findAllByUser($user);
-	}
-
-	public function getCreateBy(User $user): Organization
+	public function getCreatedBy(User $user): ?Organization
 	{
 		return $this->organizationRepository->findOneBy(["createdBy" => $user]);
 	}

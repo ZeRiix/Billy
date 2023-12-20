@@ -12,7 +12,9 @@
 	<div class="px-10 py-5">
 		<div class="mb-14 flex justify-between items-center">
 			<h1 class="text-3xl font-semibold">Mes organisations</h1>
+			{% if canCreate == false %}
 			<a href="{{ path('app_organization') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
+			{% endif %}
 		</div>
 		<div class="w-full border rounded-xl bg-white overflow-hidden">
 			<table class="w-full text-left border-collapse">
@@ -30,13 +32,18 @@
 				<tbody class="w-full flex flex-col justify-between items-center overflow-y-scroll" style="max-height: 560px;">
 				{% for organization in organizations %}
 					<tr class="w-full flex border-t">
-						<td class="w-full p-6">{{ organization.name }}</td>
-						<td class="w-full p-6">{{ organization.address }}</td>
-						<td class="w-full p-6"><a href="mailto:contact@mat.com" target="_blank">{{ organization.email }}</a></td>
-						<td class="w-full p-6">{{ organization.phone }}</td>
-						<td class="w-full p-6">{{ organization.siret }}</td>
-						<td class="w-full p-6">{{ organization.activity }}</td>
-						<td class="w-full p-6 text-xl">
+						<td class="w-full p-6 flex items-center gap-1">
+							{{ organization.name }}
+							{% if floor.user.id == organization.createdBy.id %}
+							<span class="mdi mdi-crown text-lg text-amber-500"></span>
+							{% endif %}
+						</td>
+						<td class="w-full p-6 flex items-center">{{ organization.address }}</td>
+						<td class="w-full p-6 flex items-center"><a href="mailto:contact@mat.com" target="_blank">{{ organization.email }}</a></td>
+						<td class="w-full p-6 flex items-center">{{ organization.phone }}</td>
+						<td class="w-full p-6 flex items-center">{{ organization.siret }}</td>
+						<td class="w-full p-6 flex items-center">{{ organization.activity }}</td>
+						<td class="w-full p-6 flex items-center text-xl">
 							<a href="{{ path('app_organization_get_id', { OrganizationId: organization.id }) }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
 						</td>
 					</tr>

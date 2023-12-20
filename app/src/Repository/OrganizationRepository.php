@@ -55,13 +55,4 @@ class OrganizationRepository extends BaseRepository
 	{
 		return $this->findOneBy(["id" => $value]);
 	}
-
-	public function findAllByUser($user): array
-	{
-		return $this->createQueryBuilder("s")
-			->andWhere("s.createdBy = :val")
-			->setParameter("val", $user)
-			->getQuery()
-			->getResult();
-	}
 }

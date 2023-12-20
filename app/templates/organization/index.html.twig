@@ -10,7 +10,12 @@
 
 <main class="pt-20 pl-64 min-h-screen bg-bdark-white">
 	<div class="px-10 py-5">
-		<h1 class="mb-14 text-3xl font-semibold">Organization {{ organization.name }}</h1>
+		<h1 class="mb-14 text-3xl font-semibold">
+			{{ organization.name }}
+			{% if floor.user.id == organization.createdBy.id %}
+				<span class="mdi mdi-crown text-3xl text-amber-500"></span>
+			{% endif %}
+		</h1>
 		<div>Nom de l'organization : {{ organization.name }}</div>
 		<div>Addresse : {{ organization.address }}</div>
 		<div>Email : {{ organization.email }}</div>
