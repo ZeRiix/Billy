@@ -2,7 +2,7 @@ services:
   composer:
     volumes:
       - ./newapp:/app
-    # command: composer require symfony/google-mailer
+    # command: composer remove symfony/google-mailer
 
   php:
     volumes:
