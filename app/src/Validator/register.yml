@@ -1,0 +1,25 @@
+register:
+    firstname:
+        NotBlank:
+        Length:
+            min: 2
+            max: 100
+    name:
+        NotBlank:
+        Length:
+            min: 2
+            max: 100
+    email:
+        Email:
+    password:
+        NotBlank:
+        Length:
+            min: 8
+            max: 100
+    passwordConfirm:
+        NotBlank:
+        Length:
+            min: 8
+            max: 100
+        EqualTo:
+            value: 'password'

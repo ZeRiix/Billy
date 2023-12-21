@@ -1,0 +1,9 @@
+{
+	"plugins": ["@prettier/plugin-php"],
+	"parser": "php",
+	"tabWidth": 4,
+	"semi": true,
+	"singleQuote": false,
+	"useTabs": true,
+	"printWidth": 110
+}

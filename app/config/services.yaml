@@ -20,5 +20,76 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Controller\UserController:
+        tags: ['controller.service_arguments']
+        autowire: true
+
+    # Conf Base Repository
+
+    App\Repository\BaseRepository:
+        class: 'App\Repository\BaseRepository'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@validator'
+
+    App\Repository\ClientRepository:
+        class: 'App\Repository\ClientRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\CommandeRepository:
+        class: 'App\Repository\CommandeRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\DevisRepository:
+        class: 'App\Repository\DevisRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\FactureRepository:
+        class: 'App\Repository\FactureRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\OrganizationRepository:
+        class: 'App\Repository\OrganizationRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\RoleRepository:
+        class: 'App\Repository\RoleRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\ServiceRepository:
+        class: 'App\Repository\ServiceRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+
+    App\Repository\UserRepository:
+        class: 'App\Repository\UserRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+    
+    App\Repository\InviteOrganizationRepository:
+        class: 'App\Repository\InviteOrganizationRepository'
+        parent: 'App\Repository\BaseRepository'
+        arguments:
+          $registry: '@doctrine'
+    
+    App\Services\File\FileUploaderService:
+        class: 'App\Services\File\FileUploaderService'
+        arguments:
+            $targetDirectory: 'storage/images/organizations/'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

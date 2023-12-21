@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"Vue.volar",
+		"dbaeumer.vscode-eslint",
+		"whatwedo.twig",
+		"esbenp.prettier-vscode"
+	]
+}

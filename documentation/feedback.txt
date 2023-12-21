@@ -1,0 +1,2 @@
+- Pas besoin de créer d'entité service car souvent pas les mêmes services, faire des suggestions par rapport au précédant service enregistré en base.
+- Gestion des clients (crud)
