@@ -66,5 +66,10 @@ services:
     ports:
       - 8888:8080
 
+  maildev:
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+
 volumes:
   postgres-data:
