@@ -1,0 +1,25 @@
+services:
+  composer:
+    volumes:
+      - ./newapp:/app
+    # command: composer require symfonycasts/verify-email-bundle
+
+  php:
+    volumes:
+      - ./newapp:/var/www
+      - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  nginx:
+    ports:
+      - 1506:80
+    volumes:
+      - ./newapp/:/var/www
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  webpack_installer:
+    volumes:
+      - ./newapp:/home/node/app
+
+  webpack:
+    volumes:
+      - ./newapp:/home/node/app
