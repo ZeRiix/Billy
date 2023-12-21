@@ -14,46 +14,15 @@
 
 			{{ form_start(userRegisterForm) }}
 				<div class="w-fit mx-auto flex flex-col gap-2 items-center">
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userRegisterForm.firstName) }}
-						{{ form_widget(userRegisterForm.firstName) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userRegisterForm.firstName) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userRegisterForm.name) }}
-						{{ form_widget(userRegisterForm.name) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userRegisterForm.name) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userRegisterForm.email) }}
-						{{ form_widget(userRegisterForm.email) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userRegisterForm.email) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userRegisterForm.password.first) }}
-						{{ form_widget(userRegisterForm.password.first) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userRegisterForm.password.first) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userRegisterForm.password.second) }}
-						{{ form_widget(userRegisterForm.password.second) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userRegisterForm.password.second) }}
-						</div>
-					</div>
+					{{ form_row(userRegisterForm.firstName) }}
+					{{ form_row(userRegisterForm.name) }}
+					{{ form_row(userRegisterForm.email) }}
+					{{ form_row(userRegisterForm.password.first) }}
+					{{ form_row(userRegisterForm.password.second) }}
 					<div class="mt-14">
 						{{ form_widget(userRegisterForm.submit) }}
 					</div>
 				</div>
-
 			{{ form_end(userRegisterForm) }}
 
 			<a href="{{ path('login_user') }}" class="text-sm text-blighter-green hover:text-bgreen">Déjà inscrit ?</a>

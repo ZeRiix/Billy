@@ -17,7 +17,7 @@ use App\Middleware\Organization\UserCanLeaveOrganizationMiddleware;
 use App\Middleware\OrganizationContainsUserMiddleware;
 use App\Middleware\Organization\RedirectOwnerOnListOrganizationMiddleware;
 // form
-use App\Form\CreateOrganizationFormType;
+use App\Form\CreateOrganizationForm;
 use App\Form\DeleteOrganizationForm;
 use App\Form\InviteUserForm;
 use App\Middleware\GetOrganizationMiddleware;
@@ -33,7 +33,7 @@ class OrganizationController extends MiddlewareController
 	{
 		$response = new Response();
 		$organization = new Organization();
-		$form = $this->createForm(CreateOrganizationFormType::class, $organization);
+		$form = $this->createForm(CreateOrganizationForm::class, $organization);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {

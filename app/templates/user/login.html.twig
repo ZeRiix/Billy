@@ -14,20 +14,8 @@
 
 			{{ form_start(userLoginForm) }}
 				<div class="w-fit mx-auto flex flex-col gap-2 items-center">
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userLoginForm.email) }}
-						{{ form_widget(userLoginForm.email) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userLoginForm.email) }}
-						</div>
-					</div>
-					<div class="max-w-xs flex flex-col gap-2">
-						{{ form_label(userLoginForm.password) }}
-						{{ form_widget(userLoginForm.password) }}
-						<div class="text-sm text-red-600">
-							{{ form_errors(userLoginForm.password) }}
-						</div>
-					</div>
+					{{ form_row(userLoginForm.email) }}
+					{{ form_row(userLoginForm.password) }}
 					<div class="mt-14">
 						{{ form_widget(userLoginForm.submit) }}
 					</div>

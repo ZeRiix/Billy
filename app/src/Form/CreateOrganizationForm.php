@@ -13,16 +13,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateOrganizationFormType extends AbstractType
+class CreateOrganizationForm extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options): void
 	{
 		$builder
 			->add("email", EmailType::class, [
-				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "180",
 				],
@@ -35,17 +32,13 @@ class CreateOrganizationFormType extends AbstractType
 					new Assert\Length([
 						"min" => 2,
 						"max" => 180,
-						"minMessage" =>
-							"L'adresse email doit faire au moins {{ limit }} caractères",
+						"minMessage" => "L'adresse email doit faire au moins {{ limit }} caractères",
 						"maxMessage" => "L'adresse email doit faire au plus {{ limit }} caractères",
 					]),
 				],
 			])
 			->add("phone", TelType::class, [
-				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "10",
 					"maxlenght" => "10",
 				],
@@ -58,16 +51,12 @@ class CreateOrganizationFormType extends AbstractType
 					new Assert\Length([
 						"min" => 10,
 						"max" => 10,
-						"exactMessage" =>
-							"Le numéro de téléphone doit faire {{ limit }} caractères",
+						"exactMessage" => "Le numéro de téléphone doit faire {{ limit }} caractères",
 					]),
 				],
 			])
 			->add("activity", TextType::class, [
-				"required" => false,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "2",
 					"maxlenght" => "100",
 				],
@@ -80,18 +69,13 @@ class CreateOrganizationFormType extends AbstractType
 					new Assert\Length([
 						"min" => 2,
 						"max" => 100,
-						"minMessage" =>
-							"Le secteur d'activité doit faire au moins {{ limit }} caractères",
-						"maxMessage" =>
-							"Le secteur d'activité doit faire au plus {{ limit }} caractères",
+						"minMessage" => "Le secteur d'activité doit faire au moins {{ limit }} caractères",
+						"maxMessage" => "Le secteur d'activité doit faire au plus {{ limit }} caractères",
 					]),
 				],
 			])
 			->add("siret", IntegerType::class, [
-				"required" => true,
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"minlenght" => "14",
 					"maxlenght" => "14",
 				],
@@ -109,10 +93,6 @@ class CreateOrganizationFormType extends AbstractType
 				],
 			])
 			->add("submit", SubmitType::class, [
-				"attr" => [
-					"class" =>
-						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-				],
 				"label" => "Ajouter",
 			]);
 	}

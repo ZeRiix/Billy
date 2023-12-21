@@ -14,20 +14,8 @@
 		<div class="p-14 rounded-xl bg-white">
 			{{ form_start(createServiceForm) }}
 			<div class="flex flex-col gap-10 items-start">
-				<div class="max-w-xs flex flex-col gap-2">
-					{{ form_label(createServiceForm.name) }}
-					{{ form_widget(createServiceForm.name) }}
-					<div class="text-sm text-red-600">
-						{{ form_errors(createServiceForm.name) }}
-					</div>
-				</div>
-				<div class="w-full flex flex-col gap-2">
-					{{ form_label(createServiceForm.description) }}
-					{{ form_widget(createServiceForm.description) }}
-					<div class="text-sm text-red-600">
-						{{ form_errors(createServiceForm.description) }}
-					</div>
-				</div>
+				{{ form_row(createServiceForm.name) }}
+				{{ form_row(createServiceForm.description) }}
 				<div class="w-full flex justify-end">
 					{{ form_widget(createServiceForm.submit) }}
 				</div>	

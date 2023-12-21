@@ -18,84 +18,83 @@ class UserRegisterForm extends AbstractType
 		$builder
 			->add("firstName", TextType::class, [
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"maxLenght" => "100",
 					"minLenght" => "2",
 				],
 				"label" => "Prénom",
 				"label_attr" => [
-					"class" => "",
+					"class" => "form-label",
 				],
-				"required" => true,
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 2, "max" => 100]),
+					new Assert\NotBlank(message: "Le prénom est obligatoire"),
+					new Assert\Length([
+						"min" => 2,
+						"max" => 100,
+						"minMessage" => "Le prénom doit faire au moins {{ limit }} caractères",
+						"maxMessage" => "Le prénom doit faire au plus {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("name", TextType::class, [
 				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 					"maxLenght" => "100",
 					"minLenght" => "2",
 				],
 				"label" => "Nom",
 				"label_attr" => [
-					"class" => "",
+					"class" => "form-label",
 				],
-				"required" => true,
 				"constraints" => [
-					new Assert\NotBlank(),
-					new Assert\Length(["min" => 2, "max" => 100]),
+					new Assert\NotBlank(message: "Le nom est obligatoire"),
+					new Assert\Length([
+						"min" => 2,
+						"max" => 100,
+						"minMessage" => "Le nom doit faire au moins {{ limit }} caractères",
+						"maxMessage" => "Le nom doit faire au plus {{ limit }} caractères",
+					]),
 				],
 			])
 			->add("email", EmailType::class, [
-				"attr" => [
-					"class" =>
-						"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Email",
 				"label_attr" => [
-					"class" => "",
+					"class" => "form-label",
 				],
-				"required" => true,
-				"constraints" => [new Assert\NotBlank(), new Assert\Email()],
+				"constraints" => [
+					new Assert\NotBlank(message: "L'email est obligatoire"),
+					new Assert\Email(message: "L'email n'est pas valide"),
+				],
 			])
 			->add("password", RepeatedType::class, [
 				"type" => PasswordType::class,
 				"first_options" => [
 					"attr" => [
-						"class" =>
-							"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 						// "pattern" => "[^]{8,}",
 					],
 					"label" => "Mot de passe",
 					"label_attr" => [
-						"class" => "",
+						"class" => "form-label",
 					],
-					"required" => true,
 				],
 				"second_options" => [
 					"attr" => [
-						"class" =>
-							"w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 						// "pattern" => "[^]{8,}",
 					],
 					"label" => "Confirmer mot de passe",
 					"label_attr" => [
-						"class" => "",
+						"class" => "form-label",
 					],
 					"required" => true,
 				],
 				"invalid_message" => "Les mots de passe ne correspondent pas.",
-				"constraints" => [new Assert\NotBlank(), new Assert\Length(["min" => 8])],
+				"constraints" => [
+					new Assert\NotBlank(message: "Le mot de passe est obligatoire"),
+					new Assert\Length([
+						"min" => 8,
+						"minMessage" => "Le mot de passe doit faire au moins {{ limit }} caractères",
+					]),
+				],
 			])
 			->add("submit", SubmitType::class, [
-				"attr" => [
-					"class" =>
-						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-				],
 				"label" => "S'inscrire",
 			]);
 	}
