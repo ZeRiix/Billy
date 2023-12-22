@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,8 +22,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: "users")]
+	#[ORM\JoinColumn(nullable: true)]
+	#[ORM\JoinTable(name: "user_role")]
+	private Collection $organizationRoles;
+
+	#[ORM\ManyToMany(targetEntity: Organization::class, mappedBy: "users")]
+	#[ORM\JoinColumn(nullable: true)]
+	#[ORM\JoinTable(name: "user_organizations")]
+	private Collection $organizations;
+
+	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "user")]
+	#[ORM\JoinColumn(nullable: false)]
+	private Collection $services;
+
+	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "user")]
+	#[ORM\JoinColumn(nullable: false)]
+	private Collection $factures;
+
+	#[ORM\OneToMany(targetEntity: Organization::class, mappedBy: "createdBy")]
+	#[ORM\JoinColumn(nullable: false)]
+	private Collection $createdOrganizations;
+
+	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "user")]
+	private Collection $invite_users;
+
+    #[ORM\Column(length: 320, unique: true)]
+	#[Assert\NotBlank(message: "Veuillez renseigner l'adresse email.")]
+	#[Assert\Length(
+		min: 10,
+		max: 320,
+		minMessage: "L'adresse email doit contenir au moins {{ limit }} caractères.",
+		maxMessage: "L'adresse email doit contenir au maximum {{ limit }} caractères."
+	)]
     private ?string $email = null;
+
+	#[ORM\Column(length: 100, nullable: false)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le prénom.")]
+	#[Assert\Length(
+		min: 4,
+		max: 100,
+		minMessage: "Le prénom doit contenir au moins {{ limit }} caractères.",
+		maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères."
+	)]
+	private ?string $firstName = null;
+
+	#[ORM\Column(length: 100, nullable: false)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le nom.")]
+	#[Assert\Length(
+		min: 4,
+		max: 100,
+		minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+		maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères."
+	)]
+	private ?string $name = null;
 
     #[ORM\Column]
     private array $roles = [];
@@ -30,8 +86,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?\DateTimeImmutable $created_at = null;
+
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?\DateTimeImmutable $updated_at = null;
+
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+
+	public function __construct()
+	{
+		$this->organizationRoles = new ArrayCollection();
+		$this->organizations = new ArrayCollection();
+		$this->services = new ArrayCollection();
+		$this->factures = new ArrayCollection();
+		$this->createdOrganizations = new ArrayCollection();
+		$this->invite_users = new ArrayCollection();
+	}
 
     public function getId(): ?int
     {
@@ -48,6 +120,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
 
         return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updated_at): void
+    {
+        $this->updated_at = $updated_at;
     }
 
     /**
