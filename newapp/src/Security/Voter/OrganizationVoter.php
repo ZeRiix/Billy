@@ -2,7 +2,6 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Client;
 use App\Entity\Organization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;

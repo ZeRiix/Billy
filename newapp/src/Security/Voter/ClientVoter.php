@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Client;
 use App\Entity\Organization;
+use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -11,18 +12,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ClientVoter extends Voter
 {
+    public const VIEW = 'CLIENT_VIEW';
     public const CREATE = 'CLIENT_CREATE';
     public const UPDATE = 'CLIENT_UPDATE';
 
 	public function __construct(
-		private RoleRepository $roleRepository
+		private RoleRepository $roleRepository,
+		private OrganizationRepository $organizationRepository
 	)
 	{}
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         return (
-			in_array($attribute, [self::CREATE, self::UPDATE]) && (
+			in_array($attribute, [self::CREATE, self::UPDATE, self::VIEW]) && (
 				$subject instanceof Organization ||
 				$subject instanceof Client
 			)
@@ -36,7 +39,11 @@ class ClientVoter extends Voter
             return false;
         }
 
-		if($attribute === self::CREATE) {
+		if($attribute === self::VIEW) {
+			/** @var Organization $subject */
+			return $this->organizationRepository->organizationContainsUser($subject, $user);
+		}
+		else if($attribute === self::CREATE) {
 			/** @var Organization $subject */
 			return $this->roleRepository->checkPermissionOnOrganization($user, $subject, "manage_client");
 		}
