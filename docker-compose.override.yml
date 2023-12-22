@@ -2,7 +2,7 @@ services:
   composer:
     volumes:
       - ./newapp:/app
-    # command: composer remove symfony/doctrine-messenger
+    # command: composer require symfony/uid
 
   php:
     volumes:
