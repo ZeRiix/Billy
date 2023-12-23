@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Organization;
+use App\Entity\User;
 use App\Security\Voter\OrganizationVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,8 +15,11 @@ class OrganizationController extends AbstractController
     #[Route('/organizations', name: 'app_organizations', methods: ["GET"])]
     public function index(): Response
     {
-        return $this->render('organization/index.html.twig', [
-            'controller_name' => 'OrganizationController',
+		/** @var User $user */
+		$user = $this->getUser();
+
+        return $this->render('organization/organizations.html.twig', [
+            'organizations' => $user->getOrganizations()
         ]);
     }
 
