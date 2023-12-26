@@ -11,6 +11,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -19,9 +21,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+	#[ORM\Column(type: UuidType::NAME, unique: true)]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+	private ?Uuid $id;
 
 	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
@@ -51,31 +54,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 320, unique: true)]
 	#[Assert\NotBlank(message: "Veuillez renseigner l'adresse email.")]
 	#[Assert\Length(
-		min: 10,
-		max: 320,
-		minMessage: "L'adresse email doit contenir au moins {{ limit }} caractères.",
-		maxMessage: "L'adresse email doit contenir au maximum {{ limit }} caractères."
-	)]
+         		min: 10,
+         		max: 320,
+         		minMessage: "L'adresse email doit contenir au moins {{ limit }} caractères.",
+         		maxMessage: "L'adresse email doit contenir au maximum {{ limit }} caractères."
+         	)]
     private ?string $email = null;
 
 	#[ORM\Column(length: 100, nullable: false)]
-	#[Assert\NotBlank(message: "Veuillez renseigner le prénom.")]
-	#[Assert\Length(
-		min: 4,
-		max: 100,
-		minMessage: "Le prénom doit contenir au moins {{ limit }} caractères.",
-		maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères."
-	)]
+         	#[Assert\NotBlank(message: "Veuillez renseigner le prénom.")]
+         	#[Assert\Length(
+         		min: 4,
+         		max: 100,
+         		minMessage: "Le prénom doit contenir au moins {{ limit }} caractères.",
+         		maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères."
+         	)]
 	private ?string $firstName = null;
 
 	#[ORM\Column(length: 100, nullable: false)]
-	#[Assert\NotBlank(message: "Veuillez renseigner le nom.")]
-	#[Assert\Length(
-		min: 4,
-		max: 100,
-		minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
-		maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères."
-	)]
+         	#[Assert\NotBlank(message: "Veuillez renseigner le nom.")]
+         	#[Assert\Length(
+         		min: 4,
+         		max: 100,
+         		minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+         		maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères."
+         	)]
 	private ?string $name = null;
 
     #[ORM\Column]
@@ -98,14 +101,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 	public function __construct()
 	{
-		$this->organizationRoles = new ArrayCollection();
-		$this->organizations = new ArrayCollection();
-		$this->services = new ArrayCollection();
-		$this->factures = new ArrayCollection();
-		$this->invite_users = new ArrayCollection();
+        $this->organizationRoles = new ArrayCollection();
+        $this->organizations = new ArrayCollection();
+        $this->services = new ArrayCollection();
+        $this->factures = new ArrayCollection();
+        $this->invite_users = new ArrayCollection();
 	}
 
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -141,6 +144,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->name = $name;
     }
+
+	public function getServices(): Collection
+	{
+		return $this->services;
+	}
+
+	public function getFactures(): Collection
+	{
+		return $this->factures;
+	}
+
+	public function getCreatedOrganizations(): Collection
+	{
+		return $this->createdOrganizations;
+	}
+
+	public function getInviteUsers(): Collection
+	{
+		return $this->invite_users;
+	}
+
     /**
      * A visual identifier that represents this user.
      *
@@ -169,6 +193,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+	public function addRole(Role $role)
+	{
+		if (!$this->organizationRoles->contains($role)) {
+			$this->organizationRoles->add($role);
+			$role->addUser($this);
+		}
+	}
+
+	public function removeRole(Role $role)
+	{
+		if ($this->organizationRoles->contains($role)) {
+			$this->organizationRoles->removeElement($role);
+			$role->removeUser($this);
+		}
+	}
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -207,38 +247,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 	public function getOrganizations(){
-		return $this->organizations;
-	}
+         		return $this->organizations;
+         	}
 
-	public function getCreatedOrganizations(): ?Organization
-	{
-		return $this->createdOrganizations;
-	}
-
-	public function getCreatedAt(): ?\DateTimeImmutable
-	{
-		return $this->created_at;
-	}
+    public function getCreatedAt(): ?\DateTimeImmutable
+         	{
+         		return $this->created_at;
+         	}
 
 	#[ORM\PrePersist]
-	public function setCreatedAt(): self
-	{
-		$this->created_at = new \DateTimeImmutable();
+         	public function setCreatedAt(): self
+         	{
+         		$this->created_at = new \DateTimeImmutable();
 
-		return $this;
-	}
+         		return $this;
+         	}
 
 	public function getUpdatedAt(): ?\DateTimeImmutable
-	{
-		return $this->updated_at;
-	}
+         	{
+         		return $this->updated_at;
+         	}
 
 	#[ORM\PrePersist]
-	#[ORM\PreUpdate]
-	public function setUpdatedAt(): self
-	{
-		$this->updated_at = new \DateTimeImmutable();
+         	#[ORM\PreUpdate]
+         	public function setUpdatedAt(): self
+         	{
+         		$this->updated_at = new \DateTimeImmutable();
 
-		return $this;
-	}
+         		return $this;
+         	}
+
+    public function addOrganization(Organization $organization): static
+    {
+        if (!$this->organizations->contains($organization)) {
+            $this->organizations->add($organization);
+            $organization->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganization(Organization $organization): static
+    {
+        if ($this->organizations->removeElement($organization)) {
+            $organization->removeUser($this);
+        }
+
+        return $this;
+    }
 }
