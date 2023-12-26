@@ -28,8 +28,17 @@ class RoleRepository extends ServiceEntityRepository
 		$role->setManageService(true);
 		$role->setOrganization($organization);
 		$role->addUser($user);
-		$this->getEntityManager()->persist($role);
-		$this->getEntityManager()->flush();
+		$this->save($role);
+		return $role;
+	}
+
+	/**
+	 * @param T $entity
+	 */
+	public function save($role)
+	{
+		$this->_em->persist($role);
+		$this->_em->flush();
 
 		return $role;
 	}

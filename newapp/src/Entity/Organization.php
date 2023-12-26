@@ -2,305 +2,404 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use App\Repository\OrganizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Validator\Constraints as Assert;
-
-// local imports
-use App\Repository\OrganizationRepository;
-use App\Entity\Role;
-use App\Entity\Service;
-use App\Entity\Devis;
-use App\Entity\Facture;
-use App\Entity\Client;
-use App\Entity\User;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
-#[ORM\Table(name: "`Organization`")]
-#[ORM\HasLifecycleCallbacks]
 class Organization
 {
-	#[ORM\Id]
-	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
-	private ?Uuid $id;
+    #[ORM\Id]
+	#[ORM\Column(type: 'uuid', unique: true)]
+	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
+	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	private ?Uuid $id = null;
 
-	#[ORM\OneToMany(targetEntity: Role::class, mappedBy: "Organization")]
-	private Collection $roles;
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
-	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "Organization")]
-	private Collection $services;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $address = null;
 
-	#[ORM\OneToMany(targetEntity: Devis::class, mappedBy: "Organization")]
-	private Collection $devis;
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
 
-	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "Organization")]
-	private Collection $factures;
+    #[ORM\Column(length: 10)]
+    private ?string $phone = null;
 
-	#[ORM\OneToMany(targetEntity: Client::class, mappedBy: "Organization")]
-	private Collection $clients;
+    #[ORM\Column(length: 100)]
+    private ?string $activity = null;
 
-	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "organization")]
-	private Collection $invite_organizations;
+    #[ORM\Column(length: 14)]
+    private ?string $siret = null;
 
-	#[ORM\ManyToMany(targetEntity: User::class, inversedBy: "organizations")]
-	#[ORM\JoinColumn(nullable: true)]
-	#[ORM\JoinTable(name: "user_organizations")]
-	private Collection $users;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $create_at = null;
 
-	#[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdOrganizations")]
-	#[ORM\JoinColumn(nullable: false)]
-	private User $createdBy;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated_at = null;
 
-	#[ORM\Column(length: 100, nullable: false)]
-	private ?string $name = null;
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Role::class)]
+    private Collection $roles;
 
-	#[ORM\Column(type: Types::TEXT)]
-	private ?string $address = null;
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Service::class)]
+    private Collection $services;
 
-	#[ORM\Column(length: 255)]
-	#[Assert\NotBlank(message: "Veuillez renseigner l\'email de l\'organisation.")]
-	#[Assert\Email(message: "Veuillez renseigner un email valide.")]
-	#[Assert\Length(
-		min: 5,
-		max: 255,
-		minMessage: "L\'email doit contenir au moins {{ limit }} caractères.",
-		maxMessage: "L\'email ne peut pas dépasser {{ limit }} caractères."
-	)]
-	private ?string $email = null;
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Devis::class)]
+    private Collection $devis;
 
-	#[ORM\Column(length: 10)]
-	#[Assert\NotBlank(message: "Veuillez renseigner le numéro de téléphone de l\'organisation.")]
-	#[Assert\Regex(
-		pattern: "/^0[1-9]([-. ]?[0-9]{2}){4}$/", //Pas testé si regex fonctionne à test quand on aura un form
-		message: "Veuillez renseigner un numéro de téléphone valide."
-	)]
-	#[Assert\Length(
-		min: 10,
-		max: 10,
-		minMessage: "Le numéro de téléphone doit contenir au moins {{ limit }} caractères.",
-		maxMessage: "Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères."
-	)]
-	private ?string $phone = null;
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Facture::class)]
+    private Collection $factures;
 
-	#[ORM\Column(length: 100)]
-	#[Assert\NotBlank(message: "Veuillez renseigner l'activité de votre organisation.")]
-	#[Assert\Length(
-		min: 2,
-		max: 50,
-		minMessage: "L'activité doit contenir au moins {{ limit }} caractères.",
-		maxMessage: "L'activité ne peut pas dépasser {{ limit }} caractères."
-	)]
-	private ?string $activity = null;
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Client::class)]
+    private Collection $clients;
 
-	#[ORM\Column(length: 14, nullable: false, unique: true)]
-	#[Assert\NotBlank(message: "Veuillez renseigner le siret de l'organisation.")]
-	#[Assert\Length(
-		min: 14,
-		max: 14,
-		exactMessage: "Le siret doit contenir {{ limit }} caractères."
-	)]
-	private ?string $siret = null;
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: InviteOrganization::class)]
+    private Collection $invite_organizations;
 
-	private ?UploadedFile $image = null;
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'organizations')]
+    private Collection $users;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?\DateTimeImmutable $created_at = null;
+    #[ORM\ManyToOne(inversedBy: 'organizations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?\DateTimeImmutable $updated_at = null;
+    public function __construct()
+    {
+        $this->roles = new ArrayCollection();
+        $this->services = new ArrayCollection();
+        $this->devis = new ArrayCollection();
+        $this->factures = new ArrayCollection();
+        $this->clients = new ArrayCollection();
+        $this->invite_organizations = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
 
-	public function __construct()
-	{
-		$this->roles = new ArrayCollection();
-		$this->services = new ArrayCollection();
-		$this->devis = new ArrayCollection();
-		$this->factures = new ArrayCollection();
-		$this->clients = new ArrayCollection();
-		$this->users = new ArrayCollection();
-		$this->invite_organizations = new ArrayCollection();
-	}
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-	public function getId(): ?Uuid
-	{
-		return $this->id;
-	}
+    public function setId(Uuid $id): static
+    {
+        $this->id = $id;
 
-	public function getRoles(): Collection
-	{
-		return $this->roles;
-	}
+        return $this;
+    }
 
-	public function getServices(): Collection
-	{
-		return $this->services;
-	}
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-	public function getDevis(): Collection
-	{
-		return $this->devis;
-	}
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
-	public function getFactures(): Collection
-	{
-		return $this->factures;
-	}
+        return $this;
+    }
 
-	public function getClients(): Collection
-	{
-		return $this->clients;
-	}
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
 
-	public function getUsers(): Collection
-	{
-		return $this->users;
-	}
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
 
-	public function getInviteOrganizations(): Collection
-	{
-		return $this->invite_organizations;
-	}
+        return $this;
+    }
 
-	public function getCreatedBy(): ?User
-	{
-		return $this->createdBy;
-	}
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-	public function setCreatedBy(?User $createdBy): self
-	{
-		$this->createdBy = $createdBy;
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function addUser(User $user): self
-	{
-		if (!$this->users->contains($user)) {
-			$this->users->add($user);
-		}
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
 
-		return $this;
-	}
+    public function setPhone(string $phone): static
+    {
+        $this->phone = $phone;
 
-	public function removeUser(User $user): self
-	{
-		if ($this->users->contains($user)) {
-			$this->users->removeElement($user);
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getActivity(): ?string
+    {
+        return $this->activity;
+    }
 
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
+    public function setActivity(string $activity): static
+    {
+        $this->activity = $activity;
 
-	public function setName(?string $name): static
-	{
-		$this->name = $name;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getSiret(): ?string
+    {
+        return $this->siret;
+    }
 
-	public function getAddress(): ?string
-	{
-		return $this->address;
-	}
+    public function setSiret(string $siret): static
+    {
+        $this->siret = $siret;
 
-	public function setAddress(?string $address): static
-	{
-		$this->address = $address;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getCreateAt(): ?\DateTimeImmutable
+    {
+        return $this->create_at;
+    }
 
-	public function getEmail(): ?string
-	{
-		return $this->email;
-	}
+    public function setCreateAt(\DateTimeImmutable $create_at): static
+    {
+        $this->create_at = $create_at;
 
-	public function setEmail(?string $email): static
-	{
-		$this->email = $email;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
 
-	public function getPhone(): ?string
-	{
-		return $this->phone;
-	}
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
+    {
+        $this->updated_at = $updated_at;
 
-	public function setPhone(?string $phone): static
-	{
-		$this->phone = $phone;
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
 
-	public function getActivity(): ?string
-	{
-		return $this->activity;
-	}
+    public function addRole(Role $role): static
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+            $role->setOrganization($this);
+        }
 
-	public function setActivity(?string $activity): static
-	{
-		$this->activity = $activity;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function removeRole(Role $role): static
+    {
+        if ($this->roles->removeElement($role)) {
+            // set the owning side to null (unless already changed)
+            if ($role->getOrganization() === $this) {
+                $role->setOrganization(null);
+            }
+        }
 
-	public function getSiret(): ?string
-	{
-		return $this->siret;
-	}
+        return $this;
+    }
 
-	public function setSiret(?string $siret): static
-	{
-		$this->siret = $siret;
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
 
-		return $this;
-	}
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setOrganization($this);
+        }
 
-	public function getImage(): ?UploadedFile
-	{
-		return $this->image;
-	}
+        return $this;
+    }
 
-	public function setImage(UploadedFile $image): self
-	{
-		$this->image = $image;
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getOrganization() === $this) {
+                $service->setOrganization(null);
+            }
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getCreatedAt(): ?\DateTimeImmutable
-	{
-		return $this->created_at;
-	}
+    /**
+     * @return Collection<int, Devis>
+     */
+    public function getDevis(): Collection
+    {
+        return $this->devis;
+    }
 
-	#[ORM\PrePersist]
-	public function setCreatedAtValue(): void
-	{
-		$this->created_at = new \DateTimeImmutable();
-	}
+    public function addDevis(Devis $devis): static
+    {
+        if (!$this->devis->contains($devis)) {
+            $this->devis->add($devis);
+            $devis->setOrganization($this);
+        }
 
-	public function getUpdatedAt(): ?\DateTimeImmutable
-	{
-		return $this->updated_at;
-	}
+        return $this;
+    }
 
-	#[ORM\PrePersist]
-	#[ORM\PreUpdate]
-	public function setUpdatedAtValue(): void
-	{
-		$this->updated_at = new \DateTimeImmutable();
-	}
+    public function removeDevis(Devis $devis): static
+    {
+        if ($this->devis->removeElement($devis)) {
+            // set the owning side to null (unless already changed)
+            if ($devis->getOrganization() === $this) {
+                $devis->setOrganization(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Facture>
+     */
+    public function getFactures(): Collection
+    {
+        return $this->factures;
+    }
+
+    public function addFacture(Facture $facture): static
+    {
+        if (!$this->factures->contains($facture)) {
+            $this->factures->add($facture);
+            $facture->setOrganization($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFacture(Facture $facture): static
+    {
+        if ($this->factures->removeElement($facture)) {
+            // set the owning side to null (unless already changed)
+            if ($facture->getOrganization() === $this) {
+                $facture->setOrganization(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Client>
+     */
+    public function getClients(): Collection
+    {
+        return $this->clients;
+    }
+
+    public function addClient(Client $client): static
+    {
+        if (!$this->clients->contains($client)) {
+            $this->clients->add($client);
+            $client->setOrganization($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClient(Client $client): static
+    {
+        if ($this->clients->removeElement($client)) {
+            // set the owning side to null (unless already changed)
+            if ($client->getOrganization() === $this) {
+                $client->setOrganization(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InviteOrganization>
+     */
+    public function getInviteOrganizations(): Collection
+    {
+        return $this->invite_organizations;
+    }
+
+    public function addInviteOrganization(InviteOrganization $inviteOrganization): static
+    {
+        if (!$this->invite_organizations->contains($inviteOrganization)) {
+            $this->invite_organizations->add($inviteOrganization);
+            $inviteOrganization->setOrganization($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInviteOrganization(InviteOrganization $inviteOrganization): static
+    {
+        if ($this->invite_organizations->removeElement($inviteOrganization)) {
+            // set the owning side to null (unless already changed)
+            if ($inviteOrganization->getOrganization() === $this) {
+                $inviteOrganization->setOrganization(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
 }

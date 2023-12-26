@@ -41,7 +41,7 @@ class OrganizationVoter extends Voter
         }
 
 		if($attribute === self::CREATE) {
-			return !$user->getCreatedOrganizations();
+			return true; // TODO je savais pas quoi mettre à voir ce qu'on doit mettre*/
 		}
 		else if($attribute === self::VIEW){
 			return $this->organizationRepository->organizationContainsUser($organization, $user);

@@ -5,51 +5,65 @@ namespace App\Repository;
 use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\User;
 
+/**
+ * @extends ServiceEntityRepository<Organization>
+ *
+ * @method Organization|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Organization|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Organization[]    findAll()
+ * @method Organization[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class OrganizationRepository extends ServiceEntityRepository
 {
-	public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Organization::class);
+    }
+
+	/**
+	 * @param T $entity
+	 */
+	public function save($organization)
 	{
-		parent::__construct($registry, Organization::class);
+		$this->_em->persist($organization);
+		$this->_em->flush();
+
+		return $organization;
 	}
 
-	public function findOneByName($value): ?Organization
+	public function findOneByName(string $name): ?Organization
 	{
-		return $this->findOneBy(["name" => $value]);
+		return $this->createQueryBuilder('o')
+			->andWhere('o.name = :name')
+			->setParameter('name', $name)
+			->getQuery()
+			->getOneOrNullResult()
+		;
 	}
 
-	public function findUserInOrganization(User $user): ?Organization
-	{
-		return $this->findOneBy(["users" => $user]);
-	}
+//    /**
+//     * @return Organization[] Returns an array of Organization objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('o')
+//            ->andWhere('o.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('o.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-	public function findOneBySiret($value): ?Organization
-	{
-		return $this->findOneBy(["siret" => $value]);
-	}
-
-	public function organizationContainsUser(Organization $organization, User $user): bool
-	{
-		$conn = $this->getEntityManager()->getConnection();
-		$sql =
-			"SELECT user_id FROM user_organizations WHERE user_id = :user_id AND organization_id = :organization_id";
-		$conn->prepare($sql);
-		$res = $conn->executeQuery($sql, [
-			"user_id" => $user->getId(),
-			"organization_id" => $organization->getId(),
-		]);
-		$result = $res->fetchAllAssociative();
-
-		if (count($result) > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public function findById($value): ?Organization
-	{
-		return $this->findOneBy(["id" => $value]);
-	}
+//    public function findOneBySomeField($value): ?Organization
+//    {
+//        return $this->createQueryBuilder('o')
+//            ->andWhere('o.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }
