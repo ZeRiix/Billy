@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Organization;
+use App\Repository\Traits\SaveTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,21 +17,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OrganizationRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Organization::class);
     }
-
-	/**
-	 * @param T $entity
-	 */
-	public function save($organization)
-	{
-		$this->_em->persist($organization);
-		$this->_em->flush();
-
-		return $organization;
-	}
 
 	public function findOneByName(string $name): ?Organization
 	{

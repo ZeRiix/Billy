@@ -31,7 +31,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\JoinTable(name: "user_role")]
 	private Collection $organizationRoles;
 
-	#[ORM\ManyToMany(targetEntity: Organization::class, mappedBy: 'users')]
+	#[ORM\ManyToMany(targetEntity: Organization::class, mappedBy: "users")]
+	#[ORM\JoinColumn(nullable: true)]
+	#[ORM\JoinTable(name: "user_organizations")]
 	private Collection $organizations;
 
 	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "user")]

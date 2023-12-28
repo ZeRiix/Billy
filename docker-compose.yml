@@ -11,9 +11,9 @@ services:
   php:
     build: ./.docker/php
     working_dir: /var/www/
-    env_file: ./app/.env
+    env_file: ./newapp/.env
     volumes:
-      - ./app:/var/www
+      - ./newapp:/var/www
       - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     command: php-fpm
     user: 1000:1000
