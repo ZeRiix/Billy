@@ -27,12 +27,9 @@ class Role
    	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
    	private ?Uuid $id;
 
-	//#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "roles", cascade: ["persist"])]
-	//#[ORM\JoinColumn(nullable: false)]
-	//private Organization $organization;
-
-	#[ORM\ManyToOne(inversedBy: 'roles')]
-    private ?Organization $organization = null;
+	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "roles", cascade: ["persist"])]
+	#[ORM\JoinColumn(nullable: false)]
+	private Organization $organization;
 
 	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: "roles")]
    	#[ORM\JoinColumn(nullable: true)]

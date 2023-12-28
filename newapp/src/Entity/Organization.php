@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Organization
 {
     #[ORM\Id]
@@ -37,12 +38,6 @@ class Organization
     #[ORM\Column(length: 14)]
     private ?string $siret = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $create_at = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updated_at = null;
-
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Role::class)]
     private Collection $roles;
 
@@ -62,11 +57,18 @@ class Organization
     private Collection $invite_organizations;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'organizations')]
+	#[ORM\JoinColumn(nullable: true)]
+	#[ORM\JoinTable(name: "user_organizations")]
     private Collection $users;
 
-    #[ORM\ManyToOne(inversedBy: 'organizations')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organizations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createdBy = null;
+
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?\DateTimeImmutable $create_at = null;
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?\DateTimeImmutable $updated_at = null;
 
     public function __construct()
     {
@@ -77,7 +79,7 @@ class Organization
         $this->clients = new ArrayCollection();
         $this->invite_organizations = new ArrayCollection();
         $this->users = new ArrayCollection();
-    }
+	}
 
     public function getId(): ?int
     {
@@ -159,30 +161,6 @@ class Organization
     public function setSiret(string $siret): static
     {
         $this->siret = $siret;
-
-        return $this;
-    }
-
-    public function getCreateAt(): ?\DateTimeImmutable
-    {
-        return $this->create_at;
-    }
-
-    public function setCreateAt(\DateTimeImmutable $create_at): static
-    {
-        $this->create_at = $create_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
-    {
-        $this->updated_at = $updated_at;
 
         return $this;
     }
@@ -402,4 +380,27 @@ class Organization
 
         return $this;
     }
+
+	public function getCreateAt(): ?\DateTimeImmutable
+    {
+        return $this->create_at;
+    }
+
+	public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+	#[ORM\PrePersist]
+	public function setCreatedAtValue(): void
+	{
+		$this->create_at = new \DateTimeImmutable();
+	}
+
+	#[ORM\PrePersist]
+	#[ORM\PreUpdate]
+	public function setUpdatedAtValue(): void
+	{
+		$this->updated_at = new \DateTimeImmutable();
+	}
 }

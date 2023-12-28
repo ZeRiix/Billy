@@ -8,9 +8,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Entity\Organization;
 use App\Entity\Role;
 use App\Entity\User;
+use App\Repository\Traits\SaveTrait;
 
 class RoleRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Role::class);
@@ -29,17 +32,6 @@ class RoleRepository extends ServiceEntityRepository
 		$role->setOrganization($organization);
 		$role->addUser($user);
 		$this->save($role);
-		return $role;
-	}
-
-	/**
-	 * @param T $entity
-	 */
-	public function save($role)
-	{
-		$this->_em->persist($role);
-		$this->_em->flush();
-
 		return $role;
 	}
 
