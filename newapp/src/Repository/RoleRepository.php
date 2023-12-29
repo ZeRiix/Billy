@@ -60,6 +60,7 @@ class RoleRepository extends ServiceEntityRepository
 		$roles = $user->getUserRoles();
 		// check if user has permission
 		foreach ($roles as $role) {
+			/** @var Role $role */
 			return $this->checkPermissionOnRole($role, $permission);
 		}
 		return false;

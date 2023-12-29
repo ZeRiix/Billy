@@ -35,7 +35,7 @@ class OrganizationController extends AbstractController
 
 	#[Route('/organization/{id}', name: 'app_organization_get_id', methods: ["GET"])]
 	#[IsGranted(OrganizationVoter::VIEW, "organization", "message null")]
-    public function view(Request $request, Organization $organization): Response
+    public function view(Organization $organization): Response
     {
 		$imagePath = $_ENV['UPLOAD_IMAGE_PATH'] . $organization->getId() . '.jpeg';
 		$imageExist = false;
@@ -88,7 +88,7 @@ class OrganizationController extends AbstractController
 
 	#[Route('/organization/{id}/edit', name: 'app_update_organization', methods: ["GET", "POST"])]
 	#[IsGranted(OrganizationVoter::UPDATE, "organization", "message null")]
-    public function update(Organization $organization): Response
+    public function update(Request $request, Organization $organization, OrganizationService $organizationService): Response
     {
 		$response = new Response();
 		$imagePath = $_ENV['UPLOAD_IMAGE_PATH'] . $organization->getId() . '.jpeg';

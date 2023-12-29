@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -65,8 +66,8 @@ class Organization
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createdBy = null;
 
-	#[Vich\UploadableField(mapping: 'organization', fileNameProperty: 'logoName')]
-    private ?File $logoFile = null;
+	#[Vich\UploadableField(mapping: 'organization_image', fileNameProperty: 'logoName')]
+    private $logoFile = null;
 
     #[ORM\Column(nullable: true)]
     private ?string $logoName = null;
@@ -387,16 +388,17 @@ class Organization
         return $this;
     }
 
-	public function setLogoFile(?File $logoFile = null): void
+	public function setLogoFile($logoFile = null): self
     {
         $this->logoFile = $logoFile;
 
         if (null !== $logoFile) {
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->setUpdatedAtValue();
         }
+		return $this;
     }
 
-    public function getLogoFile(): ?File
+    public function getLogoFile()
     {
         return $this->logoFile;
     }
