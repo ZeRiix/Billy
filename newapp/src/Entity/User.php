@@ -44,9 +44,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $factures;
 
-	#[ORM\OneToOne(targetEntity: Organization::class, inversedBy: "createdBy")]
-	#[ORM\JoinColumn(nullable: true)]
-	private ?Organization $createdOrganizations;
+	#[ORM\OneToMany(targetEntity: Organization::class, mappedBy: "createdBy")]
+	#[ORM\JoinColumn(nullable: false)]
+	private Collection $createdOrganizations;
 
 	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "user")]
 	private Collection $invite_users;
@@ -105,6 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->organizations = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->factures = new ArrayCollection();
+        $this->createdOrganizations = new ArrayCollection();
         $this->invite_users = new ArrayCollection();
 	}
 
@@ -250,7 +251,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
          		return $this->organizations;
          	}
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+	public function getCreatedAt(): ?\DateTimeImmutable
          	{
          		return $this->created_at;
          	}
@@ -259,7 +260,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
          	public function setCreatedAt(): self
          	{
          		$this->created_at = new \DateTimeImmutable();
-
+         
          		return $this;
          	}
 
@@ -273,7 +274,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
          	public function setUpdatedAt(): self
          	{
          		$this->updated_at = new \DateTimeImmutable();
-
+         
          		return $this;
          	}
 

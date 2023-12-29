@@ -65,6 +65,12 @@ class Organization
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createdBy = null;
 
+	#[Vich\UploadableField(mapping: 'organization', fileNameProperty: 'logoName')]
+    private ?File $logoFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $logoName = null;
+
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $create_at = null;
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -81,7 +87,7 @@ class Organization
         $this->users = new ArrayCollection();
 	}
 
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -379,6 +385,30 @@ class Organization
         $this->createdBy = $createdBy;
 
         return $this;
+    }
+
+	public function setLogoFile(?File $logoFile = null): void
+    {
+        $this->logoFile = $logoFile;
+
+        if (null !== $logoFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getLogoFile(): ?File
+    {
+        return $this->logoFile;
+    }
+
+    public function setLogoName(?string $logoName): void
+    {
+        $this->logoName = $logoName;
+    }
+
+    public function getLogoName(): ?string
+    {
+        return $this->logoName;
     }
 
 	public function getCreateAt(): ?\DateTimeImmutable
