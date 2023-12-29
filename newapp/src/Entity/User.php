@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
 	#[ORM\JoinTable(name: "user_role")]
-	private Collection $organizationRoles;
+	private Collection $userRoles;
 
 	#[ORM\ManyToMany(targetEntity: Organization::class, mappedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
@@ -101,7 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 	public function __construct()
 	{
-         		$this->organizationRoles = new ArrayCollection();
+         		$this->userRoles = new ArrayCollection();
          		$this->organizations = new ArrayCollection();
          		$this->services = new ArrayCollection();
          		$this->factures = new ArrayCollection();
@@ -188,6 +188,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+	public function getUserRoles(): Collection
+	{
+		return $this->userRoles;
+	}
+
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -197,16 +202,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 	public function addRole(Role $role)
 	{
-		if (!$this->organizationRoles->contains($role)) {
-			$this->organizationRoles->add($role);
+		if (!$this->userRoles->contains($role)) {
+			$this->userRoles->add($role);
 			$role->addUser($this);
 		}
 	}
 
 	public function removeRole(Role $role)
 	{
-		if ($this->organizationRoles->contains($role)) {
-			$this->organizationRoles->removeElement($role);
+		if ($this->userRoles->contains($role)) {
+			$this->userRoles->removeElement($role);
 			$role->removeUser($this);
 		}
 	}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Organization;
+use App\Entity\User;
 use App\Repository\Traits\SaveTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,6 +33,26 @@ class OrganizationRepository extends ServiceEntityRepository
 			->getQuery()
 			->getOneOrNullResult()
 		;
+	}
+
+	public function userCanCreateOrganization(User $user) : bool 
+	{
+		return $this->findOneBy(["createdBy" => $user]) === null;
+	}
+
+	public function organizationContainsUser(Organization $organization, User $user): bool
+	{
+		$conn = $this->_em->getConnection();
+		$sql =
+			"SELECT user_id FROM user_organizations WHERE user_id = :user_id AND organization_id = :organization_id";
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"user_id" => $user->getId(),
+			"organization_id" => $organization->getId(),
+		]);
+		$result = $res->fetchAllAssociative();
+
+		return count($result) > 0;
 	}
 
 //    /**
