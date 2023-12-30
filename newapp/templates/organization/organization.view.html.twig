@@ -7,10 +7,13 @@
 <main class="pt-20 pl-64 min-h-screen bg-bdark-white">
 	<div class="px-10 py-5">
 		<h1 class="mb-14 text-3xl font-semibold">
+		<div class="flex flex-row items-center gap-[6px]">
 			{{ organization.name }}
 			{% if app.user.id == organization.createdBy.id %}
 				<span class="mdi mdi-crown text-3xl text-amber-500"></span>
+				<a href="{{ path('app_update_organization', {'id': organization.id}) }}"><span class="mdi mdi-tag-edit text-2xl text-gray-500"></span></a>
 			{% endif %}
+		</div>
 		</h1>
 		<div>Nom de l'organization : {{ organization.name }}</div>
 		<div>Addresse : {{ organization.address }}</div>
@@ -20,11 +23,7 @@
 		<div>Siret : {{ organization.siret }}</div>
 		<div>L'organization à été créee par : {{ organization.createdBy.firstName ~ " " ~ organization.createdBy.name }}</div>
 		<div>
-			{% if imageExist %}
-				<img class="w-[250px]" src="{{ asset('storage/images/organizations/' ~ organization.id ~ '.jpeg') }}" alt="{{ "Image" ~  " " ~ organization.name }}">
-			{% else %}
-				<span>Vous n'avez pas encore de logo, ajoutez-en un !</span>
-			{% endif %}
+			<img class="width-[250px]" src="{{ vich_uploader_asset(organization, 'logoFile') }}" alt="Logo de {{organization.name}}">
 		</div>
 	</div>
 </main>

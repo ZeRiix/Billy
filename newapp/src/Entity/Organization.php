@@ -6,13 +6,16 @@ use App\Repository\OrganizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]	
 class Organization
 {
     #[ORM\Id]
@@ -28,16 +31,48 @@ class Organization
     private ?string $address = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
+	#[Assert\NotBlank(message: "Veuillez renseigner l\'email de l\'organisation.")]
+	#[Assert\Email(message: "Veuillez renseigner un email valide.")]
+	#[Assert\Length(
+		min: 5,
+		max: 255,
+		minMessage: "L\'email doit contenir au moins {{ limit }} caractères.",
+		maxMessage: "L\'email ne peut pas dépasser {{ limit }} caractères."
+	)]
+	private ?string $email = null;
 
-    #[ORM\Column(length: 10)]
-    private ?string $phone = null;
+	#[ORM\Column(length: 10)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le numéro de téléphone de l\'organisation.")]
+	#[Assert\Regex(
+		pattern: "/^0[1-9]([-. ]?[0-9]{2}){4}$/", //Pas testé si regex fonctionne à test quand on aura un form
+		message: "Veuillez renseigner un numéro de téléphone valide."
+	)]
+	#[Assert\Length(
+		min: 10,
+		max: 10,
+		minMessage: "Le numéro de téléphone doit contenir au moins {{ limit }} caractères.",
+		maxMessage: "Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères."
+	)]
+	private ?string $phone = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $activity = null;
+	#[ORM\Column(length: 100)]
+	#[Assert\NotBlank(message: "Veuillez renseigner l'activité de votre organisation.")]
+	#[Assert\Length(
+		min: 2,
+		max: 50,
+		minMessage: "L'activité doit contenir au moins {{ limit }} caractères.",
+		maxMessage: "L'activité ne peut pas dépasser {{ limit }} caractères."
+	)]
+	private ?string $activity = null;
 
-    #[ORM\Column(length: 14)]
-    private ?string $siret = null;
+	#[ORM\Column(length: 14, nullable: false, unique: true)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le siret de l'organisation.")]
+	#[Assert\Length(
+		min: 14,
+		max: 14,
+		exactMessage: "Le siret doit contenir {{ limit }} caractères."
+	)]
+	private ?string $siret = null;
 
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Role::class)]
     private Collection $roles;
@@ -62,12 +97,19 @@ class Organization
 	#[ORM\JoinTable(name: "user_organizations")]
     private Collection $users;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organizations')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'organization')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $createdBy = null;
+    private User $createdBy;
 
-	#[Vich\UploadableField(mapping: 'organization_image', fileNameProperty: 'logoName')]
-    private $logoFile = null;
+	#[Vich\UploadableField(mapping: 'organizationImage', fileNameProperty: 'logoName')]
+	#[Assert\Image(
+		mimeTypes: ["image/jpeg"],
+		mimeTypesMessage: "Le format de l'image doit être au format jpeg.",
+		maxSize: "2M",
+		maxSizeMessage: "L'image ne doit pas dépasser 2Mo."
+	)]
+	#[Ignore]
+    private ?File $logoFile = null;
 
     #[ORM\Column(nullable: true)]
     private ?string $logoName = null;
@@ -376,29 +418,28 @@ class Organization
         return $this;
     }
 
-    public function getCreatedBy(): ?User
+    public function getCreatedBy(): User
     {
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): static
+    public function setCreatedBy(User $createdBy): static
     {
         $this->createdBy = $createdBy;
 
         return $this;
     }
 
-	public function setLogoFile($logoFile = null): self
+	public function setLogoFile(?File $logoFile = null): void
     {
         $this->logoFile = $logoFile;
 
-        if (null !== $logoFile) {
+        if ($logoFile) {
             $this->setUpdatedAtValue();
         }
-		return $this;
     }
 
-    public function getLogoFile()
+    public function getLogoFile() : ?File
     {
         return $this->logoFile;
     }
@@ -434,5 +475,35 @@ class Organization
 	public function setUpdatedAtValue(): void
 	{
 		$this->updated_at = new \DateTimeImmutable();
+	}
+
+	public function __serialize(): array
+	{
+		return array(
+			"id" => $this->id,
+			"name" => $this->name,
+			"address" => $this->address,
+			"email" => $this->email,
+			"phone" => $this->phone,
+			"activity" => $this->activity,
+			"siret" => $this->siret,
+			"logoName" => $this->logoName,
+			"create_at" => $this->create_at,
+			"updated_at" => $this->updated_at
+		);
+	}
+
+	public function __unserialize(array $data): void
+	{
+		$this->id = $data["id"];
+		$this->name = $data["name"];
+		$this->address = $data["address"];
+		$this->email = $data["email"];
+		$this->phone = $data["phone"];
+		$this->activity = $data["activity"];
+		$this->siret = $data["siret"];
+		$this->logoName = $data["logoName"];
+		$this->create_at = $data["create_at"];
+		$this->updated_at = $data["updated_at"];
 	}
 }
