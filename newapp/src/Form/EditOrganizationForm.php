@@ -4,12 +4,13 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\Organization;
 
 class EditOrganizationForm extends AbstractType
 {
@@ -34,7 +35,7 @@ class EditOrganizationForm extends AbstractType
 				"label" => "Adresse email",
 				"label_attr" => [
 					"class" => "form-label",
-				],
+				]
 			])
 			->add("phone", TelType::class, [
 				"required" => false,
@@ -46,14 +47,12 @@ class EditOrganizationForm extends AbstractType
 					"class" => "form-label",
 				],
 			])
-			->add('logoFile', VichFileType::class, [
-				'required' => false,
-				'allow_delete' => true,
-				'delete_label' => '...',
-				'download_uri' => '...',
-				'download_label' => '...',
-				'asset_helper' => true,
-			])
+			->add('logoFile', VichImageType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'image_uri' => true,
+            ])
 			->add("submit", SubmitType::class, [
 				"attr" => [
 					"class" =>
@@ -61,5 +60,12 @@ class EditOrganizationForm extends AbstractType
 				],
 				"label" => "Modifier",
 			]);
+	}
+
+	public function configureOptions(OptionsResolver $resolver): void
+	{
+		$resolver->setDefaults([
+			"data_class" => Organization::class,
+		]);
 	}
 }

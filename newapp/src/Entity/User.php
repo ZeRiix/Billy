@@ -7,7 +7,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
+use App\Entity\Organization;
+use App\Entity\Role;
 use Doctrine\Common\Collections\ArrayCollection;
+use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -44,9 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $factures;
 
-	#[ORM\OneToMany(targetEntity: Organization::class, mappedBy: "createdBy")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Collection $createdOrganizations;
+	#[ORM\OneToOne(targetEntity: Organization::class, mappedBy: "createdBy")]
+	#[ORM\JoinColumn(nullable: true, name: "organization_id", referencedColumnName: "id")]
+	private ?Organization $organization = null;
 
 	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "user")]
 	private Collection $invite_users;
@@ -105,7 +108,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
          		$this->organizations = new ArrayCollection();
          		$this->services = new ArrayCollection();
          		$this->factures = new ArrayCollection();
-         		$this->createdOrganizations = new ArrayCollection();
          		$this->invite_users = new ArrayCollection();
 	}
 
@@ -156,9 +158,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		return $this->factures;
 	}
 
-	public function getCreatedOrganizations(): Collection
+	public function getOrganization(): ?Organization
 	{
-		return $this->createdOrganizations;
+		return $this->organization;
 	}
 
 	public function getInviteUsers(): Collection

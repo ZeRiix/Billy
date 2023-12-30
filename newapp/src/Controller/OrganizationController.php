@@ -23,13 +23,19 @@ use App\Form\EditOrganizationForm;
 class OrganizationController extends AbstractController
 {
     #[Route('/organizations', name: 'app_organizations', methods: ["GET"])]
-    public function index(): Response
+    public function index(OrganizationService $organizationService): Response
     {
 		/** @var User $user */
 		$user = $this->getUser();
+		$canCreate = true;
+		$org = $organizationService->getCreatedBy($user);
+		if ($org) {
+			$canCreate = false;
+		}
 
         return $this->render('organization/organizations.html.twig', [
-            'organizations' => $user->getOrganizations()
+            'organizations' => $user->getOrganizations(),
+			'canCreate' => $canCreate
         ]);
     }
 
@@ -37,14 +43,8 @@ class OrganizationController extends AbstractController
 	#[IsGranted(OrganizationVoter::VIEW, "organization", "message null")]
     public function view(Organization $organization): Response
     {
-		$imagePath = $_ENV['UPLOAD_IMAGE_PATH'] . $organization->getId() . '.jpeg';
-		$imageExist = false;
-		if (file_exists($imagePath)) {
-			$imageExist = true;
-		}
         return $this->render('organization/organization.view.html.twig', [
-            'organization' => $organization,
-			'imageExist' => $imageExist,
+            'organization' => $organization
         ]);
     }
 
@@ -91,8 +91,6 @@ class OrganizationController extends AbstractController
     public function update(Request $request, Organization $organization, OrganizationService $organizationService): Response
     {
 		$response = new Response();
-		$imagePath = $_ENV['UPLOAD_IMAGE_PATH'] . $organization->getId() . '.jpeg';
-		$imageExist = file_exists($imagePath);
 
 		$form = $this->createForm(EditOrganizationForm::class, $organization);
 		$form->handleRequest($request);
@@ -100,20 +98,21 @@ class OrganizationController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			/** @var Organization */
 			$organization = $form->getData();
+			//die(var_dump($organization));
 			try {
 				$organizationService->modify($organization);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'organisation à bien été modifiée.");
+				$this->addFlash("success", "L'organisation {$organization->getName()} à bien été modifiée.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
 			}
 		}
-
+		
         return $this->render('organization/organization.update.html.twig', [
-            "form" => $form->createView(),
-			"organization" => $organization,
-			'imageExist' => $imageExist
-        ]);
+			"form" => $form->createView(),
+			"organization" => $organization
+		], $response
+		);
     }
 }
