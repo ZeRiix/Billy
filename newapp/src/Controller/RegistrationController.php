@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
 		{
 			return $this->redirectToRoute("app_organizations");
 		}
-		
+
 		/** @var User $user */
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -58,6 +58,7 @@ class RegistrationController extends AbstractController
             );
             // do anything else you need here, like send an email
 
+			$this->addFlash('success', 'Un email a étais envoyer.');
             return $this->redirectToRoute('app_login');
         }
 

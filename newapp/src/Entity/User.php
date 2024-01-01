@@ -102,7 +102,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		$this->organizations = new ArrayCollection();
 		$this->services = new ArrayCollection();
 		$this->factures = new ArrayCollection();
-		$this->createdOrganizations = new ArrayCollection();
 		$this->invite_users = new ArrayCollection();
 	}
 
