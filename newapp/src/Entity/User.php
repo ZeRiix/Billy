@@ -41,9 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $factures;
 
-	#[ORM\OneToMany(targetEntity: Organization::class, mappedBy: "createdBy")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Collection $createdOrganizations;
+	#[ORM\OneToOne(targetEntity: Organization::class, inversedBy: "createdBy")]
+	#[ORM\JoinColumn(nullable: true)]
+	private ?Organization $createdOrganizations;
 
 	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "user")]
 	private Collection $invite_users;
@@ -209,6 +209,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 	public function getOrganizations(){
 		return $this->organizations;
+	}
+
+	public function getCreatedOrganizations(): ?Organization
+	{
+		return $this->createdOrganizations;
 	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
