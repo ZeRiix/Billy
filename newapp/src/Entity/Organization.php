@@ -97,9 +97,9 @@ class Organization
 	#[ORM\JoinTable(name: "user_organizations")]
     private Collection $users;
 
-    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'organization')]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $createdBy;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdOrganizations")]
+	#[ORM\JoinColumn(nullable: false)]
+	private User $createdBy;
 
 	#[Vich\UploadableField(mapping: 'organizationImage', fileNameProperty: 'logoName')]
 	#[Assert\Image(
@@ -122,12 +122,12 @@ class Organization
     public function __construct()
     {
         $this->roles = new ArrayCollection();
-        $this->services = new ArrayCollection();
-        $this->devis = new ArrayCollection();
-        $this->factures = new ArrayCollection();
-        $this->clients = new ArrayCollection();
-        $this->invite_organizations = new ArrayCollection();
-        $this->users = new ArrayCollection();
+		$this->services = new ArrayCollection();
+		$this->devis = new ArrayCollection();
+		$this->factures = new ArrayCollection();
+		$this->clients = new ArrayCollection();
+		$this->users = new ArrayCollection();
+		$this->invite_organizations = new ArrayCollection();
 	}
 
     public function getId(): ?Uuid

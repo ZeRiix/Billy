@@ -40,50 +40,49 @@ class RoleRepository extends ServiceEntityRepository
 		return $this->findBy(["organization" => $org]);
 	}
 
-	private function getUserRolesForOrganization(Organization $org, User $user): array
+	public function getUserRolesForOrganization(Organization $org, User $user): array
 	{
-		return $this->createQueryBuilder("role")
-			->innerJoin("role.organization", "org")
-			->innerJoin("role.users", "user")
-			->where("org = :organization")
-			->andWhere("user = :user")
-			->setParameter("organization", $org)
-			->setParameter("user", $user)
-			->getQuery()
-			->getResult();
+		$conn = $this->_em->getConnection();
+		$sql = 'SELECT * from role as r 
+				  INNER JOIN user_role as ur on r.id = ur.role_id AND ur.user_id = :user_id 
+				  WHERE organization_id = :organization_id';
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"user_id" => $user->getId(),
+			"organization_id" => $org->getId(),
+		]);
+
+		return $res->fetchAllAssociative();
 	}
 
 	public function checkPermissionOnOrganization(User $user, Organization $organization, string $permission): bool
 	{
-		// get roles for user and organization
-		/** @var Role[] $role */
-		$roles = $user->getUserRoles();
+		$roles = $this->getUserRolesForOrganization($organization, $user);
 		// check if user has permission
 		foreach ($roles as $role) {
-			/** @var Role $role */
 			return $this->checkPermissionOnRole($role, $permission);
 		}
 		return false;
 	}
 
-	private function checkPermissionOnRole(Role $role, string $permission): bool
+	private function checkPermissionOnRole(array $role, string $permission): bool
 	{
-		if ($role->getManageOrg() && $permission === "manage_org") {
+		if ($role["manage_org"] && $permission === "manage_org") {
 			return true;
 		}
-		if ($role->getManageUser() && $permission === "manage_user") {
+		if ($role["manage_user"] && $permission === "manage_user") {
 			return true;
 		}
-		if ($role->getManageClient() && $permission === "manage_client") {
+		if ($role["manage_client"] && $permission === "manage_client") {
 			return true;
 		}
-		if ($role->getWriteDevis() && $permission === "write_devis") {
+		if ($role["write_devis"] && $permission === "write_devis") {
 			return true;
 		}
-		if ($role->getWriteFactures() && $permission === "write_factures") {
+		if ($role["write_factures"] && $permission === "write_factures") {
 			return true;
 		}
-		if ($role->getManageService() && $permission === "manage_service") {
+		if ($role["manage_service"] && $permission === "manage_service") {
 			return true;
 		}
 		return false;

@@ -13,8 +13,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -23,10 +21,9 @@ use Symfony\Component\Uid\Uuid;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
-	private ?Uuid $id;
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
 	#[ORM\ManyToMany(targetEntity: Role::class, inversedBy: "users")]
 	#[ORM\JoinColumn(nullable: true)]
@@ -46,9 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\JoinColumn(nullable: false)]
 	private Collection $factures;
 
-	#[ORM\OneToMany(targetEntity: Organization::class, mappedBy: "createdBy")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Collection $createdOrganizations;
+	#[ORM\OneToOne(targetEntity: Organization::class, inversedBy: "createdBy")]
+	#[ORM\JoinColumn(nullable: true)]
+	private ?Organization $createdOrganizations;
 
 	#[ORM\OneToMany(targetEntity: InviteOrganization::class, mappedBy: "user")]
 	private Collection $invite_users;
@@ -104,14 +101,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	public function __construct()
 	{
         $this->organizationRoles = new ArrayCollection();
-        $this->organizations = new ArrayCollection();
-        $this->services = new ArrayCollection();
-        $this->factures = new ArrayCollection();
-        $this->createdOrganizations = new ArrayCollection();
-        $this->invite_users = new ArrayCollection();
+		$this->organizations = new ArrayCollection();
+		$this->services = new ArrayCollection();
+		$this->factures = new ArrayCollection();
+		$this->invite_users = new ArrayCollection();
 	}
 
-    public function getId(): ?Uuid
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -158,7 +154,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		return $this->factures;
 	}
 
-	public function getCreatedOrganizations(): Collection
+	public function getCreatedOrganizations(): ?Organization
 	{
 		return $this->createdOrganizations;
 	}
@@ -249,36 +245,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-	public function getOrganizations(){
-         		return $this->organizations;
-         	}
+	public function getOrganizations()
+	{
+		return $this->organizations;
+	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
-         	{
-         		return $this->created_at;
-         	}
-
-	#[ORM\PrePersist]
-         	public function setCreatedAt(): self
-         	{
-         		$this->created_at = new \DateTimeImmutable();
-         
-         		return $this;
-         	}
-
-	public function getUpdatedAt(): ?\DateTimeImmutable
-         	{
-         		return $this->updated_at;
-         	}
-
-	#[ORM\PrePersist]
-         	#[ORM\PreUpdate]
-         	public function setUpdatedAt(): self
-         	{
-         		$this->updated_at = new \DateTimeImmutable();
-         
-         		return $this;
-         	}
+	{
+		return $this->created_at;
+	}
 
     public function addOrganization(Organization $organization): static
     {
@@ -298,4 +273,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+	#[ORM\PrePersist]
+	public function setCreatedAt(): self
+	{
+		$this->created_at = new \DateTimeImmutable();
+	
+		return $this;
+	}
+
+	public function getUpdatedAt(): ?\DateTimeImmutable
+	{
+		return $this->updated_at;
+	}
+
+	#[ORM\PrePersist]
+	#[ORM\PreUpdate]
+	public function setUpdatedAt(): self
+	{
+		$this->updated_at = new \DateTimeImmutable();
+
+		return $this;
+	}
 }
