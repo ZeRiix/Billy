@@ -11,6 +11,8 @@
 			{{ organization.name }}
 			{% if app.user.id == organization.createdBy.id %}
 				<span class="mdi mdi-crown text-3xl text-amber-500"></span>
+			{% endif %}
+			{% if checkPermissionOnOrganization(app.user, organization, 'manage_org') %}
 				<a href="{{ path('app_update_organization', {'id': organization.id}) }}"><span class="mdi mdi-tag-edit text-2xl text-gray-500"></span></a>
 			{% endif %}
 		</div>
