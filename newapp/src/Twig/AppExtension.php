@@ -29,7 +29,7 @@ class AppExtension extends AbstractExtension
 		$request = $this->requestStack->getMainRequest();
 		$organizationId = $request->get("organizationId");
 		if(!$organizationId){
-			throw new \Exception("'organizationId' is missing from path.");
+			return false;
 		}
 
 		$organization = $this->organizationRepository->find($organizationId);
