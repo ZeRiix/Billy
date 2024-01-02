@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ServiceController extends AbstractController
 {
-	#[Route('/organization/{organizationId}/services', name: 'app_services', methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/services', name: 'app_services', methods: ["GET", "POST"])]
     public function view(Organization $organization): Response
     {
 		if(!$this->isGranted(ServiceVoter::VIEW, $organization)){
@@ -23,7 +23,7 @@ class ServiceController extends AbstractController
         ]);
     }
 
-    #[Route('/organization/{organizationId}/service', name: 'app_create_service', methods: ["GET", "POST"])]
+    #[Route('/organization/{organization}/service', name: 'app_create_service', methods: ["GET", "POST"])]
     public function create(Organization $organization): Response
     {
 		if(!$this->isGranted(ServiceVoter::CREATE, $organization)){
@@ -35,7 +35,7 @@ class ServiceController extends AbstractController
         ]);
     }
 
-	#[Route('/organization/{organizationId}/service/{id}', name: 'app_update_service', methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/service/{id}', name: 'app_update_service', methods: ["GET", "POST"])]
     public function update(Service $service): Response
     {
 		if(!$this->isGranted(ServiceVoter::UPDATE, $service)){
