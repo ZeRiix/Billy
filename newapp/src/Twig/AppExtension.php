@@ -27,7 +27,7 @@ class AppExtension extends AbstractExtension
     public function checkPermissionOnOrganization(User $user, string $permission): int
     {
 		$request = $this->requestStack->getMainRequest();
-		$organizationId = $request->get("organizationId");
+		$organizationId = $request->get("organization");
 		if(!$organizationId){
 			return false;
 		}
