@@ -4,6 +4,10 @@
 
 {% block body %}
 
+{% include 'components/header.html.twig' %}
+
+{% include 'components/sidebar.html.twig' %}
+
 <main class="pt-20 pl-64 min-h-screen bg-bdark-white">
 	<div class="px-10 py-5">
 		<div class="mb-14 flex justify-between items-center">
@@ -35,12 +39,12 @@
 							{% endif %}
 						</td>
 						<td class="w-full p-6 flex items-center">{{ organization.address }}</td>
-						<td class="w-full p-6 flex items-center"><a href="mailto:contact@mat.com" target="_blank">{{ organization.email }}</a></td>
+						<td class="w-full p-6 flex items-center underline text-blue-500"><a href="mailto:{{ organization.email }}" target="_blank">{{ organization.email }}</a></td>
 						<td class="w-full p-6 flex items-center">{{ organization.phone }}</td>
 						<td class="w-full p-6 flex items-center">{{ organization.siret }}</td>
 						<td class="w-full p-6 flex items-center">{{ organization.activity }}</td>
 						<td class="w-full p-6 flex items-center text-xl">
-							<a href="{{ path('app_organization_get_id', { id: organization.id }) }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
+							<a href="{{ path('app_organization_get_id', { organization: organization.id }) }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
 						</td>
 					</tr>
 				{% endfor %}

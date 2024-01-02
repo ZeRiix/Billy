@@ -39,7 +39,7 @@ class OrganizationController extends AbstractController
         ]);
     }
 
-	#[Route('/organization/{id}', name: 'app_organization_get_id', methods: ["GET"])]
+	#[Route('/organization/{organization}', name: 'app_organization_get_id', methods: ["GET"])]
 	#[IsGranted(OrganizationVoter::VIEW, "organization", "message null")]
     public function view(Organization $organization): Response
     {
