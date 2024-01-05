@@ -53,8 +53,8 @@ class OrganizationService
 			throw new \Exception("Une organisation avec ce siret existe déjà.");
 		}
 		// check if user is already owner of an organization
-		$isOwner = $this->roleRepository->findOneBy(["name" => "OWNER"]);
-		if ($isOwner && $isOwner->getUsers()->contains($user)) {
+		$isOwner = $this->roleRepository->isOwner($user);
+		if ($isOwner) {
 			throw new \Exception("Vous êtes déjà propriétaire d'une organisation.");
 		}
 		// check siret is valid

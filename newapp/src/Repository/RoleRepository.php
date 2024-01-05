@@ -55,6 +55,20 @@ class RoleRepository extends ServiceEntityRepository
 		return $res->fetchAllAssociative();
 	}
 
+	public function isOwner(User $user) : bool
+	{
+		$conn = $this->_em->getConnection();
+		$sql = "SELECT * from role
+		        INNER JOIN user_role on user_id = :user_id AND role_id = id
+		        WHERE name = 'OWNER'";
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"user_id" => $user->getId(),
+		]);
+
+		return count($res->fetchAllAssociative()) > 0;
+	}
+
 	public function checkPermissionOnOrganization(User $user, Organization $organization, string $permission): bool
 	{
 		$roles = $this->getUserRolesForOrganization($organization, $user);

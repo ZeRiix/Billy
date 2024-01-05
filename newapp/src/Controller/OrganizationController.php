@@ -8,9 +8,6 @@ use App\Security\Voter\OrganizationVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-//repository
-use App\Repository\OrganizationRepository;
 //services
 use App\Services\Organization\OrganizationService;
 //entity
@@ -40,18 +37,26 @@ class OrganizationController extends AbstractController
     }
 
 	#[Route('/organization/{organization}', name: 'app_organization_get_id', methods: ["GET"])]
-	#[IsGranted(OrganizationVoter::VIEW, "organization", "message null")]
     public function view(Organization $organization): Response
     {
+		//vérifier si le user est bien "vérifié" en db sinon l'empêcher de se connecter et lui demander de contacter l'admin
+		if (!$this->isGranted(OrganizationVoter::VIEW, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour accéder à cette organisation.");
+			return $this->redirectToRoute("app_organizations");
+		}
         return $this->render('organization/organization.view.html.twig', [
             'organization' => $organization
         ]);
     }
 
 	#[Route('/organization', name: 'app_create_organization', methods: ["GET", "POST"])]
-	#[IsGranted(OrganizationVoter::CREATE, message: "can't create organization")]
     public function create(Request $request, OrganizationService $organizationService): Response
     {
+		if (!$this->isGranted(OrganizationVoter::CREATE)) {
+			$this->addFlash("error", "Vous possédez déjà une organisation.");
+			return $this->redirectToRoute("app_organizations");
+		}
+
 		$response = new Response();
 		/** @var Organization $organization */
 		$organization = new Organization();
@@ -67,13 +72,12 @@ class OrganizationController extends AbstractController
 				$organization = $organizationService->create($organization, $user);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "L'organisation a bien été créée.");
+				return $this->redirectToRoute("app_organization_get_id", [
+					"organization" => $organization->getId(),
+				]);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
-			} finally {
-				return $this->redirectToRoute("app_organization_get_id", [
-					"id" => $organization->getId(),
-				]);
 			}
 		}
 
@@ -87,18 +91,21 @@ class OrganizationController extends AbstractController
     }
 
 	#[Route('/organization/{id}/edit', name: 'app_update_organization', methods: ["GET", "POST"])]
-	#[IsGranted(OrganizationVoter::UPDATE, "organization", "message null")]
     public function update(Request $request, Organization $organization, OrganizationService $organizationService): Response
     {
+		if (!$this->isGranted(OrganizationVoter::UPDATE, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour éditer cette organisation.");
+			return $this->redirectToRoute("app_organization_get_id", [
+				"organization" => $organization->getId(),
+			]);
+		}
 		$response = new Response();
-
 		$form = $this->createForm(EditOrganizationForm::class, $organization);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			/** @var Organization */
 			$organization = $form->getData();
-			//die(var_dump($organization));
 			try {
 				$organizationService->modify($organization);
 				$response->setStatusCode(Response::HTTP_OK);
