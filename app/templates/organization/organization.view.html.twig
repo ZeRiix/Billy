@@ -10,18 +10,19 @@
 				<span class="mdi mdi-crown text-3xl text-amber-500"></span>
 			{% endif %}
 			{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
-				<a href="{{ path('app_update_organization', {'id': organization.id}) }}"><span class="mdi mdi-tag-edit text-2xl text-gray-500"></span></a>
+				<a href="{{ path('app_update_organization', {'id': organization.id}) }}"><span class="mdi mdi-pencil text-2xl text-gray-500"></span></a>
 			{% endif %}
 		</div>
 	</h1>
-	<div>Nom de l'organization : {{ organization.name }}</div>
-	<div>Addresse : {{ organization.address }}</div>
-	<div>Email : {{ organization.email }}</div>
-	<div>Tel : {{ organization.phone }}</div>
-	<div>Activité : {{ organization.activity }}</div>
-	<div>Siret : {{ organization.siret }}</div>
-	<div>L'organization à été créee par : {{ organization.createdBy.firstName ~ " " ~ organization.createdBy.name }}</div>
-	<div>
-		<img class="width-[250px]" src="{{ vich_uploader_asset(organization, 'logoFile') }}" alt="Logo de {{organization.name}}">
+	<div class="p-14 flex gap-10 items-center rounded-xl bg-white">
+		<img class="w-64 aspect-square" src="{{ vich_uploader_asset(organization, 'logoFile') }}" alt="Logo de {{organization.name}}">
+		<ul class="flex flex-col gap-4">
+			<li><strong>Nom de l'organisation :</strong> {{ organization.name }}</li>
+			<li><strong>Adresse :</strong> {{ organization.address }}</li>
+			<li><strong>Email :</strong> <a class="underline text-blue-500" href="mailto:{{ organization.email }}" target="_blank">{{ organization.email }}</a></li>
+			<li><strong>Tél :</strong> {{ organization.phone }}</li>
+			<li><strong>Siret :</strong> {{ organization.activity }}</li>
+			<li><strong>Ajoutée par :</strong> {{ organization.createdBy.firstName ~ " " ~ organization.createdBy.name }}</li>
+		</ul>
 	</div>
 {% endblock %}

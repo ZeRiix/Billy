@@ -1,13 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'connected.html.twig' %}
 
-{% block title %}Billy - services{% endblock %}
+{% block title %}Liste des services{% endblock %}
 
 {% block body %}
-
-{% include 'components/header.html.twig' %}
-
-{% include 'components/sidebar.html.twig' %}
-
 
 {% for service in services %}
 	<div>
