@@ -1,6 +1,7 @@
 <?php
 namespace App\Twig;
 
+use App\Entity\Organization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
@@ -21,19 +22,28 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('checkPermissionOnOrganization', [$this, 'checkPermissionOnOrganization']),
+			new TwigFunction('getCurrentOrganization', [$this, 'getCurrentOrganization']),
         ];
     }
 
-    public function checkPermissionOnOrganization(User $user, string $permission): int
+    public function checkPermissionOnOrganization(User $user, string $permission): bool
     {
-		$request = $this->requestStack->getMainRequest();
-		$organizationId = $request->get("organization");
-		if(!$organizationId){
+		$organization = $this->getCurrentOrganization();
+		if(!$organization){
 			return false;
 		}
 
-		$organization = $this->organizationRepository->find($organizationId);
-
         return $this->roleRepository->checkPermissionOnOrganization($user, $organization, $permission);
     }
+
+	public function getCurrentOrganization(): ?Organization
+	{
+		$request = $this->requestStack->getMainRequest();
+		$organizationId = $request->get("organization");
+		if(!$organizationId){
+			return null;
+		}
+
+		return $this->organizationRepository->find($organizationId);
+	}
 }

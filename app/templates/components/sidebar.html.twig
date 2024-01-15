@@ -27,9 +27,9 @@
 						</a>
 					</li>
 				{% endif %}
-				{% if checkPermissionOnOrganization(app.user, 'manage_services') %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_service') %}
 					<li>
-						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="{{ path('app_services', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-file text-2xl"></span>
 							Gérer les services
 						</a>

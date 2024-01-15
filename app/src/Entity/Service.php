@@ -52,11 +52,9 @@ class Service
    	private ?string $description = null;
 
 	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
-   	#[Assert\NotBlank(message: "Veuillez renseigner le prix HT du service.")]
    	private ?string $total_ht = null;
 
 	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
-   	#[Assert\NotBlank(message: "Veuillez renseigner le prix TTC du service.")]
    	private ?string $total_ttc = null;
 
 	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
@@ -80,12 +78,12 @@ class Service
 
 	public function getOrganization(): ?Organization
    	{
-   		return $this->Organization;
+   		return $this->organization;
    	}
 
-	public function setOrganization(?Organization $Organization): self
+	public function setOrganization(Organization $organization): self
    	{
-   		$this->Organization = $Organization;
+   		$this->organization = $organization;
    
    		return $this;
    	}
