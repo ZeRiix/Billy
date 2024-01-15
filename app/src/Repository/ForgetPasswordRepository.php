@@ -7,10 +7,9 @@ use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 
 // local imports
-use App\Repository\BaseRepository;
-use App\Entity\UserRegister;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class ForgetPasswordRepository extends BaseRepository
+class ForgetPasswordRepository extends ServiceEntityRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{

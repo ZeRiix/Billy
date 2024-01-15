@@ -1,4 +1,4 @@
-<div data-controller="flashes" class="fixed top-28 right-8 w-[400px] h-40 pointer-events-none">
+<div id="flashes-box" class="fixed top-28 right-8 w-[400px] h-40 pointer-events-none">
 	{% for message in app.flashes("error") %}
 		<div class="flash w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-red-600 bg-white rounded shadow-md pointer-events-auto transition-opacity duration-700 ease-in opacity-100">
 			<div class="flex gap-3 items-center">

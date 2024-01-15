@@ -4,12 +4,13 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\Organization;
 
 class EditOrganizationForm extends AbstractType
 {
@@ -20,8 +21,6 @@ class EditOrganizationForm extends AbstractType
 				"required" => false,
 				"attr" => [
 					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-					"minlenght" => "2",
-					"maxlenght" => "100",
 				],
 				"label" => "Activité",
 				"label_attr" => [
@@ -32,41 +31,28 @@ class EditOrganizationForm extends AbstractType
 				"required" => false,
 				"attr" => [
 					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-					"minlenght" => "2",
-					"maxlenght" => "255",
 				],
 				"label" => "Adresse email",
 				"label_attr" => [
 					"class" => "form-label",
-				],
+				]
 			])
 			->add("phone", TelType::class, [
 				"required" => false,
 				"attr" => [
 					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-					"minlenght" => "10",
-					"maxlenght" => "10",
 				],
 				"label" => "Téléphone",
 				"label_attr" => [
 					"class" => "form-label",
 				],
 			])
-			->add("image", FileType::class, [
-				"required" => false,
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
-				"label" => "Image",
-				"constraints" => [
-					new File([
-						"maxSize" => "5120k",
-						"mimeTypes" => ["image/jpeg"],
-						"mimeTypesMessage" =>
-							"La taille de l'image ne doit pas dépasser 5Mo (Extensions autorisées : jpeg).",
-					]),
-				],
-			])
+			->add('logoFile', VichImageType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'image_uri' => true,
+            ])
 			->add("submit", SubmitType::class, [
 				"attr" => [
 					"class" =>
@@ -74,5 +60,12 @@ class EditOrganizationForm extends AbstractType
 				],
 				"label" => "Modifier",
 			]);
+	}
+
+	public function configureOptions(OptionsResolver $resolver): void
+	{
+		$resolver->setDefaults([
+			"data_class" => Organization::class,
+		]);
 	}
 }

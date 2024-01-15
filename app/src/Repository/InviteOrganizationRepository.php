@@ -6,10 +6,10 @@ use Doctrine\Persistence\ManagerRegistry;
 // local imports
 use App\Entity\InviteOrganization;
 use App\Entity\Organization;
-use App\Repository\BaseRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Entity\User;
 
-class InviteOrganizationRepository extends BaseRepository
+class InviteOrganizationRepository extends ServiceEntityRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{
@@ -21,7 +21,8 @@ class InviteOrganizationRepository extends BaseRepository
 		$inviteOrganization = new InviteOrganization();
 		$inviteOrganization->setOrganization($organization);
 		$inviteOrganization->setUser($user);
-		$this->save($inviteOrganization);
+		$this->getEntityManager()->persist($inviteOrganization);
+		$this->getEntityManager()->flush();
 		return $inviteOrganization;
 	}
 

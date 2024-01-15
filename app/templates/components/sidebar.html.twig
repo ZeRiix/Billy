@@ -1,58 +1,57 @@
 <aside class="w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green fixed">
-	<a href="{{ path('app_organizations_by_user') }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">
+	<a href="#" class="w-24 mx-auto mt-4 mb-9 aspect-square">
 		<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="h-full rounded-lg">
 	</a>
 	<div class="h-full flex flex-col justify-between text-white/50">
 		<nav>
 			<ul class="flex flex-col gap-6">
 				<li>
-					<a href="{{ path('app_organizations_by_user') }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+					<a href="{{ path('app_organizations') }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 						<span class="mdi mdi-domain-switch text-2xl"></span>
 						Mes organisations
 					</a>
 				</li>
-				{% if floor.organization is defined %}
-					{% if has_permission('manage_org') %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
 					<li>
 						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-domain text-2xl"></span>
 							Gérer l'organisation
 						</a>
 					</li>
-					{% endif %}
-					{% if has_permission('manage_org') %}
+				{% endif %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
 					<li>
-						<a href="{{ path('app_role_list', { OrganizationId: organization.id }) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-domain text-2xl"></span>
 							Gérer les rôles
 						</a>
 					</li>
-					{% endif %}
-					{% if has_permission('manage_service') %}
+				{% endif %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_services') %}
 					<li>
-						<a href="{{ path('services', { OrganizationId: organization.id }) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-file text-2xl"></span>
 							Gérer les services
 						</a>
 					</li>
-					{% endif %}
-					{% if has_permission('manage_client') %}
+				{% endif %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_user') %}
 					<li>
-						<a href="{{ path('app_client', { OrganizationId: organization.id }) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-account-multiple text-2xl"></span>
 							Gérer les clients
 						</a>
 					</li>
-					{% endif %}
-					{% if has_permission('manage_user') %}
+				{% endif %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_client') %}
 					<li>
 						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-account-tie text-2xl"></span>
 							Gérer les utilisateurs
 						</a>
 					</li>
-					{% endif %}
 				{% endif %}
+
 				{# <li>
 					<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 						<span class="mdi mdi-account-multiple text-2xl"></span>
@@ -79,7 +78,7 @@
 				</li> #}
 			</ul>
 		</nav>
-		<a href="#" class="mx-auto flex gap-2 items-center transition-all duration-300 hover:text-white">
+		<a href="{{ path('app_logout') }}" class="mx-auto flex gap-2 items-center transition-all duration-300 hover:text-white">
 			<span class="mdi mdi-logout text-2xl"></span>
 			Se déconnecter
 		</a>

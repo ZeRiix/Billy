@@ -11,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateOrganizationForm extends AbstractType
 {
@@ -24,18 +23,6 @@ class CreateOrganizationForm extends AbstractType
 					"maxlenght" => "180",
 				],
 				"label" => "Adresse email",
-				"label_attr" => [
-					"class" => "form-label",
-				],
-				"constraints" => [
-					new Assert\NotBlank(message: "L'adresse email est obligatoire"),
-					new Assert\Length([
-						"min" => 2,
-						"max" => 180,
-						"minMessage" => "L'adresse email doit faire au moins {{ limit }} caractères",
-						"maxMessage" => "L'adresse email doit faire au plus {{ limit }} caractères",
-					]),
-				],
 			])
 			->add("phone", TelType::class, [
 				"attr" => [
@@ -43,17 +30,6 @@ class CreateOrganizationForm extends AbstractType
 					"maxlenght" => "10",
 				],
 				"label" => "Téléphone",
-				"label_attr" => [
-					"class" => "form-label",
-				],
-				"constraints" => [
-					new Assert\NotBlank(message: "Le téléphone est obligatoire"),
-					new Assert\Length([
-						"min" => 10,
-						"max" => 10,
-						"exactMessage" => "Le numéro de téléphone doit faire {{ limit }} caractères",
-					]),
-				],
 			])
 			->add("activity", TextType::class, [
 				"attr" => [
@@ -61,18 +37,6 @@ class CreateOrganizationForm extends AbstractType
 					"maxlenght" => "100",
 				],
 				"label" => "Secteur d'activité",
-				"label_attr" => [
-					"class" => "form_label",
-				],
-				"constraints" => [
-					new Assert\NotBlank(message: "Le secteur d'activité est obligatoire"),
-					new Assert\Length([
-						"min" => 2,
-						"max" => 100,
-						"minMessage" => "Le secteur d'activité doit faire au moins {{ limit }} caractères",
-						"maxMessage" => "Le secteur d'activité doit faire au plus {{ limit }} caractères",
-					]),
-				],
 			])
 			->add("siret", IntegerType::class, [
 				"attr" => [
@@ -80,17 +44,6 @@ class CreateOrganizationForm extends AbstractType
 					"maxlenght" => "14",
 				],
 				"label" => "Numéro de siret",
-				"label_attr" => [
-					"class" => "form_label",
-				],
-				"constraints" => [
-					new Assert\NotBlank(message: "Le siret est obligatoire"),
-					new Assert\Length([
-						"min" => 14,
-						"max" => 14,
-						"exactMessage" => "Le siret doit faire {{ limit }} caractères",
-					]),
-				],
 			])
 			->add("submit", SubmitType::class, [
 				"label" => "Ajouter",

@@ -1,8 +1,0 @@
-login:
-    email:
-        Email:
-    password:
-        NotBlank:
-        Length:
-          min: 8
-          max: 100

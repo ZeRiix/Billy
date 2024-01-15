@@ -14,80 +14,73 @@ use App\Repository\InviteOrganizationRepository;
 class InviteOrganization
 {
 	#[ORM\Id]
-	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
-	private ?Uuid $id;
+   	#[ORM\Column(type: UuidType::NAME, unique: true)]
+   	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+   	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+   	private ?Uuid $id;
 
-	#[
-		ORM\ManyToOne(
-			targetEntity: Organization::class,
-			inversedBy: "invite_organizations",
-			cascade: ["persist"]
-		)
-	]
-	#[ORM\JoinColumn(nullable: false)]
-	private Organization $organization;
+	#[ORM\ManyToOne(inversedBy: 'invite_organizations')]
+	private ?Organization $organization = null;
 
 	#[ORM\ManyToOne(targetEntity: User::class, inversedBy: "invite_users", cascade: ["persist"])]
-	#[ORM\JoinColumn(nullable: false)]
-	private User $user;
+   	#[ORM\JoinColumn(nullable: false)]
+   	private User $user;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?\DateTimeImmutable $created_at = null;
+   	private ?\DateTimeImmutable $created_at = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?\DateTimeImmutable $updated_at = null;
+   	private ?\DateTimeImmutable $updated_at = null;
 
 	public function getId(): ?Uuid
-	{
-		return $this->id;
-	}
+   	{
+   		return $this->id;
+   	}
 
 	public function getOrganization(): ?Organization
-	{
-		return $this->organization;
-	}
+   	{
+   		return $this->organization;
+   	}
 
-	public function setOrganization(Organization $organization): self
-	{
-		$this->organization = $organization;
-
-		return $this;
-	}
+	public function setOrganization(?Organization $organization): self
+   	{
+   		$this->organization = $organization;
+   
+   		return $this;
+   	}
 
 	public function getUser(): ?User
-	{
-		return $this->user;
-	}
+   	{
+   		return $this->user;
+   	}
 
 	public function setUser(User $user): self
-	{
-		$this->user = $user;
-
-		return $this;
-	}
+   	{
+   		$this->user = $user;
+   
+   		return $this;
+   	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
-	{
-		return $this->created_at;
-	}
+   	{
+   		return $this->created_at;
+   	}
 
 	#[ORM\PrePersist]
-	public function setCreatedAt(): void
-	{
-		$this->created_at = new \DateTimeImmutable();
-	}
+   	public function setCreatedAt(): void
+   	{
+   		$this->created_at = new \DateTimeImmutable();
+   	}
 
 	public function getUpdatedAt(): ?\DateTimeImmutable
-	{
-		return $this->updated_at;
-	}
+   	{
+   		return $this->updated_at;
+   	}
 
 	#[ORM\PrePersist]
-	#[ORM\PreUpdate]
-	public function setUpdatedAt(): void
-	{
-		$this->updated_at = new \DateTimeImmutable();
-	}
+   	#[ORM\PreUpdate]
+   	public function setUpdatedAt(): void
+   	{
+   		$this->updated_at = new \DateTimeImmutable();
+   	}
 }

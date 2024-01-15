@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
@@ -27,6 +28,13 @@ class Commande
 	private Service $service;
 
 	#[ORM\Column(length: 100)]
+	#[Assert\NotBlank(message: 'Veuillez renseigner le nom de la commande.')]
+	#[Assert\Length(
+		min: 3,
+		max: 100,
+		minMessage: 'Le nom de la commande doit contenir au moins {{ limit }} caractères.',
+		maxMessage: 'Le nom de la commande doit contenir au maximum {{ limit }} caractères.'
+	)]
 	private ?string $name = null;
 
 	#[ORM\Column(type: Types::TEXT)]

@@ -22,223 +22,222 @@ use App\Entity\Client;
 class Devis
 {
 	#[ORM\Id]
-	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
-	private ?Uuid $id;
+   	#[ORM\Column(type: UuidType::NAME, unique: true)]
+   	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+   	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+   	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "devis")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Organization $Organization;
+	#[ORM\ManyToOne(inversedBy: 'devis')]
+    private ?Organization $organization = null;
 
 	#[ORM\OneToMany(targetEntity: Service::class, mappedBy: "devis")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Collection $services;
+   	#[ORM\JoinColumn(nullable: false)]
+   	private Collection $services;
 
 	#[ORM\OneToMany(targetEntity: Facture::class, mappedBy: "devis")]
-	private Collection $factures;
+   	private Collection $factures;
 
 	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: "devis")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Client $client;
+   	#[ORM\JoinColumn(nullable: false)]
+   	private Client $client;
 
 	#[ORM\Column(type: Types::TEXT)]
-	private ?string $num_devis = null;
+   	private ?string $num_devis = null;
 
 	#[ORM\Column(length: 100)]
-	private ?string $name = null;
+   	private ?string $name = null;
 
 	#[ORM\Column(type: Types::TEXT)]
-	private ?string $description = null;
+   	private ?string $description = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
-	private ?bool $is_signed = null;
+   	private ?bool $is_signed = null;
 
 	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
-	private ?string $total_ht = null;
+   		ORM\Column(
+   			type: Types::DECIMAL,
+   			nullable: false,
+   			precision: 10,
+   			scale: 2
+   		)
+   	]
+   	private ?string $total_ht = null;
 
 	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
-	private ?string $total_ttc = null;
+   		ORM\Column(
+   			type: Types::DECIMAL,
+   			nullable: false,
+   			precision: 10,
+   			scale: 2
+   		)
+   	]
+   	private ?string $total_ttc = null;
 
 	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
-	private $discount = null;
+   		ORM\Column(
+   			type: Types::DECIMAL,
+   			nullable: false,
+   			precision: 10,
+   			scale: 2
+   		)
+   	]
+   	private $discount = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?\DateTimeImmutable $created_at = null;
+   	private ?\DateTimeImmutable $created_at = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?\DateTimeImmutable $updated_at = null;
+   	private ?\DateTimeImmutable $updated_at = null;
 
 	public function __construct()
-	{
-		$this->services = new ArrayCollection();
-		$this->factures = new ArrayCollection();
-	}
+   	{
+   		$this->services = new ArrayCollection();
+   		$this->factures = new ArrayCollection();
+   	}
 
 	public function getId(): ?Uuid
-	{
-		return $this->id;
-	}
+   	{
+   		return $this->id;
+   	}
 
 	public function getOrganization(): ?Organization
-	{
-		return $this->Organization;
-	}
+   	{
+   		return $this->Organization;
+   	}
 
 	public function setOrganization(?Organization $Organization): self
-	{
-		$this->Organization = $Organization;
-
-		return $this;
-	}
+   	{
+   		$this->Organization = $Organization;
+   
+   		return $this;
+   	}
 
 	public function getServices(): Collection
-	{
-		return $this->services;
-	}
+   	{
+   		return $this->services;
+   	}
 
 	public function getFactures(): Collection
-	{
-		return $this->factures;
-	}
+   	{
+   		return $this->factures;
+   	}
 
 	public function getClient(): ?Client
-	{
-		return $this->client;
-	}
+   	{
+   		return $this->client;
+   	}
 
 	public function setClient(?Client $client): self
-	{
-		$this->client = $client;
-
-		return $this;
-	}
+   	{
+   		$this->client = $client;
+   
+   		return $this;
+   	}
 
 	public function getNumDevis(): ?string
-	{
-		return $this->num_devis;
-	}
+   	{
+   		return $this->num_devis;
+   	}
 
 	public function setNumDevis(?string $num_devis): self
-	{
-		$this->num_devis = $num_devis;
-
-		return $this;
-	}
+   	{
+   		$this->num_devis = $num_devis;
+   
+   		return $this;
+   	}
 
 	public function getName(): ?string
-	{
-		return $this->name;
-	}
+   	{
+   		return $this->name;
+   	}
 
 	public function setName(?string $name): static
-	{
-		$this->name = $name;
-
-		return $this;
-	}
+   	{
+   		$this->name = $name;
+   
+   		return $this;
+   	}
 
 	public function getDescription(): ?string
-	{
-		return $this->description;
-	}
+   	{
+   		return $this->description;
+   	}
 
 	public function setDescription(?string $description): static
-	{
-		$this->description = $description;
-
-		return $this;
-	}
+   	{
+   		$this->description = $description;
+   
+   		return $this;
+   	}
 
 	public function getIsSigned(): ?bool
-	{
-		return $this->is_signed;
-	}
+   	{
+   		return $this->is_signed;
+   	}
 
 	public function setIsSigned(?bool $is_signed): static
-	{
-		$this->is_signed = $is_signed;
-
-		return $this;
-	}
+   	{
+   		$this->is_signed = $is_signed;
+   
+   		return $this;
+   	}
 
 	public function getTotalHt(): ?string
-	{
-		return $this->total_ht;
-	}
+   	{
+   		return $this->total_ht;
+   	}
 
 	public function setTotalHt(?string $total_ht): static
-	{
-		$this->total_ht = $total_ht;
-
-		return $this;
-	}
+   	{
+   		$this->total_ht = $total_ht;
+   
+   		return $this;
+   	}
 
 	public function getTotalTtc(): ?string
-	{
-		return $this->total_ttc;
-	}
+   	{
+   		return $this->total_ttc;
+   	}
 
 	public function setTotalTtc(?string $total_ttc): static
-	{
-		$this->total_ttc = $total_ttc;
-
-		return $this;
-	}
+   	{
+   		$this->total_ttc = $total_ttc;
+   
+   		return $this;
+   	}
 
 	public function getDiscount(): ?string
-	{
-		return $this->discount;
-	}
+   	{
+   		return $this->discount;
+   	}
 
 	public function setDiscount(?string $discount): static
-	{
-		$this->discount = $discount;
-
-		return $this;
-	}
+   	{
+   		$this->discount = $discount;
+   
+   		return $this;
+   	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
-	{
-		return $this->created_at;
-	}
+   	{
+   		return $this->created_at;
+   	}
 
 	#[ORM\PrePersist]
-	public function setCreatedAt(): void
-	{
-		$this->created_at = new \DateTimeImmutable();
-	}
+   	public function setCreatedAt(): void
+   	{
+   		$this->created_at = new \DateTimeImmutable();
+   	}
 
 	public function getUpdatedAt(): ?\DateTimeImmutable
-	{
-		return $this->updated_at;
-	}
+   	{
+   		return $this->updated_at;
+   	}
 
 	#[ORM\PrePersist]
-	#[ORM\PreUpdate]
-	public function setUpdatedAt(): void
-	{
-		$this->updated_at = new \DateTimeImmutable();
-	}
+   	#[ORM\PreUpdate]
+   	public function setUpdatedAt(): void
+   	{
+   		$this->updated_at = new \DateTimeImmutable();
+   	}
 }

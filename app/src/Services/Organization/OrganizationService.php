@@ -11,10 +11,12 @@ use App\Entity\InviteOrganization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
-use App\Services\File\FileUploaderService;
 use App\Repository\UserRepository;
 use App\Services\MailService;
 use App\Repository\InviteOrganizationRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+
 use function Symfony\Component\Clock\now;
 
 class OrganizationService
@@ -23,8 +25,6 @@ class OrganizationService
 
 	private RoleRepository $roleRepository;
 
-	private FileUploaderService $fileUploaderService;
-
 	private UserRepository $userRepository;
 
 	private InviteOrganizationRepository $inviteOrganizationRepository;
@@ -32,7 +32,6 @@ class OrganizationService
 	public function __construct(
 		OrganizationRepository $organizationRepository,
 		RoleRepository $roleRepository,
-		FileUploaderService $fileUploaderService,
 		UserRepository $userRepository,
 		InviteOrganizationRepository $inviteOrganizationRepository
 	) {
@@ -40,30 +39,22 @@ class OrganizationService
 		$this->roleRepository = $roleRepository;
 		$this->userRepository = $userRepository;
 		$this->inviteOrganizationRepository = $inviteOrganizationRepository;
-		$this->fileUploaderService = $fileUploaderService;
 	}
 
 	public function modify(Organization $organization)
 	{
-		if ($organization->getImage() !== null) {
-			$this->fileUploaderService->uploadImage($organization->getImage(), $organization);
-		}
 		$this->organizationRepository->save($organization);
 	}
 
-	public function create(Organization $organization, User $user)
+	public function create(Organization $organization, User $user) : Organization
 	{
-		// check name is already registered
-		if ($this->organizationRepository->findOneByName($organization->getName())) {
-			throw new \Exception("Une organisation avec ce nom existe déjà.");
-		}
 		// check siret is already registered
 		if ($this->organizationRepository->findOneBySiret($organization->getSiret())) {
 			throw new \Exception("Une organisation avec ce siret existe déjà.");
 		}
 		// check if user is already owner of an organization
-		$isOwner = $this->roleRepository->findOneBy(["name" => "OWNER"]);
-		if ($isOwner && $isOwner->getUsers()->contains($user)) {
+		$isOwner = $this->roleRepository->isOwner($user);
+		if ($isOwner) {
 			throw new \Exception("Vous êtes déjà propriétaire d'une organisation.");
 		}
 		// check siret is valid
@@ -72,7 +63,6 @@ class OrganizationService
 			throw new \Exception("Veuillez vérifier votre siret.");
 		}
 		$responseForSiret = $responseForSiret->toArray();
-
 		// set name and address for organization
 		$organization->setName($this->constructNameForOrganization($responseForSiret));
 		// set address for organization
@@ -85,6 +75,8 @@ class OrganizationService
 		$this->roleRepository->setOwner($user, $organization);
 		// save organization
 		$this->organizationRepository->save($organization);
+		// return organization
+		return $organization;
 	}
 
 	public static function constructNameForOrganization(array $data): ?string
