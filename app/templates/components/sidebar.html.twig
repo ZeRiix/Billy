@@ -45,7 +45,7 @@
 				{% endif %}
 				{% if checkPermissionOnOrganization(app.user, 'manage_client') %}
 					<li>
-						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="{{ path('app_clients', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-account-tie text-2xl"></span>
 							Gérer les utilisateurs
 						</a>

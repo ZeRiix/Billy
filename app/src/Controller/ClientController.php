@@ -17,6 +17,27 @@ use App\Form\UpdateClientForm;
 
 class ClientController extends AbstractController
 {
+	#[Route("/organization/{organization}/clients", name: "app_clients", methods: ["GET", "POST"])]
+	public function getAll(ClientService $clientService, Organization $organization): Response
+	{
+		if (!$this->isGranted(ClientVoter::VIEW, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour consulter les clients dans cette organisation.");
+			return $this->redirectToRoute("app_organizations");
+		}
+		$response = new Response();
+
+		// gets clients
+		$clients = $clientService->getAll($organization);
+
+		return $this->render(
+			"client/clients.html.twig",
+			[
+				"clients" => $clients,
+			],
+			$response
+		);
+	}
+
 	#[Route("/organization/{organization}/client", name: "app_client", methods: ["GET", "POST"])]
 	public function create(Request $request, ClientService $clientService, Organization $organization): Response
 	{
@@ -47,38 +68,6 @@ class ClientController extends AbstractController
 			"client/create_client.html.twig",
 			[
 				"form" => $form->createView(),
-			],
-			$response
-		);
-	}
-
-	#[Route("/organization/{organization}/client/{client}", name: "client_delete", methods: ["DELETE"])]
-	public function delete(ClientService $clientService, Organization $organization, Client $client)
-	{
-		if (!$this->isGranted(ClientVoter::UPDATE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un client dans cette organisation.");
-			return $this->redirectToRoute("clients");
-		}
-		$clientService->delete($organization, $client);
-		$this->redirectToRoute("/organization/" . $organization->getId() . "/clients");
-	}
-
-	#[Route("/organization/{organization}/clients", name: "clients", methods: ["GET", "POST"])]
-	public function getAll(ClientService $clientService, Organization $organization): Response
-	{
-		if (!$this->isGranted(ClientVoter::VIEW, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour consulter les clients dans cette organisation.");
-			return $this->redirectToRoute("app_organizations");
-		}
-		$response = new Response();
-
-		// gets clients
-		$clients = $clientService->getAll($organization);
-
-		return $this->render(
-			"client/clients.html.twig",
-			[
-				"clients" => $clients,
 			],
 			$response
 		);
