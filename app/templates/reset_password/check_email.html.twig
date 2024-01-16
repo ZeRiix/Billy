@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
+{% block title %}Email de réinitialisation envoyé{% endblock %}
 
 {% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+	<main class="flex justify-center items-center bg-bdark-white">
+		<div class=" max-w-md my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white">
+			<div class="flex gap-6 flex-col items-center">
+				<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-24 aspect-square rounded-lg">
+				<h1 class="text-2xl font-bold">Email de réinitialisation envoyé</h1>
+			</div>
+			<div class="w-fit mx-auto flex flex-col gap-2 items-center">
+				<p class="text-center">
+					Un e-mail vient d'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
+					Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+				</p>
+				<br>
+				<p class="text-center">Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou <a href="{{ path('app_forgot_password_request') }}" class="text-blighter-green hover:text-bgreen">réessayer</a>.</p>
+			</div>
+		</div>
+	</main>
 {% endblock %}

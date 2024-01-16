@@ -15,7 +15,11 @@
         {% endblock %}
     </head>
     <body>
+		{% include 'components/home-header.html.twig' %}
+
         {% block body %}{% endblock %}
+
+		{% include 'components/home-footer.html.twig' %}
 
 		{% include 'components/flashes.html.twig' %}
     </body>

@@ -3,8 +3,6 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-	{% include 'components/home-header.html.twig' %}
-
 	<main class="min-h-[calc(100vh-400px)] flex justify-center items-center bg-bdark-white">
 		<div class="my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white">
 			<div class="flex gap-6 flex-col items-center">
@@ -29,10 +27,8 @@
 			</form>
 			<div class="flex gap-4 justify-center">
 				<a href="{{ path('app_register') }}" class="text-sm text-blighter-green hover:text-bgreen">Pas encore inscrit ?</a>
-				<a href="#" class="text-sm text-blighter-green hover:text-bgreen">Mot de passe oublié ?</a>
+				<a href="{{ path('app_forgot_password_request') }}" class="text-sm text-blighter-green hover:text-bgreen">Mot de passe oublié ?</a>
 			</div>
 		</div>
 	</main>
-
-	{% include 'components/home-footer.html.twig' %}
 {% endblock %}
