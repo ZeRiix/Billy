@@ -123,12 +123,12 @@ class Client
 
 	public function getOrganization(): ?Organization
    	{
-   		return $this->Organization;
+   		return $this->organization;
    	}
 
 	public function setOrganization(?Organization $Organization): self
    	{
-   		$this->Organization = $Organization;
+   		$this->organization = $Organization;
    
    		return $this;
    	}

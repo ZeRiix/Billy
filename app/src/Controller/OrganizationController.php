@@ -16,6 +16,9 @@ use App\Entity\User;
 //form
 use App\Form\CreateOrganizationForm;
 use App\Form\EditOrganizationForm;
+use App\Form\InviteUserForm;
+use App\Form\LeaveOrganizationForm;
+use App\Form\LeaveOrganizationByForm;
 
 class OrganizationController extends AbstractController
 {
@@ -122,4 +125,146 @@ class OrganizationController extends AbstractController
 		], $response
 		);
     }
+
+	#[
+		Route(
+			"/organization/{id}/invite",
+			name: "organization_invite_user",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function invite(Request $request, OrganizationService $organizationService, Organization $organization): Response
+	{
+		if (!$this->isGranted(OrganizationVoter::INVITE, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour inviter un utilsateur");
+			return $this->redirectToRoute("app_organization_get_id", [
+				"organization" => $organization->getId(),
+			]);
+		}
+		$response = new Response();
+		$form = $this->createForm(InviteUserForm::class);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$data = $form->getData();
+			try {
+				$organizationService->invite($data["email"], $organization);
+				$response->setStatusCode(Response::HTTP_OK);
+				$this->addFlash(
+					"success",
+					"L'utilisateur a bien été invité dans l'organisation : " .
+						$organization->getName() .
+						"."
+				);
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+		return $this->render(
+			"organization/invite_user.html.twig",
+			[
+				"form" => $form->createView(),
+			],
+			$response
+		);
+	}
+
+	#[
+		Route(
+			"/organization/{id}/user/{UserId}/join",
+			name: "organization_join_user",
+			methods: ["GET"]
+		)
+	]
+	public function join(Request $request, OrganizationService $organizationService, Organization $organization): Response
+	{
+		$response = new Response();
+		try {
+			$organizationService->join($organization, $request->get("UserId"));
+			$response->setStatusCode(Response::HTTP_OK);
+			$this->addFlash("success", "L'utilisateur a bien rejoint l'organisation.");
+		} catch (\Exception $e) {
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$this->addFlash("error", $e->getMessage());
+		}
+		return $this->render('organization/organization.view.html.twig', [
+            'organization' => $organization
+        ]);
+	}
+
+	#[
+		Route(
+			"/organization/{id}/leave",
+			name: "organization_leave_user",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function leave(Request $request, OrganizationService $organizationService, Organization $organization): Response
+	{
+		/** @var User $user */
+		$user = $this->getUser();
+
+		$response = new Response();
+		$form = $this->createForm(LeaveOrganizationForm::class);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			try {
+				$organizationService->leave($user, $organization);
+				$response->setStatusCode(Response::HTTP_OK);
+				$this->addFlash("success", "Vous avez bien quitté l'organisation.");
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+
+		return $this->render(
+			"organization/leave_user.html.twig",
+			[
+				"form" => $form->createView(),
+			],
+			$response
+		);
+	}
+
+	#[
+		Route(
+			"/organization/{id}/user/{UserId}/leave",
+			name: "organization_leave_user_by",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function leave_user_by(Request $request, OrganizationService $organizationService, Organization $organization): Response
+	{
+		if (!$this->isGranted(OrganizationVoter::REMOVE_USER, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un utilisateur");
+			return $this->redirectToRoute("app_organization_get_id", [
+				"organization" => $organization->getId(),
+			]);
+		}
+		$response = new Response();
+		$form = $this->createForm(LeaveOrganizationByForm::class, null, [
+			"users" => $organization->getUsers(),
+		]);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$data = $form->getData();
+			try {
+				$organizationService->leave($data["user"], $organization);
+				$response->setStatusCode(Response::HTTP_OK);
+				$this->addFlash("success", "L'utilisateur a bien quitté l'organisation.");
+			} catch (\Exception $e) {
+				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+
+		return $this->render(
+			"organization/leave_user_by.html.twig",
+			[
+				"form" => $form->createView(),
+			],
+			$response
+		);
+	}
 }

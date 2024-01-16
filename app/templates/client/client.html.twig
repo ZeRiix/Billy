@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du client{% endblock %}
+
+{% block body %}
+    <h1>Détails du client</h1>
+
+    <dl>
+        <dt>Nom</dt>
+        <dd>{{ client.name }}</dd>
+
+        <dt>Prénom</dt>
+        <dd>{{ client.firstname }}</dd>
+
+        <dt>Adresse</dt>
+        <dd>{{ client.address }}</dd>
+
+        <dt>Email</dt>
+        <dd>{{ client.email }}</dd>
+
+        <dt>Téléphone</dt>
+        <dd>{{ client.phone }}</dd>
+
+        <dt>Activité</dt>
+        <dd>{{ client.activity }}</dd>
+
+        <dt>SIRET</dt>
+        <dd>{{ client.siret }}</dd>
+    </dl>
+{% endblock %}

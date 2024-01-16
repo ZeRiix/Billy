@@ -14,8 +14,6 @@ use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Services\MailService;
 use App\Repository\InviteOrganizationRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 use function Symfony\Component\Clock\now;
 
@@ -177,13 +175,14 @@ class OrganizationService
 			"Bonjour, vous avez été invité à rejoindre l'organisation " .
 				$organization->getName() .
 				"." .
-				"rejoint l'organisation en cliquant sur le lien suivant : " .
-				$_ENV["HOST"] .
+				"<a href=\"" .
+				$_SERVER['REQUEST_SCHEME']. "://" . $_SERVER['HTTP_HOST'] .
 				"/organization/" .
 				$organization->getId() .
 				"/user/" .
 				$user->getId() .
-				"/join"
+				"/join\"> Joindre l'organisation </a>",
+			false
 		);
 	}
 

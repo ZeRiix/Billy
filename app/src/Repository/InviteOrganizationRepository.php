@@ -8,9 +8,14 @@ use App\Entity\InviteOrganization;
 use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Entity\User;
+use App\Repository\Traits\SaveTrait;
+use App\Repository\Traits\DeleteTrait;
 
 class InviteOrganizationRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+	use DeleteTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, InviteOrganization::class);

@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Client;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\Traits\SaveTrait;
+use App\Repository\Traits\DeleteTrait;
 
 /**
  * @extends ClientEntityRepository<Client>
@@ -16,6 +18,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ClientRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+	use DeleteTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Client::class);

@@ -197,7 +197,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	{
 		if (!$this->organizationRoles->contains($role)) {
 			$this->organizationRoles->add($role);
-			$role->addUser($this);
 		}
 	}
 
@@ -205,7 +204,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	{
 		if ($this->organizationRoles->contains($role)) {
 			$this->organizationRoles->removeElement($role);
-			$role->removeUser($this);
 		}
 	}
 
