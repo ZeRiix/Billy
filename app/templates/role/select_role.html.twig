@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des rôles{% endblock %}
+
+{% block body %}
+<header class="fixed bg-white z-10 h-20 w-[calc(100vw-256px)] ml-64 px-10 py-8 flex items-center">
+	<ul class="flex gap-2 items-center text-bgrey font-semibold">
+		<li>Accueil</li>
+		<li>></li>
+		<li>Organisations</li>
+		<li>></li>
+		<li class="text-blighter-grey">Gestion des rôles</li>
+	</ul>
+</header>
+<aside class="w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green fixed">
+	<a href="/dashboard" class="w-24 mx-auto mt-4 mb-9 aspect-square">
+		<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="h-full rounded-lg">
+	</a>
+	<div class="h-full flex flex-col justify-between text-white/50">
+		<nav>
+			<ul class="flex flex-col gap-6">
+				<li>
+					<a href="#" class="flex gap-2 items-center hover:text-white">
+						<span class="mdi mdi-briefcase-outline text-2xl"></span>
+						Ma société
+					</a>
+				</li>
+				<li>
+					<a href="#" class="flex gap-2 items-center hover:text-white">
+						<span class="mdi mdi-domain text-2xl"></span>
+						Mes organisations
+					</a>
+				</li>
+				<li class="accordion hover:cursor-pointer">
+					<div class="flex gap-2 items-center hover:text-white">
+						<span class="mdi mdi-domain text-2xl"></span>
+						Dropdown
+						<span class="mdi mdi-chevron-down"></span>
+					</div>
+					<ul class="content hidden mt-3 max-w-xs flex flex-col gap-2">
+						<li>
+							<a href="/role/{ Organization.id }" class="px-9 py-2 flex gap-2 items-center rounded-lg hover:text-white hover:bg-blighter-green">
+								Gestion des rôles
+							</a>
+						</li>
+						<li>
+							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg hover:text-white hover:bg-blighter-green">
+								Lien 2
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<a href="#" class="mx-auto flex gap-2 items-center hover:text-white">
+			<span class="mdi mdi-logout text-2xl"></span>
+			Se déconnecter
+		</a>
+	</div>
+</aside>
+<main class="pt-20 pl-64 min-h-screen bg-bdark-white">
+	<div class="px-10 py-5">
+		<h1 class="text-3xl font-semibold">Select un role</h1>
+		
+		{{ form_start(form) }}
+
+		{{ form_end(form) }}
+	</div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/accordion.js') }}"></script>
+{% endblock %}
