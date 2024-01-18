@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Devis;
+use App\Entity\Organization;
+use App\Repository\Traits\SaveTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +18,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class DevisRepository extends ServiceEntityRepository
 {
+
+	use SaveTrait;
+	
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Devis::class);

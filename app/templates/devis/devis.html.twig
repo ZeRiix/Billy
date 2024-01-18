@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Billy - Dashboard{% endblock %}
+
+{% block body %}
+
+{% include 'components/header.html.twig' %}
+
+{% include 'components/sidebar.html.twig' %}
+
+<main class="pt-20 pl-64 min-h-screen bg-bdark-white">
+	<div class="px-10 py-5">
+		<div class="mb-14 flex justify-between items-center">
+			<h1 class="text-3xl font-semibold">Mes devis</h1>
+			{% if canCreate %}
+			<a href="{{ path('app_create_devis', { organization: organization.id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Créer un devis</a>
+			{% endif %}
+		</div>
+		<div class="w-full border rounded-xl bg-white overflow-x-scroll">
+			<table class="w-full text-left border-collapse">
+				<thead>
+					<tr class="w-full pr-4 flex text-black/50">
+						<th class="w-full p-6">N° de devis</th>
+						<th class="w-full p-6">Nom du devis</th>
+						<th class="w-full p-6">Nom du client</th>
+						<th class="w-full p-6">Signé</th>
+						<th class="w-full p-6">Actions</th>
+					</tr>
+				</thead>
+				<tbody class="w-full flex flex-col justify-between items-center overflow-y-scroll" style="max-height: 560px;">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</main>
+{% endblock %}
