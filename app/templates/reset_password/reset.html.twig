@@ -1,12 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Réinitialiser mot de passe{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+	<main class="flex justify-center items-center bg-bdark-white">
+		<div class="my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white">
+			<div class="flex gap-6 flex-col items-center">
+				<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-24 aspect-square rounded-lg">
+				<h1 class="text-2xl font-bold">Réinitialiser mot de passe</h1>
+			</div>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.password) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+			{{ form_start(resetForm) }}
+				{{ form_row(resetForm.password) }}
+				<div class="mt-14">
+					{{ form_row(resetForm.submit) }}
+				</div>
+			{{ form_end(resetForm) }}
+		</div>
+	</main>
 {% endblock %}
