@@ -21,9 +21,10 @@ use App\Security\Voter\CommandeVoter;
 class CommandeController extends AbstractController
 {
 	#[Route('/organization/{organization}/devis/{devis}/commande', name: 'app_create_commande', methods: ["GET", "POST"])]
-	public function create(Request $request, Organization $organization, Devis $devis, CommandeService $commandeService): Response
+	public function create(Request $request, Devis $devis, CommandeService $commandeService): Response
 	{
-		if (!$this->isGranted(CommandeVoter::CREATE, $organization)) {
+		$organization = $devis->getOrganization();
+		if (!$this->isGranted(CommandeVoter::CREATE, $devis)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour créer une commande.");
 			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 		}
@@ -49,22 +50,25 @@ class CommandeController extends AbstractController
 		return $this->render('commande/commande.create.html.twig', [
 			'form' => $form->createView(),
 			'organization' => $organization,
-			'devis' => $devis
+			'devis' => $devis,
+			'isUpdate' => false,
 		],
 			$response
 		);
 	}
 
 	#[Route('/organization/{organization}/devis/{devis}/commande/{commande}', name: 'app_update_commande', methods: ["GET", "POST"])]
-	public function update(Request $request, Organization $organization, Devis $devis, Commande $commande, CommandeService $commandeService)
+	public function update(Request $request, Commande $commande, CommandeService $commandeService)
 	{
-		if (!$this->isGranted(CommandeVoter::UPDATE, $organization)) {
+		$devis = $commande->getDevis();
+		$organization = $devis->getOrganization();
+		if (!$this->isGranted(CommandeVoter::UPDATE, $commande)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour modifier une commande.");
 			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 		}
 
 		$response = new Response();
-		$form = $this->createForm(EditCommandeForm::class, $commande, [
+		$form = $this->createForm(CreateCommandeForm::class, $commande, [
 			"organization_id" => $organization->getId()
 		]);
 		$form->handleRequest($request);
@@ -79,11 +83,12 @@ class CommandeController extends AbstractController
 			}
 		}
 
-		return $this->render('commande/commande.update.html.twig', [
+		return $this->render('commande/commande.create.html.twig', [
 			'form' => $form->createView(),
 			'organization' => $organization,
 			'devis' => $devis,
-			'commande' => $commande
+			'commande' => $commande,
+			'isUpdate' => true
 		],
 			$response
 		);

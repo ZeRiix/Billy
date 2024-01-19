@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Organization;
+use App\Entity\Devis;
 use App\Repository\DevisRepository;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
@@ -25,10 +26,10 @@ class DevisVoter extends Voter
 
 	protected function supports(string $attribute, mixed $subject): bool
     {
-        return (
-			in_array($attribute, [self::VIEW, self::UPDATE]) && 
+        return in_array($attribute, [self::CREATE, self::UPDATE]) && (
+			$subject instanceof Devis ||
 			$subject instanceof Organization
-		) || $attribute === self::CREATE;
+		);
     }
 
 	protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -40,16 +41,24 @@ class DevisVoter extends Voter
 		}
 
 		if($attribute === self::VIEW) {
-			/** @var Organization $subject */
-			return $this->organizationRepository->organizationContainsUser($subject, $user);
+			/** @var Devis $subject */
+			$organization = $subject->getOrganization();
+			if(!$organization) {
+				return false;
+			}
+			return $this->organizationRepository->organizationContainsUser($organization, $user);
 		}
 		else if($attribute === self::CREATE) {
 			/** @var Organization $subject */
 			return $this->roleRepository->checkPermissionOnOrganization($user, $subject, "write_devis");
 		}
 		else if($attribute === self::UPDATE){
-			/** @var Organization $subject */
-			return $this->roleRepository->checkPermissionOnOrganization($user, $subject, "write_devis");
+			/** @var Devis $subject */
+			$organization = $subject->getOrganization();
+			if(!$organization) {
+				return false;
+			}
+			return $this->roleRepository->checkPermissionOnOrganization($user, $organization, "write_devis");
 		}
 		return false;
 	}

@@ -1,9 +1,9 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Créer une commande{% endblock %}
+{% block title %}{{ isUpdate ? 'Modification' : 'Création' }} d'une commande{% endblock %}
 
 {% block body %}
-<h1 class="mb-14 text-3xl font-semibold">Création d'une commande</h1>
+<h1 class="mb-14 text-3xl font-semibold">{{ isUpdate ? 'Modification' : 'Création' }} d'une commande</h1>
 <div class="p-14 rounded-xl bg-white">
 	{{ form_start(form, {attr: {'data-controller': 'create-commande', 'data-create-commande-services-value': entityToJson(organization.services, ['service'])}}) }}
 	<div class="flex flex-col gap-10 items-start">

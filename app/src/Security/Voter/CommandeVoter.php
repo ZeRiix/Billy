@@ -2,7 +2,8 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Organization;
+use App\Entity\Commande;
+use App\Entity\Devis;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -11,7 +12,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class CommandeVoter extends Voter
 {
-	public const VIEW = 'COMMANDE_VIEW';
 	public const CREATE = 'COMMANDE_CREATE';
 	public const UPDATE = 'COMMANDE_UPDATE';
 
@@ -23,10 +23,10 @@ class CommandeVoter extends Voter
 
 	protected function supports(string $attribute, mixed $subject): bool
     {
-        return (
-			in_array($attribute, [self::VIEW, self::UPDATE]) && 
-			$subject instanceof Organization
-		) || $attribute === self::CREATE;
+        return in_array($attribute, [self::CREATE, self::UPDATE]) && (
+			$subject instanceof Devis ||
+			$subject instanceof Commande
+		);
     }
 
 	protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -37,18 +37,21 @@ class CommandeVoter extends Voter
 			return false;
 		}
 
-		if($attribute === self::VIEW) {
-			/** @var Organization $subject */
-			//return $this->organizationRepository->organizationContainsUser($subject, $user);
-		}
 		else if($attribute === self::CREATE) {
-			/** @var Organization $subject */
-			return $this->organizationRepository->organizationContainsUser($subject, $user)
-				&& $this->roleRepository->checkPermissionOnOrganization($user, $subject, "write_devis");
+			/** @var Devis $subject */
+			$organization = $subject->getOrganization();
+			if(!$organization) {
+				return false;
+			}
+			return $this->roleRepository->checkPermissionOnOrganization($user, $organization, "write_devis");
 		}
 		else if($attribute === self::UPDATE){
-			/** @var Organization $subject */
-			return $this->roleRepository->checkPermissionOnOrganization($user, $subject, "write_devis");
+			/** @var Commande $subject */
+			$organization = $subject->getDevis()->getOrganization();
+			if(!$organization) {
+				return false;
+			}
+			return $this->roleRepository->checkPermissionOnOrganization($user, $organization, "write_devis");
 		}
 		return false;
 	}

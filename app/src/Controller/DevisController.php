@@ -16,6 +16,7 @@ use App\Entity\Organization;
 //form
 use App\Form\CreateDevisForm;
 use App\Form\EditDevisForm;
+use App\Security\Voter\OrganizationVoter;
 
 class DevisController extends AbstractController
 {
@@ -23,7 +24,7 @@ class DevisController extends AbstractController
 	#[Route('/organization/{organization}/quotations', name: 'app_devis', methods: ["GET"])]
 	public function index(Organization $organization): Response
 	{
-		if (!$this->isGranted(DevisVoter::VIEW, $organization)) {
+		if (!$this->isGranted(OrganizationVoter::VIEW, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour voir les devis de cette organisation.");
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -63,9 +64,10 @@ class DevisController extends AbstractController
 	}
 
 	#[Route('/organization/{organization}/quotation/{devis}', name: "app_update_devis", methods: ["GET", "POST"])]
-	public function update(Request $request, Organization $organization, Devis $devis, DevisService $devisService): Response
+	public function update(Request $request, Devis $devis, DevisService $devisService): Response
 	{
-		if (!$this->isGranted(DevisVoter::UPDATE, $organization)) {
+		$organization = $devis->getOrganization();
+		if (!$this->isGranted(DevisVoter::UPDATE, $devis)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour éditer ce devis.");
 			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
 		}
