@@ -1,4 +1,4 @@
-<aside class="w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green fixed">
+<aside class="w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green fixed z-50">
 	<a href="#" class="w-24 mx-auto mt-4 mb-9 aspect-square">
 		<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="h-full rounded-lg">
 	</a>
@@ -21,7 +21,7 @@
 				{% endif %}
 				{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
 					<li>
-						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="{{ path('app_role', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-domain text-2xl"></span>
 							Gérer les rôles
 						</a>

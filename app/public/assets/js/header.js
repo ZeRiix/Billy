@@ -4,11 +4,29 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log(url + "/edit");
 
     const patterns = [
-        { pattern: /^\/organization$/, pathname: "Ajouter un organisation", path: null },
-        { pattern: /^\/organization\/[a-z0-9-]+/, pathname: "Organisation", path: url.slice(0, -5) },
+        {
+            pattern: /^\/organization$/,
+            pathname: "Ajouter un organisation",
+            path: null,
+        },
+        {
+            pattern: /^\/organization\/[a-z0-9-]+/,
+            pathname: "Organisation",
+            path: null,
+        },
         {
             pattern: /^\/organization\/[a-z0-9-]+\/edit$/,
             pathname: "Modifier un organisation",
+            path: null,
+        },
+        {
+            pattern: /^\/organization\/[a-z0-9-]+\/role$/,
+            pathname: "Créer un rôle",
+            path: null,
+        },
+        {
+            pattern: /^\/organization\/[a-z0-9-]+\/services$/,
+            pathname: "Gérer les services",
             path: null,
         },
     ];
