@@ -53,6 +53,7 @@ class CreateClientForm extends AbstractType
 				"attr" => [
 					"placeholder" => "Activité du client",
 				],
+				"required" => false,
 			])
 			->add("siret", IntegerType::class, [
 				"label" => "SIRET",

@@ -3,17 +3,20 @@
 {% block title %}Création d'un client{% endblock %}
 
 {% block body %}
-    <h1>Création d'un client</h1>
-
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.firstname) }}
-    {{ form_row(form.address) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.phone) }}
-    {{ form_row(form.activity) }}
-    {{ form_row(form.siret) }}
-
-    {{ form_row(form.submit) }}
-    {{ form_end(form) }}
+	<div data-controller="clientForm">
+		<h1>Création d'un client</h1>
+		<button id="toggle-button-element">Personnel</button>
+		{{ form_start(form) }}
+		{{ form_row(form.name) }}
+		{{ form_row(form.firstname) }}
+		{{ form_row(form.address) }}
+		{{ form_row(form.email) }}
+		{{ form_row(form.phone) }}
+		<div id="professional-or-particular-field">
+			{{ form_row(form.activity) }}
+			{{ form_row(form.siret) }}
+		</div>
+		{{ form_row(form.submit) }}
+		{{ form_end(form) }}
+	</div>
 {% endblock %}
