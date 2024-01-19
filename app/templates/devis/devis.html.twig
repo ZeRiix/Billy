@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'connected.html.twig' %}
 
 {% block title %}Billy - Dashboard{% endblock %}
 
@@ -28,6 +28,17 @@
 					</tr>
 				</thead>
 				<tbody class="w-full flex flex-col justify-between items-center overflow-y-scroll" style="max-height: 560px;">
+				{% for quotation in quotations %}
+				<tr class="w-full flex border-t">
+					<td class="w-full p-6 flex items-center">{{ quotation.id }}</td>
+					<td class="w-full p-6 flex items-center">{{ quotation.name }}</td>
+					<td class="w-full p-6 flex items-center">{{ quotation.client.name }}</td>
+					<td class="w-full p-6 flex items-center">{{ quotation.isSigned == true ? '<span class="text-green-500">Signé</span>' : '<span class="text-red-500">Pas signé</span>' }}</td>
+					<td class="w-full p-6 flex items-center text-xl">
+						<a href="{{ path('app_update_devis', { organization: organization.id, devis: quotation.id }) }}"><span class="mdi mdi-pencil text-xl text-gray-500"></span></a>
+					</td>
+				</tr>
+			{% endfor %}
 				</tbody>
 			</table>
 		</div>

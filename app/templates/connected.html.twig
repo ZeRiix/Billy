@@ -1,30 +1,13 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+{% extends 'base.html.twig' %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-		{% include 'components/header.html.twig' %}
+{% block layout %}
+{% include 'components/header.html.twig' %}
 
-		{% include 'components/sidebar.html.twig' %}
+{% include 'components/sidebar.html.twig' %}
 
-		<main class="pt-20 pl-64 min-h-screen bg-bdark-white overflow-x-scroll">
-			<div class="px-10 py-5">
-				{% block body %}{% endblock %}
-			</div>
-		</main>
-
-		{% include 'components/flashes.html.twig' %}
-    </body>
-</html>
+<main class="pt-20 pl-64 min-h-screen bg-bdark-white">
+	<div class="px-10 py-5">
+		{% block body %}{% endblock %}
+	</div>
+</main>
+{% endblock %}

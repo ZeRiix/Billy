@@ -21,7 +21,7 @@
 				{% endif %}
 				{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
 					<li>
-						<a href="{{ path('app_role', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="{{ path('app_role_list', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-domain text-2xl"></span>
 							Gérer les rôles
 						</a>
@@ -35,17 +35,17 @@
 						</a>
 					</li>
 				{% endif %}
-				{% if checkPermissionOnOrganization(app.user, 'manage_user') %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_client') %}
 					<li>
-						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="{{ path('app_clients', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-account-multiple text-2xl"></span>
 							Gérer les clients
 						</a>
 					</li>
 				{% endif %}
-				{% if checkPermissionOnOrganization(app.user, 'manage_client') %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_user') %}
 					<li>
-						<a href="{{ path('app_clients', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-account-tie text-2xl"></span>
 							Gérer les utilisateurs
 						</a>

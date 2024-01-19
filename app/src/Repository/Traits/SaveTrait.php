@@ -6,7 +6,7 @@ trait SaveTrait
 {
     public function save($entity, $flush = true)
     {
-        $this->_em->persist($entity);
+		$this->_em->persist($entity);
 
         if ($flush) {
             $this->_em->flush();

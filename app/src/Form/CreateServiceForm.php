@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -16,6 +17,9 @@ class CreateServiceForm extends AbstractType
 		$builder
 			->add("name", TextType::class, [
 				"label" => "Nom",
+			])
+			->add("unitPrice", IntegerType::class, [
+				"label" => "Prix unitaire",
 			])
 			->add("description", TextareaType::class, [
 				"label" => "Description",

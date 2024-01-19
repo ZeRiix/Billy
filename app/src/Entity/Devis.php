@@ -43,7 +43,7 @@ class Devis
 	private ?string $description = null;
 
 	#[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-	private bool $is_signed = false;
+	private bool $isSigned = false;
 
 	#[
 		ORM\Column(
@@ -144,12 +144,12 @@ class Devis
 
 	public function getIsSigned(): ?bool
 	{
-		return $this->is_signed;
+		return $this->isSigned;
 	}
 
-	public function setIsSigned(?bool $is_signed): static
+	public function setIsSigned(?bool $isSigned): static
 	{
-		$this->is_signed = $is_signed;
+		$this->isSigned = $isSigned;
                   
 		return $this;
 	}

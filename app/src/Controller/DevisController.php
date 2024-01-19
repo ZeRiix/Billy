@@ -20,7 +20,7 @@ use App\Form\EditDevisForm;
 class DevisController extends AbstractController
 {
 
-	#[Route('/organization/{organization}/devis', name: 'app_devis', methods: ["GET"])]
+	#[Route('/organization/{organization}/quotations', name: 'app_devis', methods: ["GET"])]
 	public function index(Organization $organization): Response
 	{
 		if (!$this->isGranted(DevisVoter::VIEW, $organization)) {
@@ -29,11 +29,12 @@ class DevisController extends AbstractController
 		}
 		return $this->render('devis/devis.html.twig', [
 			'canCreate' => $this->isGranted(DevisVoter::CREATE, $organization),
-			'organization' => $organization
+			'organization' => $organization,
+			'quotations' => $organization->getDevis(),
 		]);
 	}
 
-	#[Route('/organization/{organization}/devis/new', name: "app_create_devis", methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/quotation', name: "app_create_devis", methods: ["GET", "POST"])]
 	public function create(Request $request, Organization $organization, DevisService $devisService): Response
 	{
 		if (!$this->isGranted(DevisVoter::CREATE, $organization)) {
@@ -61,7 +62,7 @@ class DevisController extends AbstractController
 		]);
 	}
 
-	#[Route('/organization/{organization}/devis/{devis}', name: "app_update_devis", methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/quotation/{devis}', name: "app_update_devis", methods: ["GET", "POST"])]
 	public function update(Request $request, Organization $organization, Devis $devis, DevisService $devisService): Response
 	{
 		if (!$this->isGranted(DevisVoter::UPDATE, $organization)) {
@@ -78,7 +79,7 @@ class DevisController extends AbstractController
 			try {
 				$devisService->update($devis);
 				$this->addFlash("success", "Le devis a bien été édité.");
-				return $this->redirectToRoute("app_update_devis", ["devis" => $devis->getId()]);
+				$this->redirectToRoute("app_update_devis", ["devis" => $devis->getId()]);
 			} catch (\Exception $e) {
 				$this->addFlash("error", $e->getMessage());
 				return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
@@ -87,8 +88,9 @@ class DevisController extends AbstractController
 
 		return $this->render('devis/devis.update.html.twig', [
 			"form" => $form->createView(),
-			"devis" => $devis,
-			"organization" => $organization
+			"quotation" => $devis,
+			"organization" => $organization,
+			"commandes" => $devis->getCommandes(),
 		]);
 	}
 }

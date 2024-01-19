@@ -6,6 +6,7 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css">
+		<script src="/assets/js/htmx.js"></script>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -15,11 +16,7 @@
         {% endblock %}
     </head>
     <body>
-		{% include 'components/home-header.html.twig' %}
-
-        {% block body %}{% endblock %}
-
-		{% include 'components/home-footer.html.twig' %}
+        {% block layout %}{% endblock %}
 
 		{% include 'components/flashes.html.twig' %}
     </body>

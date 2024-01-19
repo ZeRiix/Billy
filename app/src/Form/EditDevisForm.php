@@ -57,7 +57,7 @@ class EditDevisForm extends AbstractType
 				"label" => "Remise (en €)",
 			])
 			->add("submit", SubmitType::class, [
-				"label" => "Modifier le devis",
+				"label" => "Valider",
 			]);
 	}
 

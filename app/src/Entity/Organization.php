@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[Vich\Uploadable]	
+#[Vich\Uploadable]
 class Organization
 {
     #[ORM\Id]
@@ -65,7 +65,7 @@ class Organization
 	)]
 	private ?string $activity = null;
 
-	#[ORM\Column(length: 14, nullable: false, unique: true)]
+	#[ORM\Column(length: 14, nullable: false)]
 	#[Assert\NotBlank(message: "Veuillez renseigner le siret de l'organisation.")]
 	#[Assert\Length(
 		min: 14,
