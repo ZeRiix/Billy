@@ -9,39 +9,24 @@
 		<a href="{{ path('app_create_organization') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
 		{% endif %}
 	</div>
-	<div class="w-full border rounded-xl bg-white overflow-x-scroll">
-		<table class="w-full text-left border-collapse">
-			<thead>
-				<tr class="w-full pr-4 flex text-black/50">
-					<th class="w-full p-6">Nom</th>
-					<th class="w-full p-6">Adresse</th>
-					<th class="w-full p-6">Email</th>
-					<th class="w-full p-6">Téléphone</th>
-					<th class="w-full p-6">Siret</th>
-					<th class="w-full p-6">Activité</th>
-					<th class="w-full p-6">Actions</th>
-				</tr>
-			</thead>
-			<tbody class="w-full flex flex-col justify-between items-center overflow-y-scroll" style="max-height: 560px;">
-			{% for organization in organizations %}
-				<tr class="w-full flex border-t">
-					<td class="w-full p-6 flex items-center gap-1">
-						{{ organization.name }}
-						{% if app.user.id == organization.createdBy.id %}
-						<span class="mdi mdi-crown text-lg text-amber-500"></span>
-						{% endif %}
-					</td>
-					<td class="w-full p-6 flex items-center">{{ organization.address }}</td>
-					<td class="w-full p-6 flex items-center underline text-blue-500"><a href="mailto:{{ organization.email }}" target="_blank">{{ organization.email }}</a></td>
-					<td class="w-full p-6 flex items-center">{{ organization.phone }}</td>
-					<td class="w-full p-6 flex items-center">{{ organization.siret }}</td>
-					<td class="w-full p-6 flex items-center">{{ organization.activity }}</td>
-					<td class="w-full p-6 flex items-center text-xl">
-						<a href="{{ path('app_organization_get_id', { organization: organization.id }) }}"><span class="mdi mdi-open-in-new text-bgrey"></span></a>
-					</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-	</div>
+	<twig:Table
+		:data="organizations"
+		:cols="{
+			name: 'Nom',
+			address: 'Adresse',
+			email: 'Email',
+			phone: 'Téléphone',
+			siret: 'Siret',
+			activity: 'Activité'
+		}"
+		:action="true"
+	>
+		<a href="{{ path('app_organization_get_id', { organization: row.id }) }}">
+			<span class="mdi mdi-open-in-new text-bgrey"></span>
+		</a>
+
+		{% if app.user.id == row.createdBy.id %}
+			<span class="absolute left-1 top-1/2 -translate-y-1/2 mdi mdi-crown text-base text-amber-500"></span>
+		{% endif %}
+	</twig:Table>
 {% endblock %}

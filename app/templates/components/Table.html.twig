@@ -1,0 +1,29 @@
+<table class="min-w-full leading-normal">
+	<thead>
+		<tr>
+			{% for header in cols %}
+				<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">{{ header }}</th>
+			{% endfor %}
+			
+			{% if action is defined %}
+				<th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+			{% endif %}
+			
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in data %}
+			<tr class="relative">
+				{% for key, value in cols %}
+					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ attribute(row, key) }}</td>
+				{% endfor %}
+
+				{% if action is defined %}
+					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+						{% block content %}{% endblock %}
+					</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
