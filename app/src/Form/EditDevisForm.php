@@ -54,7 +54,7 @@ class EditDevisForm extends AbstractType
 				"attr" => [
 					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
-				"label" => "Remise (en €)",
+				"label" => "Remise (en %)",
 			])
 			->add("submit", SubmitType::class, [
 				"label" => "Valider",

@@ -22,6 +22,9 @@ class DevisService {
 	}
 
 	public function update(Devis $devis) : void {
+		if ($devis->getDiscount() < 0 || $devis->getDiscount() > 100) {
+			throw new \Exception("Le taux de remise doit être compris entre 0 et 100.");
+		}
 		$this->devisRepository->save($devis);
 	}
 

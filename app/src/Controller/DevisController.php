@@ -66,6 +66,8 @@ class DevisController extends AbstractController
 	#[Route('/organization/{organization}/quotation/{devis}', name: "app_update_devis", methods: ["GET", "POST"])]
 	public function update(Request $request, Devis $devis, DevisService $devisService): Response
 	{
+		$totalHt = 0;
+		$commandes = $devis->getCommandes();
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(DevisVoter::UPDATE, $devis)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour éditer ce devis.");
@@ -81,18 +83,28 @@ class DevisController extends AbstractController
 			try {
 				$devisService->update($devis);
 				$this->addFlash("success", "Le devis a bien été édité.");
-				$this->redirectToRoute("app_update_devis", ["devis" => $devis->getId()]);
+				$this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 			} catch (\Exception $e) {
 				$this->addFlash("error", $e->getMessage());
 				return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
 			}
 		}
 
+		// Calcule du total HT
+		foreach ($commandes as $commande) {
+			$totalHt += $commande->getQuantity() * $commande->getUnitPrice();
+		}
+
+		if ($devis->getDiscount() > 0) {
+			$totalHt = $totalHt * (1 - ($devis->getDiscount() / 100));
+		}
+
 		return $this->render('devis/devis.update.html.twig', [
 			"form" => $form->createView(),
 			"quotation" => $devis,
 			"organization" => $organization,
-			"commandes" => $devis->getCommandes(),
+			"commandes" => $commandes,
+			"totalHT" => $totalHt
 		]);
 	}
 }

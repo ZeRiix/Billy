@@ -93,4 +93,24 @@ class CommandeController extends AbstractController
 			$response
 		);
 	}
+
+	#[Route('/organization/{organization}/devis/{devis}/commande/{commande}/delete', name: 'app_delete_commande', methods: ["GET"])]
+	public function delete(Commande $commande, CommandeService $commandeService)
+	{
+		$devis = $commande->getDevis();
+		$organization = $devis->getOrganization();
+		if (!$this->isGranted(CommandeVoter::DELETE, $commande)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer une commande.");
+			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		}
+
+		try {
+			$commandeService->delete($commande);
+			$this->addFlash("success", "La commande a bien été supprimée.");
+		} catch (\Exception $e) {
+			$this->addFlash("error", $e->getMessage());
+		}
+
+		return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+	}
 }

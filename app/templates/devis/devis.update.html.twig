@@ -29,34 +29,28 @@
 	{{ form_end(form) }}
 	<div class="flex flex-col gap-10">
 		<!-- table d'affichage des commandes ajoutées  -->
-		<div class="w-3/4 border rounded-xl bg-white overflow-x-scroll">
-			<table class="w-full text-left border-collapse">
-				<thead>
-					<tr class="w-full pr-4 flex text-black/50">
-						<th class="w-full p-6">Nom de la commande</th>
-						<th class="w-full p-6">Nom du service</th>
-						<th class="w-full p-6">Prix du service (en €)</th>
-						<th class="w-full p-6">Quantité</th>
-						<th class="w-full p-6">Actions</th>
-					</tr>
-				</thead>
-				<tbody class="w-full flex flex-col justify-between items-center overflow-y-scroll" style="max-height: 560px;">
-				{% for commande in commandes %}
-					<tr class="w-full flex border-t">
-						<td class="w-full p-6 flex items-center">{{ commande.name }}</td>
-						<td class="w-full p-6 flex items-center">{{ commande.service.name }}</td>
-						<td class="w-full p-6 flex items-center">{{ commande.service.unitPrice | number_format(2) | default(0) }}</td>
-						<td class="w-full p-6 flex items-center">{{ commande.quantity }}</td>
-						<td class="w-full p-6 flex items-center text-xl">
-							<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: commande.id }) }}"><span class="mdi mdi-pencil text-xl text-gray-500"></span></a>
-						</td>
-				{% else %}
-						<td class="w-full p-6 flex items-center">Aucune commande ajoutée</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-		</div>
+		<twig:Table
+			:data="commandes"
+			:cols="{
+				name: 'Nom de la commande',
+				'service.name': 'Nom du service',
+				'unitPrice': 'Prix (en €)',
+				quantity: 'Quantité'
+			}"
+			:action="true"
+		>
+
+			<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+				<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+			</a>
+			<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+				<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
+			</a>
+		</twig:Table>
+		<a>Générer ma facture</a>
+		<span>
+			Total HT : {{ totalHT }} €
+		</span>
 	</div>
 	<a href="{{ path('app_devis', {organization: organization.id}) }}">Retour au devis</a>
 </div>

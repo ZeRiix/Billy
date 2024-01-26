@@ -21,13 +21,9 @@
 	>
 		{% block isSigned %}
 			{% if currentValue == 1 %}
-				<span class='text-green-500'>
-					Signé
-				</span>
+				<span class="mdi mdi-shield-check text-2xl text-green-500"></span>
 			{% else %}
-				<span class='text-red-500'>
-					Pas signé
-				</span>
+				<span class="mdi mdi-close-circle text-2xl text-red-500"></span>
 			{% endif %}
 		{% endblock %}
 

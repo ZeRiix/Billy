@@ -14,6 +14,7 @@ class CommandeVoter extends Voter
 {
 	public const CREATE = 'COMMANDE_CREATE';
 	public const UPDATE = 'COMMANDE_UPDATE';
+	public const DELETE = 'COMMANDE_DELETE';
 
 	public function __construct(
 		private RoleRepository $roleRepository,
@@ -23,7 +24,7 @@ class CommandeVoter extends Voter
 
 	protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::CREATE, self::UPDATE]) && (
+        return in_array($attribute, [self::CREATE, self::UPDATE, self::DELETE]) && (
 			$subject instanceof Devis ||
 			$subject instanceof Commande
 		);
@@ -45,7 +46,7 @@ class CommandeVoter extends Voter
 			}
 			return $this->roleRepository->checkPermissionOnOrganization($user, $organization, "write_devis");
 		}
-		else if($attribute === self::UPDATE){
+		else if($attribute === self::UPDATE || $attribute === self::DELETE){
 			/** @var Commande $subject */
 			$organization = $subject->getDevis()->getOrganization();
 			if(!$organization) {

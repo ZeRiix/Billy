@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -65,10 +66,15 @@ class Devis
 
 	#[
 		ORM\Column(
-		type: Types::DECIMAL,
+		type: Types::INTEGER,
 		nullable: true,
 		precision: 10,
 		scale: 2
+	)]
+	#[Assert\Range(
+		min: 0,
+		max: 100,
+		notInRangeMessage: "Le taux de remise doit être compris entre 0 et 100."
 	)]
 	private $discount = null;
 
@@ -234,10 +240,9 @@ class Devis
     public function removeCommande(Commande $commande): static
     {
         if ($this->commandes->removeElement($commande)) {
-            // set the owning side to null (unless already changed)
-            if ($commande->getDevis() === $this) {
-                $commande->setDevis(null);
-            }
+			if ($commande->getDevis() === $this) {
+				$commande->setDevis(null);
+			}
         }
 
         return $this;

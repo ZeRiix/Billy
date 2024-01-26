@@ -57,7 +57,7 @@ class Service
    	private ?string $description = null;
 
 	#[Groups(['service'])]
-	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
+	#[ORM\Column(type: Types::FLOAT, nullable: true, precision: 10, scale: 2)]
    	private ?string $unitPrice = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
