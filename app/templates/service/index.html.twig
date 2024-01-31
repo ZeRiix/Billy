@@ -3,11 +3,19 @@
 {% block title %}Liste des services{% endblock %}
 
 {% block body %}
-
-{% for service in services %}
-	<div>
-		{{ service.name }} {{ service.description }} {{service.id}}
+	<div class="w-full">
+		<a href="{{ path('app_create_service', { organization: getCurrentOrganization().id }) }}">Creer un servive</a>
 	</div>
-{% endfor %}
-
+	<twig:Table
+		:data="services"
+		:cols="{
+			name: 'Nom du Service',
+			description: 'Description',
+		}"
+		:action="true"
+	>
+		<a href="{{ path('app_update_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
+			<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+		</a>
+	</twig:Table>
 {% endblock %}

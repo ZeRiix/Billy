@@ -61,7 +61,7 @@ class ServiceController extends AbstractController
         ]);
     }
 
-	#[Route('/organization/{organization}/service/{id}', name: 'app_update_service', methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/service/{service}', name: 'app_update_service', methods: ["GET", "POST"])]
     public function update(Service $service, Request $request, ServiceService $serviceService): Response
     {
 		if(!$this->isGranted(ServiceVoter::UPDATE, $service)){

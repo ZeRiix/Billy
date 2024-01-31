@@ -5,6 +5,7 @@ export default class extends Controller {
   selectElement;
   descriptionElement;
   unitPriceElement;
+  quantityElement;
   nameElement;
 
   connect() {
@@ -19,7 +20,10 @@ export default class extends Controller {
     this.unitPriceElement = document.getElementById(
       "create_commande_form_unitPrice"
     );
-    console.log(this.services);
+	this.quantityElement = document.getElementById(
+		"create_commande_form_quantity"
+	);
+    
     this.selectElement.addEventListener("change", this.select.bind(this));
     this.select();
   }
@@ -28,7 +32,8 @@ export default class extends Controller {
     const { description, name, unitPrice } = this.services.find(
       (v) => v.id === this.selectElement.value
     );
-
+	
+	this.quantityElement.value = 1;
     this.nameElement.value = name;
     this.descriptionElement.value = description;
     this.unitPriceElement.value = unitPrice;
