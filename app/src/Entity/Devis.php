@@ -14,6 +14,12 @@ use App\Entity\Organization;
 use App\Entity\Facture;
 use App\Entity\Client;
 
+enum DeviStatus: string {
+    case EDITING = 'editing';
+    case LOCK = 'lock';
+    case SIGN = 'sign';
+}
+
 #[ORM\Entity(repositoryClass: DevisRepository::class)]
 #[ORM\Table(name: "`devis`")]
 #[ORM\HasLifecycleCallbacks]
@@ -32,7 +38,7 @@ class Devis
 
 	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: "devis")]
 	#[ORM\JoinColumn(nullable: true)]
-	private Client $client;
+	private ?Client $client = null;
 
 	#[ORM\OneToMany(mappedBy: 'devis', targetEntity: Commande::class)]
 	private Collection $commandes;
@@ -43,8 +49,8 @@ class Devis
 	#[ORM\Column(type: Types::TEXT, nullable: true)]
 	private ?string $description = null;
 
-	#[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-	private bool $isSigned = false;
+	#[ORM\Column(type: Types::STRING, enumType: DeviStatus::class)]
+   	private DeviStatus $status = DeviStatus::EDITING;
 
 	#[
 		ORM\Column(
@@ -96,16 +102,16 @@ class Devis
 	}
 
 	public function getOrganization(): ?Organization
-	{
-		return $this->organization;
-	}
+   	{
+   		return $this->organization;
+   	}
 
 	public function setOrganization(?Organization $organization): self
-	{
-		$this->organization = $organization;
-			
-		return $this;
-	}
+   	{
+   		$this->organization = $organization;
+   
+   		return $this;
+   	}
 
 	public function getFactures(): Collection
 	{
@@ -148,17 +154,17 @@ class Devis
 		return $this;
 	}
 
-	public function getIsSigned(): ?bool
-	{
-		return $this->isSigned;
-	}
+	public function getStatus(): DeviStatus
+   	{
+   		return $this->status;
+   	}
 
-	public function setIsSigned(?bool $isSigned): static
-	{
-		$this->isSigned = $isSigned;
-                  
-		return $this;
-	}
+	public function setStatus(DeviStatus $status): static
+   	{
+   		$this->status = $status;
+   
+   		return $this;
+   	}
 
 	public function getTotalHt(): ?string
 	{

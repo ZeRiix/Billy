@@ -15,16 +15,12 @@
 			id: 'N° de devis',
 			name: 'Nom du devis',
 			'client.name': 'Nom du client',
-			isSigned: 'Signé'
+			status: 'Status'
 		}"
 		:action="true"
 	>
-		{% block isSigned %}
-			{% if currentValue == 1 %}
-				<span class="mdi mdi-shield-check text-2xl text-green-500"></span>
-			{% else %}
-				<span class="mdi mdi-close-circle text-2xl text-red-500"></span>
-			{% endif %}
+		{% block status %}
+			{{ currentValue.value }}
 		{% endblock %}
 
 		<a href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}">

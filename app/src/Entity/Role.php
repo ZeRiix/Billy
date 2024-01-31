@@ -64,7 +64,15 @@ class Role
 
 	#[ORM\Column(type: Types::BOOLEAN)]
    	#[Assert\Type(type: "bool")]
+   	private ?bool $read_devis = null;
+
+	#[ORM\Column(type: Types::BOOLEAN)]
+   	#[Assert\Type(type: "bool")]
    	private ?bool $write_factures = null;
+
+	#[ORM\Column(type: Types::BOOLEAN)]
+   	#[Assert\Type(type: "bool")]
+   	private ?bool $read_factures = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
    	#[Assert\Type(type: "bool")]
@@ -179,6 +187,18 @@ class Role
    		return $this;
    	}
 
+	public function getReadDevis(): ?bool
+   	{
+   		return $this->read_devis;
+   	}
+
+	public function setReadDevis(?bool $read_devis): static
+   	{
+   		$this->read_devis = $read_devis;
+   
+   		return $this;
+   	}
+
 	public function getWriteFactures(): ?bool
    	{
    		return $this->write_factures;
@@ -187,6 +207,18 @@ class Role
 	public function setWriteFactures(?bool $write_factures): static
    	{
    		$this->write_factures = $write_factures;
+   
+   		return $this;
+   	}
+
+	public function getReadFactures(): ?bool
+   	{
+   		return $this->read_factures;
+   	}
+
+	public function setReadFactures(?bool $read_factures): static
+   	{
+   		$this->read_factures = $read_factures;
    
    		return $this;
    	}

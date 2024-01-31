@@ -111,7 +111,7 @@ class RoleController extends AbstractController
 		$this->redirectToRoute("/organization/" . $organization->getId() . "/roles");
 	}
 
-	#[Route("/organization/{organization}/roles", name: "app_role_list", methods: ["GET"])]
+	#[Route("/organization/{organization}/roles", name: "app_roles", methods: ["GET"])]
 	public function list(RoleService $roleService, Organization $organization): Response
 	{
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {

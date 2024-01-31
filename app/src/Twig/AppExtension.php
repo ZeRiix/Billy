@@ -45,7 +45,7 @@ class AppExtension extends AbstractExtension
 			return false;
 		}
 
-        return $this->roleRepository->checkPermissionOnOrganization($user, $organization, $permission);
+        return $this->roleRepository->userHasPermission($organization, $user,  $permission);
     }
 
 	public function getCurrentOrganization(): ?Organization

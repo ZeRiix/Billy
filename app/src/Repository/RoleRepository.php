@@ -29,6 +29,8 @@ class RoleRepository extends ServiceEntityRepository
 		$role->setWriteDevis(true);
 		$role->setWriteFactures(true);
 		$role->setManageService(true);
+		$role->setReadDevis(true);
+		$role->setReadFactures(true);
 		$role->setOrganization($organization);
 		$role->addUser($user);
 		$this->save($role);
@@ -53,6 +55,29 @@ class RoleRepository extends ServiceEntityRepository
 		]);
 
 		return $res->fetchAllAssociative();
+	}
+
+	public function userHasPermission(Organization $org, User $user, string $permission): bool{
+		if(preg_match("/[a-z_]+/", $permission) === false) return false;
+
+		$conn = $this->_em->getConnection();
+		$sql = 'WITH org_role as (
+			SELECT * FROM role WHERE organization_id = :organization_id
+		), user_org_role as (
+			SELECT org_role.* FROM org_role 
+			INNER JOIN user_role on org_role.id = user_role.role_id
+			WHERE user_role.user_id = :user_id
+		)
+		SELECT * from user_org_role WHERE ' . $permission .' = TRUE';
+
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"user_id" => $user->getId(),
+			"organization_id" => $org->getId(),
+			"permission" => $permission,
+		]);
+
+		return isset($res->fetchAllAssociative()[0]);
 	}
 
 	public function isOwner(User $user) : bool

@@ -17,7 +17,7 @@
 				{% for key, value in cols %}
 					{% set currentValue = row %}
 					{% for prop in key|split('.') %}
-						{% set currentValue = attribute(currentValue, prop) %}
+							{% set currentValue = attribute(currentValue, prop) is defined ? attribute(currentValue, prop) : 'null' %}
 					{% endfor %}
 					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 						{% if block(key) is defined %}
