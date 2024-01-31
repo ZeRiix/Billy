@@ -21,6 +21,12 @@ class CommandeRepository extends ServiceEntityRepository
 		parent::__construct($registry, Commande::class);
 	}
 
+	public function delete(Commande $commande): void
+	{
+		$this->_em->remove($commande);
+		$this->_em->flush();
+	}
+
 	//    /**
 	//     * @return Commande[] Returns an array of Commande objects
 	//     */

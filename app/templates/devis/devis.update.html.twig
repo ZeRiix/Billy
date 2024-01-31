@@ -1,0 +1,57 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Modification du devis n° {{ quotation.id }}{% endblock %}
+
+{% block body %}
+<h1 class="mb-14 text-3xl font-semibold">Modification du devis n° {{ quotation.id }}</h1>
+<div class="p-14 rounded-xl bg-white">
+	{{ form_start(form) }}
+	<div class="flex flex-col gap-10 items-start">
+		<div class="flex gap-5">
+			{{form_row(form.name)}}
+			{{form_row(form.description)}}
+		</div>
+		<div class="flex gap-5">
+			{{form_row(form.client)}}
+			{{form_row(form.discount)}}
+		</div>
+		<div class="w-full flex justify-end">
+			{{ form_widget(form.submit) }}
+		</div>
+		<button 
+			hx-post=""
+			hx-swap="none"
+			hx-on::after-request="window.location.href = '{{ path('app_create_commande', {organization: organization.id, devis: quotation.id}) }}'"
+		>
+			Ajouter une commande
+		</button>
+	</div>
+	{{ form_end(form) }}
+	<div class="flex flex-col gap-10">
+		<!-- table d'affichage des commandes ajoutées  -->
+		<twig:Table
+			:data="commandes"
+			:cols="{
+				name: 'Nom de la commande',
+				'service.name': 'Nom du service',
+				'unitPrice': 'Prix (en €)',
+				quantity: 'Quantité'
+			}"
+			:action="true"
+		>
+
+			<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+				<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+			</a>
+			<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+				<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
+			</a>
+		</twig:Table>
+		<a>Générer ma facture</a>
+		<span>
+			Total HT : {{ totalHT }} €
+		</span>
+	</div>
+	<a href="{{ path('app_devis', {organization: organization.id}) }}">Retour au devis</a>
+</div>
+{% endblock %}

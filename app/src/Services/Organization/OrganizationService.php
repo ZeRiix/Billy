@@ -45,11 +45,7 @@ class OrganizationService
 	}
 
 	public function create(Organization $organization, User $user) : Organization
-	{
-		// check siret is already registered
-		if ($this->organizationRepository->findOneBySiret($organization->getSiret())) {
-			throw new \Exception("Une organisation avec ce siret existe déjà.");
-		}
+		{
 		// check if user is already owner of an organization
 		$isOwner = $this->roleRepository->isOwner($user);
 		if ($isOwner) {

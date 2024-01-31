@@ -37,14 +37,28 @@ class Commande
 	)]
 	private ?string $name = null;
 
-	#[ORM\Column(type: Types::TEXT)]
+	#[ORM\Column(length: 1000)]
+   	#[Assert\Length(
+   		max: 1000,
+   		maxMessage: "La description de la commande doit contenir au maximum {{ limit }} caractères."
+   	)]
 	private ?string $description = null;
+
+	#[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+   	private float $unitPrice;
+
+	#[ORM\Column(type: Types::INTEGER, precision: 10, scale: 2)]
+   	private int $quantity;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Devis $devis;
 
 	public function getId(): ?Uuid
 	{
@@ -59,7 +73,7 @@ class Commande
 	public function setService(Service $service): self
 	{
 		$this->service = $service;
-
+		
 		return $this;
 	}
 
@@ -71,7 +85,7 @@ class Commande
 	public function setName(string $name): self
 	{
 		$this->name = $name;
-
+		
 		return $this;
 	}
 
@@ -83,9 +97,33 @@ class Commande
 	public function setDescription(string $description): self
 	{
 		$this->description = $description;
-
+         
 		return $this;
 	}
+
+	public function getUnitPrice(): ?float
+   	{
+   		return $this->unitPrice;
+   	}
+
+	public function setUnitPrice(?float $unitPrice): static
+   	{
+   		$this->unitPrice = $unitPrice;
+   
+   		return $this;
+   	}
+
+	public function getQuantity(): ?int
+   	{
+   		return $this->quantity;
+   	}
+
+	public function setQuantity(?int $quantity): static
+   	{
+   		$this->quantity = $quantity;
+   
+   		return $this;
+   	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
 	{
@@ -109,4 +147,16 @@ class Commande
 	{
 		$this->updated_at = new \DateTimeImmutable();
 	}
+
+    public function getDevis(): ?Devis
+    {
+        return $this->devis;
+    }
+
+    public function setDevis(?Devis $devis): static
+    {
+        $this->devis = $devis;
+
+        return $this;
+    }
 }

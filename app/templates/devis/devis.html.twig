@@ -1,0 +1,34 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Billy - Dashboard{% endblock %}
+
+{% block body %}
+	<div class="mb-14 flex justify-between items-center">
+		<h1 class="text-2xl font-semibold">Mes devis</h1>
+		{% if canCreate == true %}
+		<a href="{{ path('app_create_devis', { organization: organization.id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
+		{% endif %}
+	</div>
+	<twig:Table
+		:data="quotations"
+		:cols="{
+			id: 'N° de devis',
+			name: 'Nom du devis',
+			'client.name': 'Nom du client',
+			isSigned: 'Signé'
+		}"
+		:action="true"
+	>
+		{% block isSigned %}
+			{% if currentValue == 1 %}
+				<span class="mdi mdi-shield-check text-2xl text-green-500"></span>
+			{% else %}
+				<span class="mdi mdi-close-circle text-2xl text-red-500"></span>
+			{% endif %}
+		{% endblock %}
+
+		<a href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}">
+			<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+		</a>
+	</twig:Table>
+{% endblock %}

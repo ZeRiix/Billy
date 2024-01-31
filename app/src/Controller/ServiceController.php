@@ -93,4 +93,12 @@ class ServiceController extends AbstractController
 			"update" => true
         ]);
     }
+
+	#[Route('/service/{service}', name: "app_get_description_service", methods: ["GET"])]
+	public function getDescription(Service $service): Response
+	{
+		return $this->json([
+			"description" => $service->getDescription()
+		]);
+	}
 }

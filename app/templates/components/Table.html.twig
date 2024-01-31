@@ -15,7 +15,17 @@
 		{% for row in data %}
 			<tr class="relative">
 				{% for key, value in cols %}
-					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ attribute(row, key) }}</td>
+					{% set currentValue = row %}
+					{% for prop in key|split('.') %}
+						{% set currentValue = attribute(currentValue, prop) %}
+					{% endfor %}
+					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+						{% if block(key) is defined %}
+							{{block(key)|raw}}
+						{% else %}
+							{{currentValue}}
+						{% endif %}
+					</td>
 				{% endfor %}
 
 				{% if action is defined %}

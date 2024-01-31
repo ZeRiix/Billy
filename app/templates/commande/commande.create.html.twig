@@ -1,0 +1,29 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}{{ isUpdate ? 'Modification' : 'Création' }} d'une commande{% endblock %}
+
+{% block body %}
+<h1 class="mb-14 text-3xl font-semibold">{{ isUpdate ? 'Modification' : 'Création' }} d'une commande</h1>
+<div class="p-14 rounded-xl bg-white">
+	{{ form_start(form, {attr: {'data-controller': 'create-commande', 'data-create-commande-services-value': entityToJson(organization.services, ['service'])}}) }}
+	<div class="flex flex-col gap-10 items-start">
+		<div class="flex gap-5">
+			{{ form_row(form.name) }}
+			{{ form_row(form.description) }}
+		</div>
+		<div class="flex gap-5">
+			{{ form_row(form.service) }}
+			{{ form_row(form.unitPrice) }}
+			{{ form_row(form.quantity) }}
+		</div>
+		<div class="w-full flex justify-end">
+			{{ form_widget(form.submit) }}
+		</div>		
+	</div>
+	{{ form_end(form) }}
+	<div class="flex flex-col gap-10 items-start">
+	<a href="{{ path('app_create_service', {organization: organization.id}) }}?callback={{ path('app_create_commande', {organization: organization.id, devis: devis.id}) }}">Créer un service</a>
+	<a href="{{ path('app_update_devis', {organization: organization.id, devis: devis.id}) }}">Retour au devis n°{{ devis.id }}</a>
+	</div>
+</div>
+{% endblock %}
