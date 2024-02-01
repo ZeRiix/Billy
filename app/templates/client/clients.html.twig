@@ -3,38 +3,24 @@
 {% block title %}Liste des clients{% endblock %}
 
 {% block body %}
-    <h1>Liste des clients</h1>
+	<div class="w-full">
+		<a href="{{ path('app_client', { organization: getCurrentOrganization().id }) }}">Creer un client</a>
+	</div>
+	<twig:Table
+		:data="clients"
+		:cols="{
+			name: 'Nom du client',
+			email: 'Description',
+			activity: ''
+		}"
+		:action="true"
+	>
+		{% block name %}
+			{{ currentValue }} {{ row.firstname|default('') }}
+		{% endblock %}
 
-    {% if clients is not empty %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Téléphone</th>
-                    <th>Activité</th>
-                    <th>SIRET</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for client in clients %}
-                    <tr>
-                        <td>{{ client.name }}</td>
-                        <td>{{ client.firstname }}</td>
-                        <td>{{ client.email }}</td>
-                        <td>{{ client.phone }}</td>
-                        <td>{{ client.activity }}</td>
-                        <td>{{ client.siret }}</td>
-                        <td>
-                            <a href="#">Voir</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucun client trouvé.</p>
-    {% endif %}
+		<a href="{{ path('app_client_update', { organization: getCurrentOrganization().id, service: row.id }) }}">
+			<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+		</a>
+	</twig:Table>
 {% endblock %}
