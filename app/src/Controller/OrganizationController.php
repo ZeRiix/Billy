@@ -93,7 +93,7 @@ class OrganizationController extends AbstractController
 		);
     }
 
-	#[Route('/organization/{id}/edit', name: 'app_update_organization', methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/edit', name: 'app_update_organization', methods: ["GET", "POST"])]
     public function update(Request $request, Organization $organization, OrganizationService $organizationService): Response
     {
 		if (!$this->isGranted(OrganizationVoter::UPDATE, $organization)) {
@@ -128,7 +128,7 @@ class OrganizationController extends AbstractController
 
 	#[
 		Route(
-			"/organization/{id}/invite",
+			"/organization/{organization}/invite",
 			name: "organization_invite_user",
 			methods: ["GET", "POST"]
 		)
@@ -171,16 +171,16 @@ class OrganizationController extends AbstractController
 
 	#[
 		Route(
-			"/organization/{id}/user/{UserId}/join",
+			"/organization/{organization}/user/{user}/join",
 			name: "organization_join_user",
 			methods: ["GET"]
 		)
 	]
-	public function join(Request $request, OrganizationService $organizationService, Organization $organization): Response
+	public function join(Request $request, OrganizationService $organizationService, Organization $organization, User $user): Response
 	{
 		$response = new Response();
 		try {
-			$organizationService->join($organization, $request->get("UserId"));
+			$organizationService->join($organization, $user);
 			$response->setStatusCode(Response::HTTP_OK);
 			$this->addFlash("success", "L'utilisateur a bien rejoint l'organisation.");
 		} catch (\Exception $e) {
@@ -229,12 +229,12 @@ class OrganizationController extends AbstractController
 
 	#[
 		Route(
-			"/organization/{id}/user/{UserId}/leave",
+			"/organization/{organization}/user/{user}/leave",
 			name: "organization_leave_user_by",
 			methods: ["GET", "POST"]
 		)
 	]
-	public function leave_user_by(Request $request, OrganizationService $organizationService, Organization $organization): Response
+	public function leave_user_by(Request $request, OrganizationService $organizationService, Organization $organization, User $user): Response
 	{
 		if (!$this->isGranted(OrganizationVoter::REMOVE_USER, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un utilisateur");
@@ -242,6 +242,7 @@ class OrganizationController extends AbstractController
 				"organization" => $organization->getId(),
 			]);
 		}
+		
 		$response = new Response();
 		$form = $this->createForm(LeaveOrganizationByForm::class, null, [
 			"users" => $organization->getUsers(),

@@ -182,10 +182,8 @@ class OrganizationService
 		);
 	}
 
-	public function join(Organization $organization, string $user): void
+	public function join(Organization $organization, User $user): void
 	{
-		// get the user
-		$user = $this->userRepository->findOneById($user);
 		// check if user is already in organization
 		$userInOrg = $this->checkIsInOrganization($user, $organization);
 		if ($userInOrg) {
