@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Devis;
-use App\Entity\Organization;
 use App\Repository\Traits\SaveTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;

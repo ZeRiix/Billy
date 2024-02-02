@@ -1,0 +1,135 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devis</title>
+    <style>
+		table {
+			min-width: 100%;
+			line-height: 1.5;
+		}
+		th {
+			padding: 3px 5px;
+			border-bottom: 2px solid;
+			border-color: gray;
+			background-color: gray;
+			text-align: left;
+			font-size: 0.75rem;
+			line-height: 1rem;
+			border-color: rgb(229 231 235);
+			background-color: rgb(243 244 246);
+			font-weight: 600;
+			color: rgb(75 85 99);
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+        td {
+			padding: 5px;
+			background-color: white;
+			font-size: 0.875rem;
+			line-height: 1.25rem;
+			border-bottom: 1px solid;
+			border-color: rgb(229 231 235);
+		}
+		tr {
+			position: relative;
+		}
+		.devisHeader {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
+		.devisInfos {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
+		.devisContent {
+			width: 100%;
+		}
+		.devisFooter {
+			display: flex;
+			justify-content: center;
+		}
+    </style>
+</head>
+<body style="padding: 40px;">
+<header>
+	<div class="devisHeader">
+		{% if haveLogo %}
+			<img src="{{logoPath}}" alt="">
+		{% endif %}
+		<div>
+			<h1>Devis n°{{devis.id}}</h1>
+			<p>Devis établi le : {{devis.createdAt | date('d/m/y')}}</p>
+		</div>
+	</div>
+	<div class="devisInfos">
+		<div>
+			<p><strong>Nom de l'entreprise : {{devis.organization.name}}</strong></p>
+			<p>Adresse de l'entreprise : {{devis.organization.address}}</p>
+			<p>Téléphone de l'entreprise : {{devis.organization.phone}}</p>
+			<p>Mail de l'entreprise : {{devis.organization.email}}</p>
+			<p>Activité de l'entreprise : {{devis.organization.activity}}</p>
+		</div>
+		<div>
+			<p><strong>Nom du client : {{devis.client.name}}</strong></p>
+			<p>Adresse du client : {{devis.client.address}}</p>
+			<p>Téléphone du client : {{devis.client.phone}}</p>
+		</div>
+	</div>
+</header>
+<main>
+	<div class="devisContent">
+		<table>
+			<thead>
+				<tr>
+					<th>Description</th>
+					<th>Quantité</th>
+					<th>Prix unitaire</th>
+					<th>Montant</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for commande in devis.commandes %}
+					<td>{{commande.description}}</td>
+					<td>{{commande.quantity}}</td>
+					<td>{{commande.unitPrice}}€</td>
+					<td>{{commande.montant}}€</td>
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3">Total HT</td>
+					<td>{{totalHt}}€</td>
+				</tr>
+				<tr>
+					<td colspan="3">TVA</td>
+					<td>?</td>
+				</tr>
+				<tr>
+					<td colspan="3">Remise</td>
+					{% if devis.discount == 0 %}
+						<td>Pas de remise</td>
+					{% else %}
+						<td>{{devis.discount}}%</td>
+					{% endif %}
+				</tr>
+				<tr>
+					<td colspan="3">Total TTC</td>
+					<td>?</td>
+				</tr>
+			</tfoot>
+		</table>
+		<div>
+			<p>Date et signature du client</p>
+		</div>
+	</div>
+</main>
+<footer>
+	<div class="devisFooter">
+		<p>© {{'now' | date('Y')}} - Tous droits réservés - Mentions légales</p>
+	</div>
+</footer>
+</body>
+</html>

@@ -19,10 +19,18 @@
 		}"
 		:action="true"
 	>
+		
 		{% block status %}
-			{{ currentValue.value }}
+		{% if currentValue.value == 'editing' %}
+			<span class="px-4 py-2 bg-yellow-500 text-white uppercase rounded-full mdi mdi-pencil"> Édition</span>
+		{% elseif currentValue.value == 'lock' %}
+			<span class="px-4 py-2 bg-red-500 text-white uppercase rounded-full mdi mdi-lock"> Verrouillé</span>
+		{% elseif currentValue.value == 'sign' %}
+			<span class="px-4 py-2 bg-green-500 text-white uppercase rounded-full mdi mdi-fountain-pen-tip"> Signé</span>
+		{% endif %}
 		{% endblock %}
 
+	
 		<a href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}">
 			<span class="mdi mdi-pencil text-xl text-gray-500"></span>
 		</a>

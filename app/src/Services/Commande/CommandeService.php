@@ -20,13 +20,20 @@ class CommandeService
 
 	public function create(Commande $commande, Devis $devis): void
 	{
+		$this->updateMontantForCommande($commande);
 		$devis->addCommande($commande);
 		$this->devisRepository->save($commande);
 	}
 
 	public function update(Commande $commande): void
 	{
+		$this->updateMontantForCommande($commande);
 		$this->devisRepository->save($commande);
+	}
+
+	private function updateMontantForCommande(Commande $commande) : void
+	{
+		$commande->setMontant($commande->getQuantity() * $commande->getUnitPrice());
 	}
 
 	public function delete(Commande $commande): void

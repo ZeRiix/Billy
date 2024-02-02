@@ -17,6 +17,7 @@ use App\Entity\Organization;
 use App\Form\CreateDevisForm;
 use App\Form\EditDevisForm;
 use App\Security\Voter\OrganizationVoter;
+use App\Services\Pdf\GeneratePdfService;
 
 class DevisController extends AbstractController
 {
@@ -90,14 +91,7 @@ class DevisController extends AbstractController
 			}
 		}
 
-		// Calcule du total HT
-		foreach ($commandes as $commande) {
-			$totalHt += $commande->getQuantity() * $commande->getUnitPrice();
-		}
-
-		if ($devis->getDiscount() > 0) {
-			$totalHt = $totalHt * (1 - ($devis->getDiscount() / 100));
-		}
+		$totalHt = $this->doCalculationForTotalHT($commandes, $devis->getDiscount());
 
 		return $this->render('devis/devis.update.html.twig', [
 			"form" => $form->createView(),
@@ -106,5 +100,64 @@ class DevisController extends AbstractController
 			"commandes" => $commandes,
 			"totalHT" => $totalHt
 		]);
+	}
+
+	private function doCalculationForTotalHT($commandes, $discount) 
+	{
+		$totalHt = 0;
+		foreach ($commandes as $commande) {
+			$totalHt += $commande->getQuantity() * $commande->getUnitPrice();
+		}
+
+		if ($discount > 0) {
+			$totalHt = $totalHt * (1 - ($discount / 100));
+		}
+
+		return $totalHt;
+	}
+
+	#[Route('/organization/{organization}/quotation/{devis}/generate-pdf', name: "app_generate_pdf_devis", methods: ["GET"])]
+	public function generatePdf(Devis $devis, Organization $organization, GeneratePdfService $generatePdfService, DevisService $devisService) : Response
+	{
+		if(!$devisService->findById($devis->getId()) && !$devisService->devisBelongsToOrganization($devis, $organization))
+		{
+			$this->addFlash("error", "Le devis n'existe pas ou n'appartient pas à cette organisation.");
+			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
+		}
+
+		$response = new Response();
+
+		$haveLogo = false;
+
+		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
+
+		$imagePath = $this->getParameter('kernel.project_dir') . '/public/storage/images/organizations/' . $devis->getOrganization()->getLogoName();
+
+		if (file_exists($imagePath)) {
+			$haveLogo = true;
+		}
+
+		$html = $this->renderView('generate_pdf/devis-pdf.html.twig', [
+			"devis" => $devis,
+			"totalHt" => $totalHt,
+			"logoPath" => $imagePath,
+			"haveLogo" => $haveLogo
+		]);
+
+		$filenamePdf = "devis-" . $devis->getId() . ".pdf";
+
+		try {
+			/** @var Dompdf $pdf */
+			$pdf = $generatePdfService->generatePdf($html);
+			$response->setContent($pdf->stream($filenamePdf));
+			$response->setStatusCode(Response::HTTP_OK);
+		} catch (\Exception $e) {
+			$response->setContent("");
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$this->addFlash("error", $e->getMessage());
+			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
+		}
+
+		return $response;
 	}
 }

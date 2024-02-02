@@ -60,6 +60,21 @@ class Commande
     #[ORM\JoinColumn(nullable: false)]
     private ?Devis $devis;
 
+	#[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+	private float $montant;
+
+	public function getMontant() : ?float
+	{
+		return $this->montant;
+	}
+
+	public function setMontant(float $montant) : self
+	{
+		$this->montant = $montant;
+
+		return $this;
+	}
+
 	public function getId(): ?Uuid
 	{
 		return $this->id;
