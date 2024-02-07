@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Devis;
 use App\Entity\Client;
 use App\Repository\ClientRepository;
+use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -22,6 +23,7 @@ class EditDevisForm extends AbstractType
 		$organizationId = $options["organization_id"];
 		$builder
 			->add("name", TextType::class, [
+				"required" => false,
 				"attr" => [
 					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
@@ -31,6 +33,7 @@ class EditDevisForm extends AbstractType
 				],
 			])
 			->add("description", TextareaType::class, [
+				"required" => false,
 				"attr" => [
 					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
 				],
@@ -40,13 +43,14 @@ class EditDevisForm extends AbstractType
 				],
 			])
 			->add("client", EntityType::class, [
+				"required" => false,
 				"class" => Client::class,
 				"choice_label" => "name",
 				"query_builder" => function (ClientRepository $clientRepository) use ($organizationId): QueryBuilder {
 					return $clientRepository->createQueryBuilder("c")
-											->orderBy("c.name", "ASC")
-											->where("c.organization = :organization")
-											->setParameter("organization", $organizationId);
+						->orderBy("c.name", "ASC")
+						->where("c.organization = :organization")
+						->setParameter("organization", $organizationId);
 				},
 			])
 			->add("discount", IntegerType::class, [
@@ -57,7 +61,7 @@ class EditDevisForm extends AbstractType
 				"label" => "Remise (en %)",
 			])
 			->add("submit", SubmitType::class, [
-				"label" => "Valider",
+				"label" => "Enregistrer",
 			]);
 	}
 

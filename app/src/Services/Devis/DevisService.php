@@ -27,7 +27,7 @@ class DevisService {
 	{
 		if ($devis->getDiscount() < 0 || $devis->getDiscount() > 100) {
 			throw new \Exception("Le taux de remise doit être compris entre 0 et 100.");
-		} else if ($devis->getStatus() == DeviStatus::SIGN || $devis->getStatus() == DeviStatus::LOCK) {
+		} else if ($devis->getStatus() !== DeviStatus::EDITING) {
 			throw new \Exception("Le devis est verrouillé ou bien déjà signé, vous ne pouvez pas le modifier.");
 		}
 		$this->devisRepository->save($devis);

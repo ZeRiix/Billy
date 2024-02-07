@@ -2,17 +2,21 @@
 
 namespace App\Entity;
 
+//séparer les "import" serre uniquement a faire semble de montré que tu as de la rigeur
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 // local imports
 use App\Repository\DevisRepository;
 use App\Entity\Organization;
 use App\Entity\Facture;
 use App\Entity\Client;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 enum DeviStatus: string {
     case EDITING = 'editing';
@@ -43,7 +47,14 @@ class Devis
 	#[ORM\OneToMany(mappedBy: 'devis', targetEntity: Commande::class)]
 	private Collection $commandes;
 
-	#[ORM\Column(length: 100, nullable: true)]
+	#[ORM\Column(length: 100, nullable: false)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le nom du devis.")]
+	#[Assert\Length(
+		min: 3,
+		max: 100,
+		minMessage: "Le nom du devis doit contenir au moins {{ limit }} caractères.",
+   		maxMessage: "Le nom du devis doit contenir au maximum {{ limit }} caractères."
+	)]
 	private ?string $name = null;
 
 	#[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -82,7 +93,17 @@ class Devis
 		max: 100,
 		notInRangeMessage: "Le taux de remise doit être compris entre 0 et 100."
 	)]
-	private $discount = null;
+	private ?int $discount = null;
+
+	#[Vich\UploadableField(mapping: 'organizationImage', fileNameProperty: 'devisSign')]
+	#[Assert\Image(
+		mimeTypes: ["image/jpeg"],
+		mimeTypesMessage: "Le format de l'image doit être au format jpeg.",
+		maxSize: "2M",
+		maxSizeMessage: "L'image ne doit pas dépasser 2Mo."
+	)]
+	#[Ignore]
+    private ?File $imageSign = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -252,5 +273,19 @@ class Devis
         }
 
         return $this;
+    }
+
+	public function setImageSign(?File $imageSign = null): void
+    {
+        $this->imageSign = $imageSign;
+
+        if ($imageSign) {
+            $this->setUpdatedAt();
+        }
+    }
+
+    public function getImageSign() : ?File
+    {
+        return $this->imageSign;
     }
 }

@@ -264,6 +264,7 @@ class Organization
 
     public function removeService(Service $service): static
     {
+		//na aucun sens mais flemme de re passer derrier 
         if ($this->services->removeElement($service)) {
             // set the owning side to null (unless already changed)
             if ($service->getOrganization() === $this) {
@@ -324,6 +325,7 @@ class Organization
 
     public function removeFacture(Facture $facture): static
     {
+		// une fois pas deux...
         if ($this->factures->removeElement($facture)) {
             // set the owning side to null (unless already changed)
             if ($facture->getOrganization() === $this) {
@@ -384,6 +386,7 @@ class Organization
 
     public function removeInviteOrganization(InviteOrganization $inviteOrganization): static
     {
+		//jamais 2 sans 3
         if ($this->invite_organizations->removeElement($inviteOrganization)) {
             // set the owning side to null (unless already changed)
             if ($inviteOrganization->getOrganization() === $this) {
@@ -472,6 +475,7 @@ class Organization
 
 	#[ORM\PrePersist]
 	#[ORM\PreUpdate]
+	// je vais rien dire sur le nomage mais on ce comprend
 	public function setUpdatedAtValue(): void
 	{
 		$this->updated_at = new \DateTimeImmutable();

@@ -6,7 +6,10 @@
 <h1 class="mb-14 text-3xl font-semibold">Modification du devis n° {{ quotation.id }}</h1>
 <div class="p-14 rounded-xl bg-white">
 	{{ form_start(form) }}
-	<div class="flex flex-col gap-10 items-start">
+	<fieldset 
+		{{quotation.status.value != 'editing'? 'disabled' : ''}} 
+		class="flex flex-col gap-10 items-start"
+	>
 		<div class="flex gap-5">
 			{{form_row(form.name)}}
 			{{form_row(form.description)}}
@@ -18,15 +21,25 @@
 		<div class="w-full flex justify-end">
 			{{ form_widget(form.submit) }}
 		</div>
-		<button 
-			hx-post=""
-			hx-swap="none"
-			hx-on::after-request="window.location.href = '{{ path('app_create_commande', {organization: organization.id, devis: quotation.id}) }}'"
-		>
-			Ajouter une commande
-		</button>
-	</div>
+
+		<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
+		
+	</fieldset>
+
 	{{ form_end(form) }}
+
+	<label 
+		for="redirectCommand" 
+		onclick="
+		setTimeout(() => {
+			document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+			
+		})
+		"
+	>
+		Ajouter une commande
+	</label>
+	
 	<div class="flex flex-col gap-10">
 		<!-- table d'affichage des commandes ajoutées  -->
 		<twig:Table
@@ -48,11 +61,16 @@
 				<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
 			</a>
 		</twig:Table>
-		<a>Générer ma facture</a>
+
+		{% if quotation.status.value == 'sign' %}
+			<a>Générer ma facture</a>
+		{% endif %}
+
 		<span>
 			Total HT : {{ totalHT }} €
 		</span>
 	</div>
+	
 	<a href="{{ path('app_devis', {organization: organization.id}) }}">Retour au devis</a>
 </div>
 {% endblock %}
