@@ -40,6 +40,16 @@ export default class extends Controller {
 			path: null,
 		},
 		{
+			pattern: /^\/organization\/[a-z0-9-]+\/service$/,
+			pathname: "Ajouter un service",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/service\/[a-z0-9-]+$/,
+			pathname: "Modifier le service",
+			path: null,
+		},
+		{
 			pattern: /^\/organization\/[a-z0-9-]+\/clients$/,
 			pathname: "Gérer les clients",
 			path: null,
