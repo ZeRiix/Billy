@@ -1,26 +1,31 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Liste des clients{% endblock %}
+{% block title %}List des clients{% endblock %}
 
 {% block body %}
-	<div class="w-full">
-		<a href="{{ path('app_client', { organization: getCurrentOrganization().id }) }}">Creer un client</a>
+	<div class="mb-14 flex justify-between items-center">
+		<h1 class="text-3xl font-semibold">List des clients</h1>
+		<a href="{{ path('app_client_create', { 'organization': getCurrentOrganization().id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Créer</a>
 	</div>
-	<twig:Table
-		:data="clients"
-		:cols="{
-			name: 'Nom du client',
-			email: 'Description',
-			activity: ''
-		}"
-		:action="true"
-	>
-		{% block name %}
-			{{ currentValue }} {{ row.firstname|default('') }}
-		{% endblock %}
 
-		<a href="{{ path('app_client_update', { organization: getCurrentOrganization().id, service: row.id }) }}">
-			<span class="mdi mdi-pencil text-xl text-gray-500"></span>
-		</a>
-	</twig:Table>
+	{% if clients is not empty %}
+		<twig:Table
+			:data="clients"
+			:cols="{
+				name: 'Nom',
+				firstname: 'Prénom',
+				email: 'Email',
+				phone: 'Téléphone',
+				siret: 'Siret',
+				activity: 'Activité'
+			}"
+			:action="true"
+		>
+			<a href="{{ path('app_client_update', { 'organization': getCurrentOrganization().id, 'client': row.id }) }}">
+				<span class="mdi mdi-pencil text-base text-bgrey"></span>
+			</a>
+		</twig:Table>
+	{% else %}
+		<p>Aucun client trouvé./p>
+	{% endif %}
 {% endblock %}

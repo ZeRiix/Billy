@@ -1,36 +1,23 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-	#orgMode = false
-	#professionalOrParticularEelment = null
-	#toggleButtonElement = null
+	hidden = true;
 
-	/**
-	 * @return {Element}
-	 */
-	get professionalOrParticularEelment() {
-		return this.#professionalOrParticularEelment ??
-			(this.#professionalOrParticularEelment = this.element.querySelector("#professional-or-particular-field"))
-	}
-
-	/**
-	 * @return {Element}
-	 */
-	get toggleButtonElement() {
-		return this.#toggleButtonElement ??
-			(this.#toggleButtonElement = this.element.querySelector("#toggle-button-element"))
+	connect() {
+		this.element.addEventListener('click', this.toggleField.bind(this));
 	}
 
 	toggleField() {
-		this.#orgMode = !this.#orgMode
-		if (this.#orgMode) {
-			this.professionalOrParticularEelment.classList.add("hidden")
-		} else {
-			this.professionalOrParticularEelment.classList.remove("hidden")
-		}
-	}
+		const hiddenField = document.querySelectorAll('.hidden-field');
 
-	connect() {
-		this.toggleButtonElement.addEventListener("click", this.toggleField.bind(this))
+		hiddenField.forEach((field) => {
+			if (this.hidden) {
+				field.classList.remove('hidden');
+			} else {
+				field.classList.add('hidden');
+			}
+		});
+
+		this.hidden = !this.hidden;
 	}
 }

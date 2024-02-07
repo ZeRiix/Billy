@@ -1,36 +1,25 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Gestion des rôles{% endblock %}
+{% block title %}Liste des rôles{% endblock %}
 
 {% block body %}
-<div class="px-10 py-5">
-	<h1 class="text-3xl font-semibold">List des roles</h1>
+	<h1 class="text-3xl font-semibold pb-6">Liste des rôles</h1>
+	
 	{% if roles is not empty %}
-		<table class="min-w-full border rounded-lg overflow-hidden">
-			<thead class="bg-bdarker-green text-white">
-				<tr>
-					<th class="py-2 px-4">Nom du rôle</th>
-					<th class="py-2 px-4">Date de création</th>
-					<th class="py-2 px-4">Dernière mise à jour</th>
-				</tr>
-			</thead>
-			<tbody class="bg-white text-blighter-grey flex-1 sm:flex-none">
-				{% for role in roles %}
-					<tr class="border-t border-b text-center">
-						<td class="py-2 px-4">{{ role.name }}</td>
-						<td class="py-2 px-4">{{ role.created_at|date("Y-m-d") }}</td>
-						<td class="py-2 px-4">{{ role.updated_at|date("Y-m-d") }}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+		<twig:Table
+				:data="roles"
+				:cols="{
+					name: 'Nom',
+					created_at: 'Date de création',
+					updated_at: 'Dernière modification',
+				}"
+				:action="true"
+			>
+				<a href="{{ path('app_role_update', { 'organization': getCurrentOrganization().id, 'role': row.id }) }}">
+					<span class="mdi mdi-pencil text-base text-bgrey"></span>
+				</a>
+			</twig:Table>
 	{% else %}
 		<p>Aucun rôle disponible pour cette organisation.</p>
 	{% endif %}
-</div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('assets/js/accordion.js') }}"></script>
 {% endblock %}

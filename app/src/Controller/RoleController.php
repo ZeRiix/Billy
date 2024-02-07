@@ -18,14 +18,16 @@ use App\Form\SelectRoleForm;
 use App\Form\CreateRoleForm;
 use App\Form\UpdateRoleForm;
 
-
 class RoleController extends AbstractController
 {
 	#[Route("/organization/{organization}/role", name: "app_role", methods: ["GET", "POST"])]
 	public function create(Request $request, RoleService $roleService, Organization $organization): Response
 	{
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour accéder à réation de role poue cette orgaisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour accéder à réation de role poue cette orgaisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
 		$response = new Response();
@@ -55,23 +57,29 @@ class RoleController extends AbstractController
 		);
 	}
 
-	#[Route("/organization/{organization}/user/{user}/selectrole", name: "app_role_select", methods: ["GET", "POST"])]
+	#[
+		Route(
+			"/organization/{organization}/user/{user}/selectrole",
+			name: "app_role_select",
+			methods: ["GET", "POST"]
+		)
+	]
 	public function selectRoleToUser(
-		Request $request, 
-		RoleService $roleService, 
-		Organization $organization, 
-		RoleRepository $roleRepository, 
-		User $user): Response
-	{
+		Request $request,
+		RoleService $roleService,
+		Organization $organization,
+		RoleRepository $roleRepository,
+		User $user
+	): Response {
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour editer les roles d'un utilisarteur dans cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour editer les roles d'un utilisarteur dans cette organisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
 		$response = new Response();
-		$rolesUser = $roleService->getRolesUserHasInOrganization(
-			$user,
-			$organization
-		);
+		$rolesUser = $roleService->getRolesUserHasInOrganization($user, $organization);
 		$form = $this->createForm(SelectRoleForm::class, null, [
 			"rolesHas" => $rolesUser,
 			"roles" => $roleRepository->getRolesForOrganization($organization),
@@ -104,7 +112,10 @@ class RoleController extends AbstractController
 	public function delete(RoleService $roleService, Organization $organization, Role $role)
 	{
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un role dans cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour supprimer un role dans cette organisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
 		$roleService->delete($role);
@@ -115,7 +126,10 @@ class RoleController extends AbstractController
 	public function list(RoleService $roleService, Organization $organization): Response
 	{
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour lister les roles de cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour lister les roles de cette organisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
 		$response = new Response();
@@ -129,26 +143,21 @@ class RoleController extends AbstractController
 		);
 	}
 
-	#[
-		Route(
-			"/organization/{organization}/role/{role}",
-			name: "app_role_update",
-			methods: ["GET", "POST"]
-		)
-	]
-	public function update(Request $request, RoleService $roleService, Role $role, Organization $organization): Response
-	{
+	#[Route("/organization/{organization}/role/{role}", name: "app_role_update", methods: ["GET", "POST"])]
+	public function update(
+		Request $request,
+		RoleService $roleService,
+		Role $role,
+		Organization $organization
+	): Response {
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour modifier un role dans cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour modifier un role dans cette organisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
 		$response = new Response();
-		if ($role->getName() === "OWNER") {
-			$this->redirectToRoute(
-				route: "/organization/" . $organization->getId(),
-				status: Response::HTTP_UNAUTHORIZED
-			);
-		}
 		$form = $this->createForm(UpdateRoleForm::class, $role);
 		$form->handleRequest($request);
 

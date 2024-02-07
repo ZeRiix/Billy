@@ -1,22 +1,40 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Création d'un client{% endblock %}
+{% block title %}Créer un client{% endblock %}
 
 {% block body %}
-	<div data-controller="clientForm">
-		<h1>Création d'un client</h1>
-		<button id="toggle-button-element">Personnel</button>
+<div data-controller="clientForm">
+	<div class="mb-14 flex justify-between items-center">
+		<h1 class="text-3xl font-semibold pb-6">Créer un client</h1>
+		<button class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300 gap-3" id="toggle-button-element">
+			<span class="mdi mdi-account-alert-outline"></span> particulier
+		</button> 
+	</div>
+	<div class="p-14 rounded-xl bg-white">
 		{{ form_start(form) }}
-		{{ form_row(form.name) }}
-		{{ form_row(form.firstname) }}
-		{{ form_row(form.address) }}
-		{{ form_row(form.email) }}
-		{{ form_row(form.phone) }}
-		<div id="professional-or-particular-field">
-			{{ form_row(form.activity) }}
-			{{ form_row(form.siret) }}
-		</div>
-		{{ form_row(form.submit) }}
+			<div class="flex flex-col gap-10 items-start">
+				<div class="flex gap-8">
+					<div class="flex flex-col gap-5">
+						{{ form_row(form.name) }}
+						{{ form_row(form.firstname) }}
+						{{ form_row(form.email) }}
+						{{ form_row(form.phone) }}
+					</div>
+					<div class="flex flex-col gap-5">
+						<div class="hidden-field hidden">
+							{{ form_row(form.activity) }}
+						</div>
+						<div class="hidden-field hidden">
+							{{ form_row(form.siret) }}
+						</div>
+						{{ form_row(form.address) }}
+					</div>
+				</div>
+				<div class="w-full flex justify-end">
+					{{ form_row(form.submit) }}
+				</div>
+			</div>
 		{{ form_end(form) }}
 	</div>
+</div>
 {% endblock %}

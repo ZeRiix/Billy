@@ -15,14 +15,14 @@ class UpdateRoleForm extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options): void
 	{
 		$builder
-			->add("name", TextType::class, ["label" => "Nom"])
+			->add("name", TextType::class, ["label" => "Nom du rôle"])
 			->add("manage_org", CheckboxType::class, ["label" => "Manage Organization", "required" => false])
 			->add("manage_user", CheckboxType::class, ["label" => "Manage User", "required" => false])
 			->add("manage_client", CheckboxType::class, ["label" => "Manage Client", "required" => false])
 			->add("write_devis", CheckboxType::class, ["label" => "Write Devis", "required" => false])
 			->add("write_factures", CheckboxType::class, ["label" => "Write Facture", "required" => false])
 			->add("manage_service", CheckboxType::class, ["label" => "Manage Service", "required" => false])
-			->add("submit", SubmitType::class, ["label" => "Enregistrer les modifications"]);
+			->add("submit", SubmitType::class, ["label" => "Éditer"]);
 	}
 
 	public function configureOptions(OptionsResolver $resolver): void

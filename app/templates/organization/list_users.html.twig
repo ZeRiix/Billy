@@ -1,0 +1,25 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+	<h1 class="text-3xl font-semibold pb-6">Liste des utilisateurs</h1>
+
+	{% if users is not empty %}
+		<twig:Table
+			:data="users"
+			:cols="{
+				name: 'Nom',
+				firstname: 'Prénom',
+				email: 'Email',
+			}"
+			:action="true"
+		>
+			<a href="{{ path('app_role_select', { 'organization': getCurrentOrganization().id, 'user': row.id }) }}">
+				<span class="mdi mdi-pencil text-base text-bgrey"></span>
+			</a>
+		</twig:Table>
+	{% else %}
+		<p>Il n'y a pas d'utilisateur dans cette organisation</p>
+	{% endif %}
+{% endblock %}

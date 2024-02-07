@@ -20,11 +20,24 @@
 					</li>
 				{% endif %}
 				{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
-					<li>
-						<a href="{{ path('app_roles', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+					<li class="accordion hover:cursor-pointer">
+						<div class="flex gap-2 items-center hover:text-white">
 							<span class="mdi mdi-domain text-2xl"></span>
 							Gérer les rôles
-						</a>
+							<span class="mdi mdi-chevron-down"></span>
+						</div>
+						<ul class="content hidden mt-3 max-w-xs flex flex-col gap-2">
+							<li>
+								<a href="{{ path('app_role', {organization: getCurrentOrganization().id}) }}" class="px-9 py-2 flex gap-2 items-center rounded-lg hover:text-white hover:bg-blighter-green">
+									Créer un rôle
+								</a>
+							</li>
+							<li>
+								<a href="{{ path('app_role_list', {organization: getCurrentOrganization().id}) }}" class="px-9 py-2 flex gap-2 items-center rounded-lg hover:text-white hover:bg-blighter-green">
+									Liste des rôles
+								</a>
+							</li>
+						</ul>
 					</li>
 				{% endif %}
 				{% if checkPermissionOnOrganization(app.user, 'manage_service') %}
@@ -35,30 +48,47 @@
 						</a>
 					</li>
 				{% endif %}
-				{% if checkPermissionOnOrganization(app.user, 'manage_client') %}
-					<li>
-						<a href="{{ path('app_clients', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
-							<span class="mdi mdi-account-multiple text-2xl"></span>
-							Gérer les clients
-						</a>
-					</li>
-				{% endif %}
 				{% if checkPermissionOnOrganization(app.user, 'manage_user') %}
 					<li>
-						<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
-							<span class="mdi mdi-account-tie text-2xl"></span>
+						<a href="{{ path('organization_list_users', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+							<span class="mdi mdi-account-multiple text-2xl"></span>
 							Gérer les utilisateurs
 						</a>
 					</li>
 				{% endif %}
-				{% if checkPermissionOnOrganization(app.user, 'read_devis') %}
+				{% if checkPermissionOnOrganization(app.user, 'manage_client') %}
 					<li>
-						<a href="{{ path('app_devis', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<a href="{{ path('app_clients', {organization: getCurrentOrganization().id}) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
 							<span class="mdi mdi-account-tie text-2xl"></span>
-							Devis
+							Gérer les clients
 						</a>
 					</li>
 				{% endif %}
+
+				{# <li>
+					<a href="#" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<span class="mdi mdi-account-multiple text-2xl"></span>
+						Mes clients
+					</a>
+				{# <li class="accordion hover:cursor-pointer">
+					<div class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+						<span class="mdi mdi-domain text-2xl"></span>
+						Dropdown
+						<span class="mdi mdi-chevron-down"></span>
+					</div>
+					<ul class="content hidden mt-3 flex flex-col gap-2">
+						<li>
+							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg transition-all duration-300 hover:text-white hover:bg-blighter-green">
+								Lien 1
+							</a>
+						</li>
+						<li>
+							<a href="#" class="px-9 py-2 flex gap-2 items-center rounded-lg transition-all duration-300 hover:text-white hover:bg-blighter-green">
+								Lien 2
+							</a>
+						</li>
+					</ul>
+				</li> #}
 			</ul>
 		</nav>
 		<a href="{{ path('app_logout') }}" class="mx-auto flex gap-2 items-center transition-all duration-300 hover:text-white">

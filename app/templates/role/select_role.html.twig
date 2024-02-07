@@ -1,18 +1,12 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Gestion des rôles{% endblock %}
-
+{% block title %}Donner un rôle{% endblock %}
 {% block body %}
 <div class="px-10 py-5">
-	<h1 class="text-3xl font-semibold">Select un role</h1>
-	
-	{{ form_start(form) }}
-
-	{{ form_end(form) }}
+	<h1 class="text-3xl font-semibold pb-6">Donner un rôle</h1>
+	<div class="p-14 rounded-xl bg-white max-w-lg">
+		{{ form_start(form) }}
+		{{ form_end(form) }}
+	</div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('assets/js/accordion.js') }}"></script>
 {% endblock %}

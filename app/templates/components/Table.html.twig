@@ -15,17 +15,11 @@
 		{% for row in data %}
 			<tr class="relative">
 				{% for key, value in cols %}
-					{% set currentValue = row %}
-					{% for prop in key|split('.') %}
-							{% set currentValue = attribute(currentValue, prop) is defined ? attribute(currentValue, prop) : 'null' %}
-					{% endfor %}
-					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-						{% if block(key) is defined %}
-							{{block(key)|raw}}
-						{% else %}
-							{{currentValue}}
-						{% endif %}
-					</td>
+					{% if attribute(row, key).timestamp is defined %}
+						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ attribute(row, key)|date("Y-m-d") }}</td>
+					{% else %}
+						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ attribute(row, key) }}</td>
+					{% endif %}
 				{% endfor %}
 
 				{% if action is defined and action == true %}
