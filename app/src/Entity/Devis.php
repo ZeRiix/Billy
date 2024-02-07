@@ -22,6 +22,7 @@ enum DeviStatus: string {
     case EDITING = 'editing';
     case LOCK = 'lock';
     case SIGN = 'sign';
+    case COMPLETED = 'completed';
 }
 
 #[ORM\Entity(repositoryClass: DevisRepository::class)]

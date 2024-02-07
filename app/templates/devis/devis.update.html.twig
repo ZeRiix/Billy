@@ -18,9 +18,12 @@
 			{{form_row(form.client)}}
 			{{form_row(form.discount)}}
 		</div>
-		<div class="w-full flex justify-end">
-			{{ form_widget(form.submit) }}
-		</div>
+
+		{% if quotation.status.value == 'editing' %}
+			<div class="w-full flex justify-end">
+				{{ form_widget(form.submit) }}
+			</div>
+		{% endif %}
 
 		<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
 		
@@ -62,13 +65,13 @@
 			</a>
 		</twig:Table>
 
-		{% if quotation.status.value == 'sign' %}
-			<a>Générer ma facture</a>
-		{% endif %}
-
 		<span>
 			Total HT : {{ totalHT }} €
 		</span>
+
+		{% if quotation.status.value == 'sign' %}
+			<a href="#">Générer ma facture</a>
+		{% endif %}
 	</div>
 	
 	<a href="{{ path('app_devis', {organization: organization.id}) }}">Retour au devis</a>

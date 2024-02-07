@@ -20,8 +20,8 @@
 							{% set currentValue = attribute(currentValue, prop) is defined ? attribute(currentValue, prop) : 'null' %}
 					{% endfor %}
 					<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-						{% if block(key) is defined %}
-							{{block(key)|raw}}
+						{% if block(key|replace({'.': '_'})) is defined %}
+							{{block(key|replace({'.': '_'}))|raw}}
 						{% else %}
 							{{currentValue}}
 						{% endif %}
