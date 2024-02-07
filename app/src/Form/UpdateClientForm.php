@@ -23,7 +23,8 @@ class UpdateClientForm extends AbstractType
 			->add("phone", TelType::class, ["label" => "Téléphone"])
 			->add("activity", TextareaType::class, ["label" => "Activité"])
 			->add("address", TextareaType::class, ["label" => "Adresse"])
-			->add("submit", SubmitType::class, ["label" => "Enregistrer les modifications"]);
+			->add("siret", TextType::class, ["label" => "Siret"])
+			->add("submit", SubmitType::class, ["label" => "Valider"]);
 	}
 
 	public function configureOptions(OptionsResolver $resolver): void

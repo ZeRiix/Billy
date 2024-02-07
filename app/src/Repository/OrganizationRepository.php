@@ -20,22 +20,21 @@ class OrganizationRepository extends ServiceEntityRepository
 {
 	use SaveTrait;
 
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Organization::class);
-    }
+	public function __construct(ManagerRegistry $registry)
+	{
+		parent::__construct($registry, Organization::class);
+	}
 
 	public function findOneByName(string $name): ?Organization
 	{
-		return $this->createQueryBuilder('o')
-			->andWhere('o.name = :name')
-			->setParameter('name', $name)
+		return $this->createQueryBuilder("o")
+			->andWhere("o.name = :name")
+			->setParameter("name", $name)
 			->getQuery()
-			->getOneOrNullResult()
-		;
+			->getOneOrNullResult();
 	}
 
-	public function userCanCreateOrganization(User $user) : bool 
+	public function userCanCreateOrganization(User $user): bool
 	{
 		return $this->findOneBy(["createdBy" => $user]) === null;
 	}
@@ -55,28 +54,33 @@ class OrganizationRepository extends ServiceEntityRepository
 		return count($result) > 0;
 	}
 
-//    /**
-//     * @return Organization[] Returns an array of Organization objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+	public function getUsersByOrganization(Organization $organization)
+	{
+		return $this->find(["id" => $organization->getId()])->getUsers();
+	}
 
-//    public function findOneBySomeField($value): ?Organization
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+	//    /**
+	//     * @return Organization[] Returns an array of Organization objects
+	//     */
+	//    public function findByExampleField($value): array
+	//    {
+	//        return $this->createQueryBuilder('o')
+	//            ->andWhere('o.exampleField = :val')
+	//            ->setParameter('val', $value)
+	//            ->orderBy('o.id', 'ASC')
+	//            ->setMaxResults(10)
+	//            ->getQuery()
+	//            ->getResult()
+	//        ;
+	//    }
+
+	//    public function findOneBySomeField($value): ?Organization
+	//    {
+	//        return $this->createQueryBuilder('o')
+	//            ->andWhere('o.exampleField = :val')
+	//            ->setParameter('val', $value)
+	//            ->getQuery()
+	//            ->getOneOrNullResult()
+	//        ;
+	//    }
 }

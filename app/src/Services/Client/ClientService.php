@@ -28,13 +28,14 @@ class ClientService
 		if ($this->clientRepository->findOneBySiret($client->getSiret())) {
 			throw new \Exception("Un client avec ce siret existe déjà.");
 		}
-		// check siret is valid and get data client
-		$responseForSiret = $this->organizationService::getResponseForSiret($client->getSiret())->toArray();
-
-		// set response data to client
+		if ($client->getSiret() !== null) {
+			// check siret is valid and get data client
+			$responseForSiret = $this->organizationService::getResponseForSiret($client->getSiret())->toArray();
+			// set response data to client
+			$client->setName($this->organizationService::constructNameForOrganization($responseForSiret));
+			$client->setAddress($this->organizationService::constructAddressForOrganization($responseForSiret));
+		}
 		$client->setOrganization($organization);
-		$client->setName($this->organizationService::constructNameForOrganization($responseForSiret));
-		$client->setAddress($this->organizationService::constructAddressForOrganization($responseForSiret));
 		$this->clientRepository->save($client);
 	}
 

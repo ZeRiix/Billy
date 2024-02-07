@@ -22,9 +22,9 @@ use App\Form\LeaveOrganizationByForm;
 
 class OrganizationController extends AbstractController
 {
-    #[Route('/organizations', name: 'app_organizations', methods: ["GET"])]
-    public function index(OrganizationService $organizationService): Response
-    {
+	#[Route("/organizations", name: "app_organizations", methods: ["GET"])]
+	public function index(OrganizationService $organizationService): Response
+	{
 		/** @var User $user */
 		$user = $this->getUser();
 		$canCreate = true;
@@ -33,28 +33,28 @@ class OrganizationController extends AbstractController
 			$canCreate = false;
 		}
 
-        return $this->render('organization/organizations.html.twig', [
-            'organizations' => $user->getOrganizations(),
-			'canCreate' => $canCreate
-        ]);
-    }
+		return $this->render("organization/organizations.html.twig", [
+			"organizations" => $user->getOrganizations(),
+			"canCreate" => $canCreate,
+		]);
+	}
 
-	#[Route('/organization/{organization}', name: 'app_organization_get_id', methods: ["GET"])]
-    public function view(Organization $organization): Response
-    {
+	#[Route("/organization/{organization}", name: "app_organization_get_id", methods: ["GET"])]
+	public function view(Organization $organization): Response
+	{
 		//vérifier si le user est bien "vérifié" en db sinon l'empêcher de se connecter et lui demander de contacter l'admin
 		if (!$this->isGranted(OrganizationVoter::VIEW, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour accéder à cette organisation.");
 			return $this->redirectToRoute("app_organizations");
 		}
-        return $this->render('organization/organization.view.html.twig', [
-            'organization' => $organization
-        ]);
-    }
+		return $this->render("organization/organization.view.html.twig", [
+			"organization" => $organization,
+		]);
+	}
 
-	#[Route('/organization', name: 'app_create_organization', methods: ["GET", "POST"])]
-    public function create(Request $request, OrganizationService $organizationService): Response
-    {
+	#[Route("/organization", name: "app_create_organization", methods: ["GET", "POST"])]
+	public function create(Request $request, OrganizationService $organizationService): Response
+	{
 		if (!$this->isGranted(OrganizationVoter::CREATE)) {
 			$this->addFlash("error", "Vous possédez déjà une organisation.");
 			return $this->redirectToRoute("app_organizations");
@@ -84,18 +84,21 @@ class OrganizationController extends AbstractController
 			}
 		}
 
-        return $this->render(
+		return $this->render(
 			"organization/organization.create.html.twig",
 			[
 				"form" => $form->createView(),
 			],
 			$response
 		);
-    }
+	}
 
-	#[Route('/organization/{organization}/edit', name: 'app_update_organization', methods: ["GET", "POST"])]
-    public function update(Request $request, Organization $organization, OrganizationService $organizationService): Response
-    {
+	#[Route("/organization/{organization}/edit", name: "app_update_organization", methods: ["GET", "POST"])]
+	public function update(
+		Request $request,
+		Organization $organization,
+		OrganizationService $organizationService
+	): Response {
 		if (!$this->isGranted(OrganizationVoter::UPDATE, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour éditer cette organisation.");
 			return $this->redirectToRoute("app_organization_get_id", [
@@ -118,13 +121,16 @@ class OrganizationController extends AbstractController
 				$this->addFlash("error", $e->getMessage());
 			}
 		}
-		
-        return $this->render('organization/organization.update.html.twig', [
-			"form" => $form->createView(),
-			"organization" => $organization
-		], $response
+
+		return $this->render(
+			"organization/organization.update.html.twig",
+			[
+				"form" => $form->createView(),
+				"organization" => $organization,
+			],
+			$response
 		);
-    }
+	}
 
 	#[
 		Route(
@@ -133,8 +139,11 @@ class OrganizationController extends AbstractController
 			methods: ["GET", "POST"]
 		)
 	]
-	public function invite(Request $request, OrganizationService $organizationService, Organization $organization): Response
-	{
+	public function invite(
+		Request $request,
+		OrganizationService $organizationService,
+		Organization $organization
+	): Response {
 		if (!$this->isGranted(OrganizationVoter::INVITE, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour inviter un utilsateur");
 			return $this->redirectToRoute("app_organization_get_id", [
@@ -151,9 +160,7 @@ class OrganizationController extends AbstractController
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash(
 					"success",
-					"L'utilisateur a bien été invité dans l'organisation : " .
-						$organization->getName() .
-						"."
+					"L'utilisateur a bien été invité dans l'organisation : " . $organization->getName() . "."
 				);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -176,8 +183,12 @@ class OrganizationController extends AbstractController
 			methods: ["GET"]
 		)
 	]
-	public function join(Request $request, OrganizationService $organizationService, Organization $organization, User $user): Response
-	{
+	public function join(
+		Request $request,
+		OrganizationService $organizationService,
+		Organization $organization,
+		User $user
+	): Response {
 		$response = new Response();
 		try {
 			$organizationService->join($organization, $user);
@@ -187,20 +198,17 @@ class OrganizationController extends AbstractController
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 			$this->addFlash("error", $e->getMessage());
 		}
-		return $this->render('organization/organization.view.html.twig', [
-            'organization' => $organization
-        ]);
+		return $this->render("organization/organization.view.html.twig", [
+			"organization" => $organization,
+		]);
 	}
 
-	#[
-		Route(
-			"/organization/{id}/leave",
-			name: "organization_leave_user",
-			methods: ["GET", "POST"]
-		)
-	]
-	public function leave(Request $request, OrganizationService $organizationService, Organization $organization): Response
-	{
+	#[Route("/organization/{id}/leave", name: "organization_leave_user", methods: ["GET", "POST"])]
+	public function leave(
+		Request $request,
+		OrganizationService $organizationService,
+		Organization $organization
+	): Response {
 		/** @var User $user */
 		$user = $this->getUser();
 
@@ -234,15 +242,19 @@ class OrganizationController extends AbstractController
 			methods: ["GET", "POST"]
 		)
 	]
-	public function leave_user_by(Request $request, OrganizationService $organizationService, Organization $organization, User $user): Response
-	{
+	public function leave_user_by(
+		Request $request,
+		OrganizationService $organizationService,
+		Organization $organization,
+		User $user
+	): Response {
 		if (!$this->isGranted(OrganizationVoter::REMOVE_USER, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un utilisateur");
 			return $this->redirectToRoute("app_organization_get_id", [
 				"organization" => $organization->getId(),
 			]);
 		}
-		
+
 		$response = new Response();
 		$form = $this->createForm(LeaveOrganizationByForm::class, null, [
 			"users" => $organization->getUsers(),
@@ -264,6 +276,30 @@ class OrganizationController extends AbstractController
 			"organization/leave_user_by.html.twig",
 			[
 				"form" => $form->createView(),
+			],
+			$response
+		);
+	}
+
+	#[Route("/organization/{organization}/users", name: "organization_list_users", methods: ["GET"])]
+	public function list_users(
+		Request $request,
+		OrganizationService $organizationService,
+		Organization $organization
+	): Response {
+		if (!$this->isGranted(OrganizationVoter::VIEW, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour lister les utilisateurs de cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
+		$response = new Response();
+		$users = $organizationService->getUsers($organization);
+		return $this->render(
+			"organization/list_users.html.twig",
+			[
+				"users" => $users,
 			],
 			$response
 		);

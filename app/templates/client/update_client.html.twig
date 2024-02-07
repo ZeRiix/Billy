@@ -1,11 +1,32 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Modifier le client{% endblock %}
-
+{% block title %}Update client{% endblock %}
 {% block body %}
-    <h1>Modifier le client</h1>
-
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+<div class="px-10 py-5">
+	<h1 class="text-3xl font-semibold pb-6">Modifier un client</h1>
+	<div class="p-14 rounded-xl bg-white">
+		{{ form_start(form) }}
+			<div class="flex flex-col gap-10 items-start">
+				<div class="flex gap-8">
+					<div class="flex flex-col gap-5">
+						{{ form_row(form.name) }}
+						{{ form_row(form.firstname) }}
+						{{ form_row(form.email) }}
+						{{ form_row(form.phone) }}
+					</div>
+					<div class="flex flex-col gap-5">
+					{% if form.siret.vars.value is not null %}
+						{{ form_row(form.activity) }}
+						{{ form_row(form.siret) }}
+					{% endif %}
+						{{ form_row(form.address) }}
+					</div>
+				</div>
+				<div class="w-full flex justify-end">
+					{{ form_row(form.submit) }}
+				</div>
+			</div>
+		{{ form_end(form) }}
+	</div>
+</div>
 {% endblock %}
