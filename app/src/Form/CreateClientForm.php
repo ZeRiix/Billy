@@ -6,6 +6,7 @@ use App\Entity\Client;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -52,12 +53,14 @@ class CreateClientForm extends AbstractType
 				"attr" => [
 					"placeholder" => "Activité du client",
 				],
+				"required" => false,
 			])
-			->add("siret", TextType::class, [
+			->add("siret", IntegerType::class, [
 				"label" => "SIRET",
 				"attr" => [
 					"placeholder" => "Numéro SIRET du client",
 				],
+				"required" => false,
 			])
 			->add("submit", SubmitType::class, [
 				"label" => "Créer le client",

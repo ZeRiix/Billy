@@ -44,8 +44,8 @@ class OrganizationService
 		$this->organizationRepository->save($organization);
 	}
 
-	public function create(Organization $organization, User $user) : Organization
-		{
+	public function create(Organization $organization, User $user): Organization
+	{
 		// check if user is already owner of an organization
 		$isOwner = $this->roleRepository->isOwner($user);
 		if ($isOwner) {
@@ -172,7 +172,9 @@ class OrganizationService
 				$organization->getName() .
 				"." .
 				"<a href=\"" .
-				$_SERVER['REQUEST_SCHEME']. "://" . $_SERVER['HTTP_HOST'] .
+				$_SERVER["REQUEST_SCHEME"] .
+				"://" .
+				$_SERVER["HTTP_HOST"] .
 				"/organization/" .
 				$organization->getId() .
 				"/user/" .
@@ -236,5 +238,10 @@ class OrganizationService
 	public function getCreatedBy(User $user): ?Organization
 	{
 		return $this->organizationRepository->findOneBy(["createdBy" => $user]);
+	}
+
+	public function getUsers(Organization $organization)
+	{
+		return $this->organizationRepository->getUsersByOrganization($organization);
 	}
 }

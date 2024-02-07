@@ -1,28 +1,30 @@
 {% extends 'connected.html.twig' %}
 
 {% block title %}Créer un rôle{% endblock %}
-
 {% block body %}
-<div class="px-10 py-5">
-	<h1 class="text-3xl font-semibold">Créer un role</h1>
-	
-	{{ form_start(form) }}
-
-		{{ form_row(form.name) }}
-		{{ form_row(form.manage_org) }}
-		{{ form_row(form.manage_user) }}
-		{{ form_row(form.manage_client) }}
-		{{ form_row(form.write_devis) }}
-		{{ form_row(form.write_factures) }}
-		{{ form_row(form.manage_service) }}
-
-		{{ form_row(form.submit) }}
-
-	{{ form_end(form) }}
-</div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('assets/js/accordion.js') }}"></script>
+	<h1 class="text-3xl font-semibold pb-6">Créer un rôle</h1>
+	<div class="p-14 rounded-xl bg-white max-w-lg">
+		{{ form_start(form) }}
+			<div class="flex flex-col gap-10 items-start">
+				{{ form_row(form.name) }}
+				<div class="flex gap-8">
+					<div class="flex flex-col gap-5">
+						{{ form_row(form.manage_org) }}
+						{{ form_row(form.manage_client) }}
+						{{ form_row(form.manage_user) }}
+						{{ form_row(form.manage_service) }}
+					</div>
+					<div class="flex flex-col gap-5">
+						{{ form_row(form.write_factures) }}
+						{{ form_row(form.write_devis) }}
+						{{ form_row(form.read_devis) }}
+						{{ form_row(form.read_factures) }}
+					</div>
+				</div>
+				<div class="w-full flex justify-end">
+					{{ form_row(form.submit) }}
+				</div>
+			</div>
+		{{ form_end(form) }}
+	</div>
 {% endblock %}

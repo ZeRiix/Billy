@@ -21,7 +21,10 @@ class ClientController extends AbstractController
 	public function getAll(ClientService $clientService, Organization $organization): Response
 	{
 		if (!$this->isGranted(ClientVoter::VIEW, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour consulter les clients dans cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour consulter les clients dans cette organisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
 		$response = new Response();
@@ -38,11 +41,17 @@ class ClientController extends AbstractController
 		);
 	}
 
-	#[Route("/organization/{organization}/client", name: "app_client", methods: ["GET", "POST"])]
-	public function create(Request $request, ClientService $clientService, Organization $organization): Response
-	{
+	#[Route("/organization/{organization}/client", name: "app_client_create", methods: ["GET", "POST"])]
+	public function create(
+		Request $request,
+		ClientService $clientService,
+		Organization $organization
+	): Response {
 		if (!$this->isGranted(ClientVoter::CREATE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour créer un client dans cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour créer un client dans cette organisation."
+			);
 			return $this->redirectToRoute("clients");
 		}
 		$response = new Response();
@@ -80,10 +89,17 @@ class ClientController extends AbstractController
 			methods: ["GET", "POST"]
 		)
 	]
-	public function update(Request $request, ClientService $clientService, Client $client, Organization $organization): Response
-	{
+	public function update(
+		Request $request,
+		ClientService $clientService,
+		Client $client,
+		Organization $organization
+	): Response {
 		if (!$this->isGranted(ClientVoter::UPDATE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour modifier un client dans cette organisation.");
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour modifier un client dans cette organisation."
+			);
 			return $this->redirectToRoute("clients");
 		}
 		$response = new Response();
