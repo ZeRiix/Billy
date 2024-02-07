@@ -7,6 +7,7 @@ services:
         user: 1000:1000
         # command: composer install --ignore-platform-reqs --no-scripts
         # command: composer require symfony/ux-twig-component
+        # command: composer require dompdf/dompdf
         command: composer update --ignore-platform-reqs --no-scripts
 
     php:

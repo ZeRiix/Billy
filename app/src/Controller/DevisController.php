@@ -128,25 +128,25 @@ class DevisController extends AbstractController
 		}
 
 		$response = new Response();
-
-		$haveLogo = false;
+		$organization = $devis->getOrganization();
 
 		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
 
-		$imagePath = $this->getParameter('kernel.project_dir') . '/public/storage/images/organizations/' . $devis->getOrganization()->getLogoName();
+		$kernel_dir = $this->getParameter('kernel.project_dir');
 
-		if (file_exists($imagePath)) {
-			$haveLogo = true;
+		if ($organization->getLogoName() === null) {
+			$imagePath = $kernel_dir . '/public/storage/images/organizations/default.jpg';
+		} else {
+			$imagePath = $kernel_dir . '/public/storage/images/organizations/' . $devis->getOrganization()->getLogoName();
 		}
 
 		$html = $this->renderView('generate_pdf/devis-pdf.html.twig', [
 			"devis" => $devis,
 			"totalHt" => $totalHt,
-			"logoPath" => $imagePath,
-			"haveLogo" => $haveLogo
+			"logoPath" => $imagePath
 		]);
 
-		$filenamePdf = "devis-" . $devis->getId() . ".pdf";
+		$filenamePdf = $organization->getName() ."-" . "devis-" . $devis->getId() . ".pdf";
 
 		try {
 			/** @var Dompdf $pdf */
