@@ -1,23 +1,21 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-	hidden = true;
 
 	connect() {
-		this.element.addEventListener('click', this.toggleField.bind(this));
+		let checkboxInput = this.element.querySelector('#toggle-button-element');
+		checkboxInput.addEventListener('change', () => this.toggleField(checkboxInput.checked));
 	}
 
-	toggleField() {
+	toggleField(isChecked) {
 		const hiddenField = document.querySelectorAll('.hidden-field');
 
 		hiddenField.forEach((field) => {
-			if (this.hidden) {
+			if (isChecked) {
 				field.classList.remove('hidden');
 			} else {
 				field.classList.add('hidden');
 			}
 		});
-
-		this.hidden = !this.hidden;
 	}
 }
