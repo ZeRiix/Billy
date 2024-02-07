@@ -17,6 +17,7 @@ class OrganizationVoter extends Voter
     public const UPDATE = 'ORGANIZATION_UPDATE';
 	public const INVITE = 'ORGANIZATION_INVITE';
 	public const REMOVE_USER = 'ORGANIZATION_REMOVE_USER';
+	public const WRITE_DEVIS = 'ORGANIZATION_WRITE_DEVIS';
 
 	public function __construct(
 		private RoleRepository $roleRepository,
@@ -27,7 +28,7 @@ class OrganizationVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return (
-			in_array($attribute, [self::VIEW, self::UPDATE, self::INVITE, self::REMOVE_USER]) && 
+			in_array($attribute, [self::VIEW, self::UPDATE, self::INVITE, self::REMOVE_USER, self::WRITE_DEVIS]) && 
 			$subject instanceof Organization
 		) || $attribute === self::CREATE;
     }
@@ -56,6 +57,12 @@ class OrganizationVoter extends Voter
 		}
 		else if($attribute === self::REMOVE_USER){
 			return $this->roleRepository->checkPermissionOnOrganization($user, $organization, "manage_user");
+		}
+		else if($attribute === self::REMOVE_USER){
+			return $this->roleRepository->checkPermissionOnOrganization($user, $organization, "manage_user");
+		}
+		else if($attribute === self::WRITE_DEVIS){
+			return $this->roleRepository->userHasPermission($organization, $user, "write_devis");
 		}
 		
 		return false;

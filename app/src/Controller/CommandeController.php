@@ -13,6 +13,7 @@ use App\Services\Commande\CommandeService;
 use App\Entity\Commande;
 use App\Entity\Organization;
 use App\Entity\Devis;
+use App\Entity\DeviStatus;
 //form
 use App\Form\CreateCommandeForm;
 use App\Form\EditCommandeForm;
@@ -26,6 +27,10 @@ class CommandeController extends AbstractController
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(CommandeVoter::CREATE, $devis)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour créer une commande.");
+			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		}
+
+		if($devis->getStatus() !== DeviStatus::EDITING){
 			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 		}
 
@@ -64,6 +69,10 @@ class CommandeController extends AbstractController
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(CommandeVoter::UPDATE, $commande)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour modifier une commande.");
+			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		}
+
+		if($devis->getStatus() !== DeviStatus::EDITING){
 			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 		}
 

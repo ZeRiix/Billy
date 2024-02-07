@@ -6,6 +6,7 @@ use App\Entity\Devis;
 use App\Entity\DeviStatus;
 use App\Entity\Organization;
 use App\Repository\DevisRepository;
+use Error;
 
 class DevisService {
 
@@ -44,6 +45,26 @@ class DevisService {
 	{
 		if($devis->getOrganization() !== $organization) return false;
 		return true;
+	}
+
+	public function sendDevis(Devis $devis){
+		if($devis->getStatus() !== DeviStatus::EDITING){
+			throw new Error("Vous ne pouvez pas envoyer un devis vérouiller.");
+		}
+
+		if(!isset($devis->getCommandes()[0])){
+			throw new Error("Il faut minimum une commande pour envoyer un devis.");
+		}
+
+		if($devis->getClient() === null){
+			throw new Error("Vous n'avez pas selectioner de client pour ce devis.");
+		}
+
+		$devis->setStatus(DeviStatus::LOCK);
+
+		//send mail
+
+		$this->devisRepository->save($devis);
 	}
 
 }

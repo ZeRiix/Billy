@@ -82,7 +82,12 @@ class DevisController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			try {
 				$devisService->update($devis);
-				$this->addFlash("success", "Le devis a bien été édité.");
+				if(
+					$request->get("redirectCommand") !== "on" &&
+					$request->get("redirectSend") !== "on"
+				){
+					$this->addFlash("success", "Le devis a bien été édité.");
+				}
 			} catch (\Exception $e) {
 				$this->addFlash("error", $e->getMessage());
 			}
@@ -93,6 +98,10 @@ class DevisController extends AbstractController
 
 		if($request->get("redirectCommand") === "on" && $form->isValid()){
 			return $this->redirectToRoute('app_create_commande', ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		}
+
+		if($request->get("redirectSend") === "on" && $form->isValid()){
+			return $this->redirectToRoute('app_send_devis', ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 		}
 
 		return $this->render('devis/devis.update.html.twig', [
@@ -161,5 +170,23 @@ class DevisController extends AbstractController
 		}
 
 		return $response;
+	}
+
+	#[Route('/organization/{organization}/quotation/{devis}/send', name: "app_send_devis", methods: ["GET"])]
+	public function sendDevis(Devis $devis, DevisService $devisService){
+		$organization = $devis->getOrganization();
+		if (!$this->isGranted(OrganizationVoter::WRITE_DEVIS, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour éditer ce devis.");
+			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
+		}
+
+		try {
+			$devisService->sendDevis($devis);
+			$this->addFlash("success", "Le devis a bien étais envoyer.");
+		} catch (\Exception $e) {
+			$this->addFlash("error", $e->getMessage());
+		}
+
+		return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 	}
 }

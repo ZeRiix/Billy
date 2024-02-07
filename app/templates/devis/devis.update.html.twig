@@ -23,25 +23,38 @@
 			<div class="w-full flex justify-end">
 				{{ form_widget(form.submit) }}
 			</div>
-		{% endif %}
 
-		<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
+			<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
+			<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
+		{% endif %}
 		
 	</fieldset>
 
 	{{ form_end(form) }}
 
-	<label 
-		for="redirectCommand" 
-		onclick="
-		setTimeout(() => {
-			document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
-			
-		})
-		"
-	>
-		Ajouter une commande
-	</label>
+	{% if quotation.status.value == 'editing' %}
+		<label 
+			for="redirectCommand" 
+			onclick="
+			setTimeout(() => {
+				document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+			})
+			"
+		>
+			Ajouter une commande
+		</label>
+
+		<label 
+			for="redirectSend" 
+			onclick="
+			setTimeout(() => {
+				document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+			})
+			"
+		>
+			Envoyer
+		</label>
+	{% endif %}
 	
 	<div class="flex flex-col gap-10">
 		<!-- table d'affichage des commandes ajoutées  -->
