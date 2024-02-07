@@ -19,11 +19,11 @@
 			{{form_row(form.discount)}}
 		</div>
 
-		{% if quotation.status.value == 'editing' %}
-			<div class="w-full flex justify-end">
-				{{ form_widget(form.submit) }}
-			</div>
+		<div class="w-full flex justify-end {{quotation.status.value != 'editing' ? 'hidden' : ''}}">
+			{{ form_widget(form.submit) }}
+		</div>
 
+		{% if quotation.status.value == 'editing' %}
 			<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
 			<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
 		{% endif %}
@@ -67,7 +67,7 @@
 				quantity: 'Quantité',
 				montant: 'Montant (en €)'
 			}"
-			:action="true"
+			:action="quotation.status.value == 'editing'"
 		>
 
 			<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
