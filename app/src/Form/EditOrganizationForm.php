@@ -19,19 +19,10 @@ class EditOrganizationForm extends AbstractType
 		$builder
 			->add("activity", TextType::class, [
 				"required" => false,
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Activité",
-				"label_attr" => [
-					"class" => "form-label",
-				],
 			])
 			->add("email", EmailType::class, [
 				"required" => false,
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Adresse email",
 				"label_attr" => [
 					"class" => "form-label",
@@ -39,25 +30,18 @@ class EditOrganizationForm extends AbstractType
 			])
 			->add("phone", TelType::class, [
 				"required" => false,
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Téléphone",
-				"label_attr" => [
-					"class" => "form-label",
-				],
 			])
 			->add('logoFile', VichImageType::class, [
                 'required' => false,
+				"label" => "Logo",
                 'allow_delete' => true,
+				'delete_label' => 'Supprimer',
                 'download_uri' => true,
+				'download_label' => 'Télécharger',
                 'image_uri' => true,
             ])
 			->add("submit", SubmitType::class, [
-				"attr" => [
-					"class" =>
-						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-				],
 				"label" => "Modifier",
 			]);
 	}

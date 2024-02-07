@@ -18,42 +18,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CreateCommandeForm extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options) : void
+	public function buildForm(FormBuilderInterface $builder, array $options): void
 	{
 		$organizationId = $options["organization_id"];
 		$builder
 			->add("name", TextType::class, [
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Nom de la commande",
 			])
 			->add("description", TextareaType::class, [
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Description de la commande",
 			])
 			->add("unitPrice", MoneyType::class, [
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Prix",
 			])
 			->add("quantity", IntegerType::class, [
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Quantité",
 			])
 			->add("service", EntityType::class, [
 				"class" => Service::class,
 				"choice_label" => "name",
-				"query_builder" => function (ServiceRepository $serviceRepository) use ($organizationId): QueryBuilder {
-					return $serviceRepository->createQueryBuilder("s")
-											->orderBy("s.name", "ASC")
-											->where("s.organization = :organization")
-											->setParameter("organization", $organizationId);
+				"query_builder" => function (ServiceRepository $serviceRepository) use (
+					$organizationId
+				): QueryBuilder {
+					return $serviceRepository
+						->createQueryBuilder("s")
+						->orderBy("s.name", "ASC")
+						->where("s.organization = :organization")
+						->setParameter("organization", $organizationId);
 				},
 			])
 			->add("submit", SubmitType::class, [

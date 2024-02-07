@@ -33,10 +33,6 @@ class SelectRoleForm extends AbstractType
 		}
 
 		$builder->add("submit", SubmitType::class, [
-			"attr" => [
-				"class" =>
-					"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-			],
 			"label" => "Attribuer",
 		]);
 	}

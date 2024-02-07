@@ -15,13 +15,7 @@ class CreateDevisForm extends AbstractType
 	{
 		$builder
 			->add("name", TextType::class, [
-				"attr" => [
-					"class" => "w-80 p-2 rounded-lg outline-none border-solid border-2 focus:border-bgreen",
-				],
 				"label" => "Nom du devis",
-				"label_attr" => [
-					"class" => "form-label",
-				],
 			])
 			->add("submit", SubmitType::class, [
 				"label" => "Créer un devis",

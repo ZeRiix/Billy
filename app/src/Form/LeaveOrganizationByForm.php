@@ -22,10 +22,6 @@ class LeaveOrganizationByForm extends AbstractType
 			])
 			->add("submit", SubmitType::class, [
 				"label" => 'Quitter l\'organisation',
-				"attr" => [
-					"class" =>
-						"px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300",
-				],
 			]);
 	}
 
