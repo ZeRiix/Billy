@@ -256,29 +256,18 @@ class OrganizationController extends AbstractController
 		}
 
 		$response = new Response();
-		$form = $this->createForm(LeaveOrganizationByForm::class, null, [
-			"users" => $organization->getUsers(),
-		]);
-		$form->handleRequest($request);
-		if ($form->isSubmitted() && $form->isValid()) {
-			$data = $form->getData();
-			try {
-				$organizationService->leave($data["user"], $organization);
-				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'utilisateur a bien quitté l'organisation.");
-			} catch (\Exception $e) {
-				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-				$this->addFlash("error", $e->getMessage());
-			}
+		try {
+			$organizationService->leave($user, $organization);
+			$response->setStatusCode(Response::HTTP_OK);
+			$this->addFlash("success", "L'utilisateur a bien quitté l'organisation.");
+		} catch (\Exception $e) {
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$this->addFlash("error", $e->getMessage());
 		}
 
-		return $this->render(
-			"organization/leave_user_by.html.twig",
-			[
-				"form" => $form->createView(),
-			],
-			$response
-		);
+		return $this->redirectToRoute("organization_list_users", [
+			"organization" => $organization->getId(),
+		]);
 	}
 
 	#[Route("/organization/{organization}/users", name: "organization_list_users", methods: ["GET"])]

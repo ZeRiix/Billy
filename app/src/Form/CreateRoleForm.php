@@ -62,6 +62,20 @@ class CreateRoleForm extends AbstractType
 					"class" => "form-check-input",
 				],
 			])
+			->add("read_devis", CheckboxType::class, [
+				"label" => "Lire les devis",
+				"required" => false,
+				"attr" => [
+					"class" => "form-check-input",
+				],
+			])
+			->add("read_factures", CheckboxType::class, [
+				"label" => "Lire les factures",
+				"required" => false,
+				"attr" => [
+					"class" => "form-check-input",
+				],
+			])
 			->add("submit", SubmitType::class, [
 				"attr" => [
 					"class" =>

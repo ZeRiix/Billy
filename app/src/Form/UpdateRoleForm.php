@@ -22,6 +22,8 @@ class UpdateRoleForm extends AbstractType
 			->add("write_devis", CheckboxType::class, ["label" => "Write Devis", "required" => false])
 			->add("write_factures", CheckboxType::class, ["label" => "Write Facture", "required" => false])
 			->add("manage_service", CheckboxType::class, ["label" => "Manage Service", "required" => false])
+			->add("read_devis", CheckboxType::class, ["label" => "Read Devis", "required" => false])
+			->add("read_factures", CheckboxType::class, ["label" => "Read Facture", "required" => false])
 			->add("submit", SubmitType::class, ["label" => "Éditer"]);
 	}
 

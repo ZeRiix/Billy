@@ -1,6 +1,6 @@
 <div data-controller="flashes" class="fixed top-28 right-8 w-[400px] h-40 pointer-events-none">
 	{% for message in app.flashes("error") %}
-		<div data-flashes-target="flash" data-action="transitionend->flashes#removeFlash" class="flash w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-red-600 bg-white rounded shadow-md pointer-events-auto transition-opacity duration-700 ease-in opacity-100">
+		<div data-flashes-target="flash" data-action="transitioned->flashes#removeFlash" class="flash w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-red-600 bg-white rounded shadow-md pointer-events-auto transition-opacity duration-700 ease-in opacity-100">
 			<div class="flex gap-3 items-center">
 					<span class="mdi mdi-alert-circle-outline text-2xl text-red-600"></span>
 				<div>
@@ -13,7 +13,7 @@
 	{% endfor %}
 
 	{% for message in app.flashes("success") %}
-		<div data-flashes-target="flash" data-action="transitionend->flashes#removeFlash" class="flash w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-green-600 bg-white rounded shadow-md pointer-events-auto transition-opacity duration-700 ease-in opacity-100">
+		<div data-flashes-target="flash" data-action="transitioned->flashes#removeFlash" class="flash w-full min-h-10 p-3 flex gap-3 justify-between items-center border-l-4 border-green-600 bg-white rounded shadow-md pointer-events-auto transition-opacity duration-700 ease-in opacity-100">
 			<div class="flex gap-3 items-center">
 					<span class="mdi mdi-check-circle-outline text-2xl text-green-600"></span>
 				<div>
