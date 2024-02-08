@@ -24,16 +24,20 @@ class ClientService
 
 	public function create(Organization $organization, Client $client)
 	{
-		// check siret is already registered
-		if ($this->clientRepository->findOneBySiret($client->getSiret())) {
-			throw new \Exception("Un client avec ce siret existe déjà.");
-		}
 		if ($client->getSiret() !== null) {
+			// check siret is already registered
+			if ($this->clientRepository->findOneBySiret($client->getSiret())) {
+				throw new \Exception("Un client avec ce siret existe déjà.");
+			}
 			// check siret is valid and get data client
-			$responseForSiret = $this->organizationService::getResponseForSiret($client->getSiret())->toArray();
+			$responseForSiret = $this->organizationService
+				::getResponseForSiret($client->getSiret())
+				->toArray();
 			// set response data to client
 			$client->setName($this->organizationService::constructNameForOrganization($responseForSiret));
-			$client->setAddress($this->organizationService::constructAddressForOrganization($responseForSiret));
+			$client->setAddress(
+				$this->organizationService::constructAddressForOrganization($responseForSiret)
+			);
 		}
 		$client->setOrganization($organization);
 		$this->clientRepository->save($client);
@@ -66,6 +70,22 @@ class ClientService
 	{
 		if ($client->getOrganization() !== $organization) {
 			throw new \Exception("Ce client n'appartient pas à votre organisation.");
+		}
+		if ($client->getSiret() !== null) {
+			// check siret is already registered
+			$findedClient = $this->clientRepository->findOneBySiret($client->getSiret());
+			if ($findedClient && $findedClient->getId() !== $client->getId()) {
+				throw new \Exception("Un client avec ce siret existe déjà.");
+			}
+			// check siret is valid and get data client
+			$responseForSiret = $this->organizationService
+				::getResponseForSiret($client->getSiret())
+				->toArray();
+			// set response data to client
+			$client->setName($this->organizationService::constructNameForOrganization($responseForSiret));
+			$client->setAddress(
+				$this->organizationService::constructAddressForOrganization($responseForSiret)
+			);
 		}
 		$this->clientRepository->save($client);
 	}

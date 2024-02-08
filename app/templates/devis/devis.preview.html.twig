@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Preview{% endblock %}
+
+{% block layout %}
+	{% include '/generate_pdf/devis-pdf.html.twig' with {devis: devis, totalHt: totalHt, logoPath: logoPath} %}
+{% endblock %}

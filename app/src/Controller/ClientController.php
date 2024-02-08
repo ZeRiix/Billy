@@ -52,7 +52,7 @@ class ClientController extends AbstractController
 				"error",
 				"Vous n'avez pas les droits pour créer un client dans cette organisation."
 			);
-			return $this->redirectToRoute("clients");
+			return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
 		}
 		$response = new Response();
 
@@ -67,6 +67,7 @@ class ClientController extends AbstractController
 				$clientService->create($organization, $client);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "Le client a bien été créé.");
+				return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -77,6 +78,7 @@ class ClientController extends AbstractController
 			"client/create_client.html.twig",
 			[
 				"form" => $form->createView(),
+				"isCreating" => true,
 			],
 			$response
 		);
@@ -95,16 +97,16 @@ class ClientController extends AbstractController
 		Client $client,
 		Organization $organization
 	): Response {
-		if (!$this->isGranted(ClientVoter::UPDATE, $organization)) {
+		if (!$this->isGranted(ClientVoter::UPDATE, $client)) {
 			$this->addFlash(
 				"error",
 				"Vous n'avez pas les droits pour modifier un client dans cette organisation."
 			);
-			return $this->redirectToRoute("clients");
+			return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
 		}
 		$response = new Response();
 
-		$form = $this->createForm(UpdateClientForm::class, $client);
+		$form = $this->createForm(CreateClientForm::class, $client);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
@@ -114,6 +116,7 @@ class ClientController extends AbstractController
 				$clientService->update($organization, $client);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "Le client à bien été modifiée.");
+				return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -121,9 +124,10 @@ class ClientController extends AbstractController
 		}
 
 		return $this->render(
-			"client/update_client.html.twig",
+			"client/create_client.html.twig",
 			[
 				"form" => $form->createView(),
+				"isEntrprise" => !!$client->getSiret(),
 			],
 			$response
 		);

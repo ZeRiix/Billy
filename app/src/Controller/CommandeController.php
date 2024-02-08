@@ -113,6 +113,10 @@ class CommandeController extends AbstractController
 			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
 		}
 
+		if($devis->getStatus() !== DeviStatus::EDITING){
+			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		}
+
 		try {
 			$commandeService->delete($commande);
 			$this->addFlash("success", "La commande a bien été supprimée.");

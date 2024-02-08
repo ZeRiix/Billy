@@ -3,38 +3,38 @@
 {% block title %}Créer un client{% endblock %}
 
 {% block body %}
-<div data-controller="clientForm">
+<div data-controller="clientForm" data-clientform-entreprise-value="{{isEntrprise is defined ? isEntrprise : "null"}}">
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-3xl font-semibold pb-6">Créer un client</h1>
-		<label for="toggle-button-element" class="inline-flex relative items-center cursor-pointer">
-  			<input type="checkbox" id="toggle-button-element" class="sr-only peer" checked>
-  			<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-bgrey peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-bgreen"></div>
-  			<span class="ml-3 text-sm font-medium text-gray-900 dark:text-bgrey">Particulié ?</span>
-		</label>
+		<h1 class="text-3xl font-semibold pb-6">{{ isCreating is defined ? 'Création' : 'Modification' }} un client</h1>
+		{% if isCreating is defined %} 
+			<label for="toggle-button-element" class="inline-flex relative items-center cursor-pointer">
+				<input type="checkbox" id="toggle-button-element" class="sr-only peer" checked>
+				<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-bgrey peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-bgreen"></div>
+				<span class="ml-3 text-sm font-medium text-gray-900 dark:text-bgrey">Entreprise</span>
+			</label>
+		{% endif %}
 	</div>
 	<div class="p-14 rounded-xl bg-white">
 		{{ form_start(form) }}
-			<div class="flex flex-col gap-10 items-start">
-				<div class="flex flex-col lg:flex-row gap-8">
-					<div class="flex flex-col gap-5">
-						{{ form_row(form.name) }}
-						{{ form_row(form.firstname) }}
-						{{ form_row(form.email) }}
-						{{ form_row(form.phone) }}
-					</div>
-					<div class="flex flex-col gap-5">
-						<div class="hidden-field">
-							{{ form_row(form.activity) }}
-						</div>
-						<div class="hidden-field">
-							{{ form_row(form.siret) }}
-						</div>
-						{{ form_row(form.address) }}
-					</div>
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+				<div class="P-field">
+					{{ form_row(form.name) }}
 				</div>
-				<div class="w-full flex justify-end">
-					{{ form_row(form.submit) }}
+				<div class="P-field">
+					{{ form_row(form.firstname) }}
 				</div>
+				{{ form_row(form.email) }}
+				{{ form_row(form.phone) }}
+				<div class="E-field">
+					{{ form_row(form.activity) }}
+				</div>
+				<div class="E-field">
+					{{ form_row(form.siret) }}
+				</div>
+				<div class="P-field">
+					{{ form_row(form.address) }}
+				</div>
+				{{ form_row(form.submit) }}
 			</div>
 		{{ form_end(form) }}
 	</div>

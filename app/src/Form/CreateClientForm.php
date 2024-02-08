@@ -23,18 +23,21 @@ class CreateClientForm extends AbstractType
 				"attr" => [
 					"placeholder" => "Nom du client",
 				],
+				"required" => false,
 			])
 			->add("firstname", TextType::class, [
 				"label" => "Prénom",
 				"attr" => [
 					"placeholder" => "Prénom du client",
 				],
+				"required" => false,
 			])
 			->add("address", TextareaType::class, [
 				"label" => "Adresse",
 				"attr" => [
 					"placeholder" => "Adresse du client",
 				],
+				"required" => false,
 			])
 			->add("email", EmailType::class, [
 				"label" => "Email",
@@ -43,6 +46,7 @@ class CreateClientForm extends AbstractType
 				],
 			])
 			->add("phone", TelType::class, [
+				"required" => false,
 				"label" => "Téléphone",
 				"attr" => [
 					"placeholder" => "Numéro de téléphone du client",
@@ -63,7 +67,7 @@ class CreateClientForm extends AbstractType
 				"required" => false,
 			])
 			->add("submit", SubmitType::class, [
-				"label" => "Créer le client",
+				"label" => "Valider",
 			]);
 	}
 
