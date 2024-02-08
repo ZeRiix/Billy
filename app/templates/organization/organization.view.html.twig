@@ -24,10 +24,11 @@
 		{% endif %}
 		<ul class="flex flex-col gap-4">
 			<li><strong>Nom de l'organisation : </strong>{{ organization.name }}</li>
+			<li><strong>Activité : </strong>{{ organization.activity }}</li>
 			<li><strong>Adresse : </strong>{{ organization.address }}</li>
 			<li><strong>Email : </strong><a class="underline text-blue-500" href="mailto:{{ organization.email }}" target="_blank">{{ organization.email }}</a></li>
 			<li><strong>Tél : </strong>{{ organization.phone }}</li>
-			<li><strong>Siret : </strong>{{ organization.activity }}</li>
+			<li><strong>Siret : </strong>{{ organization.siret }}</li>
 			<li><strong>Ajoutée par : </strong>{{ organization.createdBy.firstName ~ " " ~ organization.createdBy.name }}</li>
 		</ul>
 	</div>

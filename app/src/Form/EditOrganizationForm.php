@@ -26,21 +26,20 @@ class EditOrganizationForm extends AbstractType
 				"label" => "Adresse email",
 				"label_attr" => [
 					"class" => "form-label",
-				]
+				],
 			])
 			->add("phone", TelType::class, [
 				"required" => false,
 				"label" => "Téléphone",
 			])
-			->add('logoFile', VichImageType::class, [
-                'required' => false,
+			->add("logoFile", VichImageType::class, [
+				"required" => false,
 				"label" => "Logo",
-                'allow_delete' => true,
-				'delete_label' => 'Supprimer',
-                'download_uri' => true,
-				'download_label' => 'Télécharger',
-                'image_uri' => true,
-            ])
+				"download_uri" => false,
+				"image_uri" => true,
+				"allow_delete" => true,
+				"delete_label" => "Supprimer",
+			])
 			->add("submit", SubmitType::class, [
 				"label" => "Modifier",
 			]);

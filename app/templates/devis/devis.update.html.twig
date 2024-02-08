@@ -3,90 +3,90 @@
 {% block title %}Modification du devis n° {{ quotation.id }}{% endblock %}
 
 {% block body %}
-<h1 class="mb-14 text-3xl font-semibold">Modification du devis n° {{ quotation.id }}</h1>
-<div class="p-14 rounded-xl bg-white">
-	{{ form_start(form) }}
-	<fieldset 
-		{{quotation.status.value != 'editing'? 'disabled' : ''}} 
-		class="flex flex-col gap-10 items-start"
-	>
-		<div class="flex gap-5">
-			{{form_row(form.name)}}
-			{{form_row(form.description)}}
-		</div>
-		<div class="flex gap-5">
-			{{form_row(form.client)}}
-			{{form_row(form.discount)}}
-		</div>
+	<h1 class="mb-14 text-3xl font-semibold">Modification du devis n° {{ quotation.id }}</h1>
+	<div class="p-14 rounded-xl bg-white">
+		{{ form_start(form) }}
+			<fieldset 
+				{{quotation.status.value != 'editing'? 'disabled' : ''}} 
+				class="flex flex-col gap-10 items-start"
+			>
+				<div class="flex gap-5">
+					{{form_row(form.name)}}
+					{{form_row(form.description)}}
+				</div>
+				<div class="flex gap-5">
+					{{form_row(form.client)}}
+					{{form_row(form.discount)}}
+				</div>
+				<div class="w-full mb-5 flex {{quotation.status.value != 'editing' ? 'hidden' : ''}}">
+					{% if quotation.status.value == 'editing' %}
+						<div class="flex gap-4 text-bgreen">
+							<label 
+								class="cursor-pointer hover:underline"
+								for="redirectCommand" 
+								onclick="
+								setTimeout(() => {
+									document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+								})
+								"
+							>
+								Ajouter une commande
+							</label>
+							<label 
+							class="cursor-pointer hover:underline"
+								for="redirectSend" 
+								onclick="
+								setTimeout(() => {
+									document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+								})
+								"
+							>
+								Envoyer
+							</label>
+						</div>
+					{% endif %}
+				</div>
+				{% if quotation.status.value == 'editing' %}
+					<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
+					<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
+				{% endif %}
+			</fieldset>
+			<div class="flex flex-col gap-10">
+				<!-- table d'affichage des commandes ajoutées  -->
+				<twig:Table
+					:data="commandes"
+					:cols="{
+						name: 'Nom de la commande',
+						'service.name': 'Nom du service',
+						'unitPrice': 'Prix (en €)',
+						quantity: 'Quantité',
+						montant: 'Montant (en €)'
+					}"
+					:action="quotation.status.value == 'editing'"
+				>
+					<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+						<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+					</a>
+					<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+						<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
+					</a>
+				</twig:Table>
 
-		<div class="w-full flex justify-end {{quotation.status.value != 'editing' ? 'hidden' : ''}}">
-			{{ form_widget(form.submit) }}
-		</div>
+				<span>
+					Total HT : {{ totalHT }} €
+				</span>
 
-		{% if quotation.status.value == 'editing' %}
-			<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
-			<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
-		{% endif %}
-		
-	</fieldset>
-
-	{{ form_end(form) }}
-
-	{% if quotation.status.value == 'editing' %}
-		<label 
-			for="redirectCommand" 
-			onclick="
-			setTimeout(() => {
-				document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
-			})
-			"
-		>
-			Ajouter une commande
-		</label>
-
-		<label 
-			for="redirectSend" 
-			onclick="
-			setTimeout(() => {
-				document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
-			})
-			"
-		>
-			Envoyer
-		</label>
-	{% endif %}
-	
-	<div class="flex flex-col gap-10">
-		<!-- table d'affichage des commandes ajoutées  -->
-		<twig:Table
-			:data="commandes"
-			:cols="{
-				name: 'Nom de la commande',
-				'service.name': 'Nom du service',
-				'unitPrice': 'Prix (en €)',
-				quantity: 'Quantité',
-				montant: 'Montant (en €)'
-			}"
-			:action="quotation.status.value == 'editing'"
-		>
-
-			<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
-				<span class="mdi mdi-pencil text-xl text-gray-500"></span>
-			</a>
-			<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
-				<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
-			</a>
-		</twig:Table>
-
-		<span>
-			Total HT : {{ totalHT }} €
-		</span>
-
-		{% if quotation.status.value == 'sign' %}
-			<a href="#">Générer ma facture</a>
-		{% endif %}
+				{% if quotation.status.value == 'sign' %}
+					<a href="#">Générer ma facture</a>
+				{% endif %}
+			</div>
+			<div class="w-full² flex justify-between items-center">
+				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="hover:text-bgreen">
+					<span class="mdi mdi-arrow-left"></span> 
+					Retour aux devis
+				</a>
+				{{ form_widget(form.submit) }}
+			</div>		
+		{{ form_end(form) }}
 	</div>
-	
-	<a href="{{ path('app_devis', {organization: organization.id}) }}">Retour au devis</a>
-</div>
 {% endblock %}
