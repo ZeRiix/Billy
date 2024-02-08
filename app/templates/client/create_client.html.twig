@@ -28,9 +28,12 @@
 				<div class="E-field">
 					{{ form_row(form.activity) }}
 				</div>
-				<div class="E-field">
+				<fieldset 
+					class="E-field"
+					{{isCreating is defined? '' : 'disabled'}} 
+				>
 					{{ form_row(form.siret) }}
-				</div>
+				</fieldset>
 				<div class="P-field">
 					{{ form_row(form.address) }}
 				</div>
