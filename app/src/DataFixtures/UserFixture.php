@@ -49,6 +49,7 @@ class UserFixture extends Fixture
 			$u->setFirstName($user["first_name"]);
 			$u->setName($user["last_name"]);
 			$u->setPassword($this->passwordHasher->hashPassword($u, "Respons11@"));
+			$u->setIsVerified(true);
 			$manager->persist($u);
 			$this->addReference($user["reference"], $u);
 		}
@@ -58,6 +59,7 @@ class UserFixture extends Fixture
 			$user->setEmail($faker->email);
 			$user->setFirstName($faker->firstName);
 			$user->setName($faker->lastName);
+			$u->setIsVerified(true);
 			$user->setPassword($this->passwordHasher->hashPassword($user, "Respons11@"));
 			$manager->persist($user);
 		}
