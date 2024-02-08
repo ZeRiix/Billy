@@ -155,7 +155,7 @@ class DevisController extends AbstractController
 			"logoPath" => $imagePath
 		]);
 
-		$filenamePdf = $organization->getName() ."-" . "devis-" . $devis->getId() . ".pdf";
+		$filenamePdf = $organization->getName() ."-devis-" . $devis->getId() . ".pdf";
 
 		try {
 			/** @var Dompdf $pdf */
@@ -188,5 +188,23 @@ class DevisController extends AbstractController
 		}
 
 		return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+	}
+
+	#[Route('/organization/{organization}/quotation/{devis}/preview', name: "app_preview_devis", methods: ["GET"])]
+	public function previewDevis(Devis $devis, Organization $organization){
+		if(
+			$organization->getId() !== $devis->getOrganization()->getId() ||
+			$devis->getStatus() !== DeviStatus::LOCK
+		){
+			return new Response("Devis inaccessible.", 400);
+		}
+
+		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
+
+		return $this->render('devis/devis.preview.html.twig', [
+			"devis" => $devis,
+			"totalHt" => $totalHt,
+			"logoPath" => '/public/storage/images/organizations/' . $devis->getOrganization()->getLogoName()
+		]);
 	}
 }
