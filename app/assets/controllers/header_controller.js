@@ -12,16 +12,16 @@ export default class extends Controller {
 		{
 			pattern: /^\/organization\/[a-z0-9-]+/,
 			pathname: "Organisation",
-			path: null,
+			path: this.url.replace(/\/[a-zA-Z\-]+$/, "")
 		},
 		{
-			pattern: /^\/organization\/[a-z0-9-]+\/edit$/,
+			pattern: /^\/organization\/([a-z0-9-]+)\/edit$/,
 			pathname: "Modifier un organisation",
 			path: null,
 		},
 		{
 			pattern: /^\/organization\/[a-z0-9-]+\/roles$/,
-			pathname: "Gérer les rôles",
+			pathname: "Liste des rôles",
 			path: null,
 		},
 		{
@@ -62,6 +62,21 @@ export default class extends Controller {
 		{
 			pattern: /^\/organization\/[a-z0-9-]+\/users$/,
 			pathname: "Gérer les utilisateurs",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/quotations$/,
+			pathname: "Gérer les devis",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/quotation$/,
+			pathname: "Créer un devis",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/quotation\/[0-9-]+$/,
+			pathname: "Modifier le devis",
 			path: null,
 		},
 	];
