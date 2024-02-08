@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Controller;
 
@@ -22,22 +22,21 @@ use App\Services\Pdf\GeneratePdfService;
 
 class DevisController extends AbstractController
 {
-
-	#[Route('/organization/{organization}/quotations', name: 'app_devis', methods: ["GET"])]
+	#[Route("/organization/{organization}/quotations", name: "app_devis", methods: ["GET"])]
 	public function index(Organization $organization): Response
 	{
 		if (!$this->isGranted(OrganizationVoter::VIEW, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour voir les devis de cette organisation.");
 			return $this->redirectToRoute("app_organizations");
 		}
-		return $this->render('devis/devis.html.twig', [
-			'canCreate' => $this->isGranted(DevisVoter::CREATE, $organization),
-			'organization' => $organization,
-			'quotations' => $organization->getDevis(),
+		return $this->render("devis/devis.html.twig", [
+			"canCreate" => $this->isGranted(DevisVoter::CREATE, $organization),
+			"organization" => $organization,
+			"quotations" => $organization->getDevis(),
 		]);
 	}
 
-	#[Route('/organization/{organization}/quotation', name: "app_create_devis", methods: ["GET", "POST"])]
+	#[Route("/organization/{organization}/quotation", name: "app_create_devis", methods: ["GET", "POST"])]
 	public function create(Request $request, Organization $organization, DevisService $devisService): Response
 	{
 		if (!$this->isGranted(DevisVoter::CREATE, $organization)) {
@@ -53,19 +52,28 @@ class DevisController extends AbstractController
 			try {
 				$devisService->create($devis, $organization);
 				$this->addFlash("success", "Le devis a bien été créé.");
-				return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+				return $this->redirectToRoute("app_update_devis", [
+					"organization" => $organization->getId(),
+					"devis" => $devis->getId(),
+				]);
 			} catch (\Exception $e) {
 				$this->addFlash("error", $e->getMessage());
 				return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
 			}
 		}
 
-		return $this->render('devis/devis.create.html.twig', [
-			"form" => $form->createView()
+		return $this->render("devis/devis.create.html.twig", [
+			"form" => $form->createView(),
 		]);
 	}
 
-	#[Route('/organization/{organization}/quotation/{devis}', name: "app_update_devis", methods: ["GET", "POST"])]
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}",
+			name: "app_update_devis",
+			methods: ["GET", "POST"]
+		)
+	]
 	public function update(Request $request, Devis $devis, DevisService $devisService): Response
 	{
 		$organization = $devis->getOrganization();
@@ -82,38 +90,41 @@ class DevisController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			try {
 				$devisService->update($devis);
-				if(
-					$request->get("redirectCommand") !== "on" &&
-					$request->get("redirectSend") !== "on"
-				){
+				if ($request->get("redirectCommand") !== "on" && $request->get("redirectSend") !== "on") {
 					$this->addFlash("success", "Le devis a bien été édité.");
 				}
 			} catch (\Exception $e) {
 				$this->addFlash("error", $e->getMessage());
 			}
-		}	
+		}
 
 		$commandes = $devis->getCommandes();
 		$totalHt = $this->doCalculationForTotalHT($commandes, $devis->getDiscount());
 
-		if($request->get("redirectCommand") === "on" && $form->isValid()){
-			return $this->redirectToRoute('app_create_commande', ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		if ($request->get("redirectCommand") === "on" && $form->isValid()) {
+			return $this->redirectToRoute("app_create_commande", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
-		if($request->get("redirectSend") === "on" && $form->isValid()){
-			return $this->redirectToRoute('app_send_devis', ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		if ($request->get("redirectSend") === "on" && $form->isValid()) {
+			return $this->redirectToRoute("app_send_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
-		return $this->render('devis/devis.update.html.twig', [
+		return $this->render("devis/devis.update.html.twig", [
 			"form" => $form->createView(),
 			"quotation" => $devis,
 			"organization" => $organization,
 			"commandes" => $commandes,
-			"totalHT" => $totalHt
+			"totalHT" => $totalHt,
 		]);
 	}
 
-	private function doCalculationForTotalHT($commandes, $discount) 
+	private function doCalculationForTotalHT($commandes, $discount)
 	{
 		$totalHt = 0;
 		foreach ($commandes as $commande) {
@@ -121,17 +132,29 @@ class DevisController extends AbstractController
 		}
 
 		if ($discount > 0) {
-			$totalHt = $totalHt * (1 - ($discount / 100));
+			$totalHt = $totalHt * (1 - $discount / 100);
 		}
 
 		return $totalHt;
 	}
 
-	#[Route('/organization/{organization}/quotation/{devis}/generate-pdf', name: "app_generate_pdf_devis", methods: ["GET"])]
-	public function generatePdf(Devis $devis, Organization $organization, GeneratePdfService $generatePdfService, DevisService $devisService) : Response
-	{
-		if(!$devisService->findById($devis->getId()) && !$devisService->devisBelongsToOrganization($devis, $organization))
-		{
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}/generate-pdf",
+			name: "app_generate_pdf_devis",
+			methods: ["GET"]
+		)
+	]
+	public function generatePdf(
+		Devis $devis,
+		Organization $organization,
+		GeneratePdfService $generatePdfService,
+		DevisService $devisService
+	): Response {
+		if (
+			!$devisService->findById($devis->getId()) &&
+			!$devisService->devisBelongsToOrganization($devis, $organization)
+		) {
 			$this->addFlash("error", "Le devis n'existe pas ou n'appartient pas à cette organisation.");
 			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
 		}
@@ -141,21 +164,24 @@ class DevisController extends AbstractController
 
 		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
 
-		$kernel_dir = $this->getParameter('kernel.project_dir');
+		$kernel_dir = $this->getParameter("kernel.project_dir");
 
 		if ($organization->getLogoName() === null) {
-			$imagePath = $kernel_dir . '/public/storage/images/organizations/default.jpg';
+			$imagePath = $kernel_dir . "/public/assets/images/default.jpg";
 		} else {
-			$imagePath = $kernel_dir . '/public/storage/images/organizations/' . $devis->getOrganization()->getLogoName();
+			$imagePath =
+				$kernel_dir .
+				"/public/storage/images/organizations/" .
+				$devis->getOrganization()->getLogoName();
 		}
 
-		$html = $this->renderView('generate_pdf/devis-pdf.html.twig', [
+		$html = $this->renderView("generate_pdf/devis-pdf.html.twig", [
 			"devis" => $devis,
 			"totalHt" => $totalHt,
-			"logoPath" => $imagePath
+			"logoPath" => $imagePath,
 		]);
 
-		$filenamePdf = $organization->getName() ."-devis-" . $devis->getId() . ".pdf";
+		$filenamePdf = $organization->getName() . "-devis-" . $devis->getId() . ".pdf";
 
 		try {
 			/** @var Dompdf $pdf */
@@ -172,8 +198,9 @@ class DevisController extends AbstractController
 		return $response;
 	}
 
-	#[Route('/organization/{organization}/quotation/{devis}/send', name: "app_send_devis", methods: ["GET"])]
-	public function sendDevis(Devis $devis, DevisService $devisService){
+	#[Route("/organization/{organization}/quotation/{devis}/send", name: "app_send_devis", methods: ["GET"])]
+	public function sendDevis(Devis $devis, DevisService $devisService)
+	{
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(OrganizationVoter::WRITE_DEVIS, $organization)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour éditer ce devis.");
@@ -187,24 +214,37 @@ class DevisController extends AbstractController
 			$this->addFlash("error", $e->getMessage());
 		}
 
-		return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		return $this->redirectToRoute("app_update_devis", [
+			"organization" => $organization->getId(),
+			"devis" => $devis->getId(),
+		]);
 	}
 
-	#[Route('/organization/{organization}/quotation/{devis}/preview', name: "app_preview_devis", methods: ["GET"])]
-	public function previewDevis(Devis $devis, Organization $organization){
-		if(
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}/preview",
+			name: "app_preview_devis",
+			methods: ["GET"]
+		)
+	]
+	public function previewDevis(Devis $devis, Organization $organization)
+	{
+		if (
 			$organization->getId() !== $devis->getOrganization()->getId() ||
 			$devis->getStatus() !== DeviStatus::LOCK
-		){
+		) {
 			return new Response("Devis inaccessible.", 400);
 		}
 
 		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
+		$logoName = $devis->getOrganization()->getLogoName();
 
-		return $this->render('devis/devis.preview.html.twig', [
+		return $this->render("devis/devis.preview.html.twig", [
 			"devis" => $devis,
 			"totalHt" => $totalHt,
-			"logoPath" => '/public/storage/images/organizations/' . $devis->getOrganization()->getLogoName()
+			"logoPath" => $logoName
+				? "/public/storage/images/organizations/" . $logoName
+				: "/public/assets/images/default.jpg",
 		]);
 	}
 }
