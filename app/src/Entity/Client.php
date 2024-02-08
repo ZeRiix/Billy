@@ -82,15 +82,22 @@ class Client
 			maxMessage: "L'email du client doit contenir au maximum {{ limit }} caractères."
 		)
 	]
-	private ?string $email = null;
+	private ?string $email = null; //Pas testé si regex fonctionne à test quand on aura un form
 
-	#[ORM\Column(length: 10, nullable: true)]
-	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner le téléphone du client.")]
+	#[ORM\Column(length: 10)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le numéro de téléphone du client")]
+	#[
+		Assert\Regex(
+			pattern: "/^0[1-9]([-. ]?[0-9]{2}){4}$/",
+			message: "Veuillez renseigner un numéro de téléphone valide."
+		)
+	]
 	#[
 		Assert\Length(
 			min: 10,
 			max: 10,
-			exactMessage: "Le téléphone du client doit contenir {{ limit }} caractères."
+			minMessage: "Le numéro de téléphone doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères."
 		)
 	]
 	private ?string $phone = null;
@@ -204,7 +211,7 @@ class Client
 		return $this->phone;
 	}
 
-	public function setPhone(?string $phone): static
+	public function setPhone(string $phone): static
 	{
 		$this->phone = $phone;
 

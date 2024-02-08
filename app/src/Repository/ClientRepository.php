@@ -47,4 +47,11 @@ class ClientRepository extends ServiceEntityRepository
 	{
 		return $this->findOneBy(["siret" => $siret]);
 	}
+
+	public function findRandomClient()
+	{
+		$clients = $this->findAll();
+		$randomClient = $clients[array_rand($clients)];
+		return $randomClient;
+	}
 }

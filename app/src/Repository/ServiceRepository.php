@@ -33,6 +33,13 @@ class ServiceRepository extends ServiceEntityRepository
 		return $this->findOneBy(["organization" => $organization, "name" => $name]);
 	}
 
+	public function findRandomService()
+	{
+		$services = $this->findAll();
+		$randomService = $services[array_rand($services)];
+		return $randomService;
+	}
+
 	//    public function findOneBySomeField($value): ?Service
 	//    {
 	//        return $this->createQueryBuilder('s')
