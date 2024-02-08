@@ -20,135 +20,155 @@ use App\Entity\Commande;
 #[ORM\Table(name: "`service`")]
 #[ORM\HasLifecycleCallbacks]
 class Service
-{	
-	#[Groups(['service'])]
+{
+	#[Groups(["service"])]
 	#[ORM\Id]
-   	#[ORM\Column(type: UuidType::NAME, unique: true)]
-   	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-   	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
-   	private ?Uuid $id;
+	#[ORM\Column(type: UuidType::NAME, unique: true)]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+	private ?Uuid $id;
 
-	#[Groups(['organization'])]
-	#[ORM\ManyToOne(inversedBy: 'services')]
+	#[Groups(["organization"])]
+	#[ORM\ManyToOne(inversedBy: "services")]
 	private ?Organization $organization = null;
 
-	#[Groups(['commandes'])]
+	#[Groups(["commandes"])]
 	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "service")]
-   	private Collection $commandes;
+	private Collection $commandes;
 
 	//add to late manyToMany devis
-	#[Groups(['service'])]
+	#[Groups(["service"])]
 	#[ORM\Column(length: 100)]
-   	#[Assert\NotBlank(message: "Veuillez renseigner le nom du service.")]
-   	#[Assert\Length(
-   		min: 3,
-   		max: 100,
-   		minMessage: "Le nom du service doit contenir au moins {{ limit }} caractères.",
-   		maxMessage: "Le nom du service doit contenir au maximum {{ limit }} caractères."
-   	)]
-   	private ?string $name = null;
+	#[Assert\NotBlank(message: "Veuillez renseigner le nom du service.")]
+	#[
+		Assert\Length(
+			min: 3,
+			max: 100,
+			minMessage: "Le nom du service doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le nom du service doit contenir au maximum {{ limit }} caractères."
+		)
+	]
+	private ?string $name = null;
 
-	#[Groups(['service'])]
+	#[Groups(["service"])]
 	#[ORM\Column(length: 1000)]
-   	#[Assert\Length(
-   		max: 1000,
-   		maxMessage: "La description du service doit contenir au maximum {{ limit }} caractères."
-   	)]
-   	private ?string $description = null;
+	#[
+		Assert\Length(
+			max: 1000,
+			maxMessage: "La description du service doit contenir au maximum {{ limit }} caractères."
+		)
+	]
+	private ?string $description = null;
 
-	#[Groups(['service'])]
+	#[Groups(["service"])]
 	#[ORM\Column(type: Types::FLOAT, nullable: true, precision: 10, scale: 2)]
-   	private ?string $unitPrice = null;
+	private ?string $unitPrice = null;
+
+	#[Groups(["service"])]
+	#[ORM\Column(type: Types::BOOLEAN)]
+	private ?bool $isArchived = false;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-   	private ?\DateTimeImmutable $created_at = null;
+	private ?\DateTimeImmutable $created_at = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-   	private ?\DateTimeImmutable $updated_at = null;
+	private ?\DateTimeImmutable $updated_at = null;
 
 	public function __construct()
-   	{
-   		$this->commandes = new ArrayCollection();
-   	}
+	{
+		$this->commandes = new ArrayCollection();
+	}
 
 	public function getId(): ?Uuid
-   	{
-   		return $this->id;
-   	}
+	{
+		return $this->id;
+	}
 
 	public function getOrganization(): ?Organization
-   	{
-   		return $this->organization;
-   	}
+	{
+		return $this->organization;
+	}
 
 	public function setOrganization(Organization $organization): self
-   	{
-   		$this->organization = $organization;
-   
-   		return $this;
-   	}
+	{
+		$this->organization = $organization;
+
+		return $this;
+	}
 
 	public function getCommandes(): Collection
-   	{
-   		return $this->commandes;
-   	}
+	{
+		return $this->commandes;
+	}
 
 	public function getName(): ?string
-   	{
-   		return $this->name;
-   	}
+	{
+		return $this->name;
+	}
 
 	public function setName(?string $name): static
-   	{
-   		$this->name = $name;
-   
-   		return $this;
-   	}
+	{
+		$this->name = $name;
+
+		return $this;
+	}
 
 	public function getDescription(): ?string
-   	{
-   		return $this->description;
-   	}
+	{
+		return $this->description;
+	}
 
 	public function setDescription(?string $description): static
-   	{
-   		$this->description = $description;
-   
-   		return $this;
-   	}
+	{
+		$this->description = $description;
+
+		return $this;
+	}
 
 	public function getUnitPrice(): ?string
-   	{
-   		return $this->unitPrice;
-   	}
+	{
+		return $this->unitPrice;
+	}
 
 	public function setUnitPrice(?string $unitPrice): static
-   	{
-   		$this->unitPrice = $unitPrice;
-   
-   		return $this;
-   	}
+	{
+		$this->unitPrice = $unitPrice;
+
+		return $this;
+	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
-   	{
-   		return $this->created_at;
-   	}
+	{
+		return $this->created_at;
+	}
 
 	#[ORM\PrePersist]
-   	public function setCreatedAt(): void
-   	{
-   		$this->created_at = new \DateTimeImmutable();
-   	}
+	public function setCreatedAt(): void
+	{
+		$this->created_at = new \DateTimeImmutable();
+	}
 
 	public function getUpdatedAt(): ?\DateTimeImmutable
-   	{
-   		return $this->updated_at;
-   	}
+	{
+		return $this->updated_at;
+	}
 
 	#[ORM\PrePersist]
-   	#[ORM\PreUpdate]
-   	public function setUpdatedAt(): void
-   	{
-   		$this->updated_at = new \DateTimeImmutable();
-   	}
+	#[ORM\PreUpdate]
+	public function setUpdatedAt(): void
+	{
+		$this->updated_at = new \DateTimeImmutable();
+	}
+
+	public function getIsArchived(): ?bool
+	{
+		return $this->isArchived;
+	}
+
+	public function setIsArchived(bool $isArchived): static
+	{
+		$this->isArchived = $isArchived;
+
+		return $this;
+	}
 }

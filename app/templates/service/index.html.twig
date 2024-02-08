@@ -4,7 +4,22 @@
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-2xl font-semibold">Mes organisations</h1>
+		<div>
+			<h1 class="text-2xl font-semibold pb-4">Mes Services</h1>
+			{% if isArchived is defined %} 
+				<label for="toggle-button-element" class="inline-flex relative items-center cursor-pointer">
+					<input type="checkbox" id="toggle-button-element" class="sr-only peer" checked>
+					<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-bgrey peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-bgreen"></div>
+					<span class="ml-3 text-sm font-medium text-gray-900 dark:text-bgrey">Archivé</span>
+				</label>
+			{% else %}
+				<label for="toggle-button-element" class="inline-flex relative items-center cursor-pointer">
+					<input type="checkbox" id="toggle-button-element" class="sr-only peer">
+					<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-bgrey peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-bgreen"></div>
+					<span class="ml-3 text-sm font-medium text-gray-900 dark:text-bgrey">Archivé</span>
+				</label>
+			{% endif %}
+		</div>
 		<a href="{{ path('app_create_service', { organization: getCurrentOrganization().id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter un service</a>
 	</div>
 	<twig:Table
@@ -18,5 +33,27 @@
 		<a href="{{ path('app_update_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
 			<span class="mdi mdi-pencil text-xl text-gray-500"></span>
 		</a>
+		{% if  row.isArchived == false %}
+		<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
+			<span class="mdi mdi-eye-outline text-xl text-gray-500"></span>
+		</a>
+		{% else %}
+		<a href="{{ path('app_unarchive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
+			<span class="mdi mdi-eye-remove-outline text-xl text-gray-500"></span>
+		</a>
+		{% endif %}
 	</twig:Table>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			const checkbox = document.getElementById("toggle-button-element");
+			checkbox.addEventListener("change", function() {
+				console.log("Changement détecté");
+				if (this.checked) {
+					window.location.href = "/organization/{{ getCurrentOrganization().id }}/services/archived";
+				} else {
+					window.location.href = "/organization/{{ getCurrentOrganization().id }}/services";
+				}
+			});
+		});
+	</script>
 {% endblock %}

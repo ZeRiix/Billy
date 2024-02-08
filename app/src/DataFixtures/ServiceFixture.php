@@ -21,6 +21,7 @@ class ServiceFixture extends Fixture implements DependentFixtureInterface
 			$service->setDescription($faker->text(200));
 			$service->setOrganization($this->getReference(OrganizationFixture::ORGANIZATION));
 			$service->setUnitPrice($faker->randomFloat(2, 0, 1000));
+			$service->setIsArchived(false);
 			$manager->persist($service);
 		}
 

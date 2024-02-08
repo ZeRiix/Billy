@@ -1,11 +1,11 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Créer un client{% endblock %}
+{% block title %}{{ isCreating is defined ? 'Création' : 'Modification' }} d'un client{% endblock %}
 
 {% block body %}
 <div data-controller="clientForm" data-clientform-entreprise-value="{{isEntrprise is defined ? isEntrprise : "null"}}">
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-3xl font-semibold pb-6">{{ isCreating is defined ? 'Création' : 'Modification' }} un client</h1>
+		<h1 class="text-3xl font-semibold pb-6">{{ isCreating is defined ? 'Création' : 'Modification' }} d'un client</h1>
 		{% if isCreating is defined %} 
 			<label for="toggle-button-element" class="inline-flex relative items-center cursor-pointer">
 				<input type="checkbox" id="toggle-button-element" class="sr-only peer" checked>
