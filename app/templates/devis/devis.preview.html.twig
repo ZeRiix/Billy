@@ -3,5 +3,18 @@
 {% block title %}Preview{% endblock %}
 
 {% block layout %}
-	{% include '/generate_pdf/devis-pdf.html.twig' with {devis: devis, totalHt: totalHt, logoPath: logoPath} %}
+	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+	<div class="w-full h-[100vh]">
+		{% include '/generate_pdf/devis-pdf.html.twig' with {devis: devis, totalHt: totalHt, logoPath: logoPath} %}
+	</div>
+
+	<div class="fixed bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+		<button>
+			Signer
+		</button>
+
+		<a href="{{path('app_generate_pdf_devis', {organization: getCurrentOrganization().id, devis: devis.id})}}">
+			Télécharger
+		</a>
+	</div>
 {% endblock %}

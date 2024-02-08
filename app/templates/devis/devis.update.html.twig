@@ -85,7 +85,9 @@
 					<span class="mdi mdi-arrow-left"></span> 
 					Retour aux devis
 				</a>
-				{{ form_widget(form.submit) }}
+				<div class="{{quotation.status.value != 'editing' ? 'hidden': ''}}">
+					{{ form_widget(form.submit) }}
+				</div>
 			</div>		
 		{{ form_end(form) }}
 	</div>

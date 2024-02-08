@@ -148,15 +148,13 @@ class DevisController extends AbstractController
 	public function generatePdf(
 		Devis $devis,
 		Organization $organization,
-		GeneratePdfService $generatePdfService,
-		DevisService $devisService
+		GeneratePdfService $generatePdfService
 	): Response {
 		if (
-			!$devisService->findById($devis->getId()) &&
-			!$devisService->devisBelongsToOrganization($devis, $organization)
+			$organization->getId() !== $devis->getOrganization()->getId() ||
+			$devis->getStatus() !== DeviStatus::LOCK
 		) {
-			$this->addFlash("error", "Le devis n'existe pas ou n'appartient pas à cette organisation.");
-			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
+			return new Response("Devis inaccessible.", 400);
 		}
 
 		$response = new Response();
@@ -188,6 +186,7 @@ class DevisController extends AbstractController
 			$pdf = $generatePdfService->generatePdf($html);
 			$response->setContent($pdf->stream($filenamePdf));
 			$response->setStatusCode(Response::HTTP_OK);
+			$response->headers->set("content-type", "application/pdf");
 		} catch (\Exception $e) {
 			$response->setContent("");
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -243,8 +242,8 @@ class DevisController extends AbstractController
 			"devis" => $devis,
 			"totalHt" => $totalHt,
 			"logoPath" => $logoName
-				? "/public/storage/images/organizations/" . $logoName
-				: "/public/assets/images/default.jpg",
+				? "/storage/images/organizations/" . $logoName
+				: "/assets/images/default.jpg",
 		]);
 	}
 }
