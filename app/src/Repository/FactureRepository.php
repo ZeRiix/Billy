@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Facture;
+use App\Entity\Organization;
+use App\Repository\Traits\SaveTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,33 +18,24 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FactureRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Facture::class);
 	}
 
-	//    /**
-	//     * @return Facture[] Returns an array of Facture objects
-	//     */
-	//    public function findByExampleField($value): array
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->orderBy('s.id', 'ASC')
-	//            ->setMaxResults(10)
-	//            ->getQuery()
-	//            ->getResult()
-	//        ;
-	//    }
+	public function genChrono(Organization $organization): int
+	{
+		$lastChrono = $this->createQueryBuilder("f")
+			->select("f.chrono")
+			->where("f.organization = :organization")
+			->setParameter("organization", $organization)
+			->orderBy("f.chrono", "DESC")
+			->setMaxResults(1)
+			->getQuery()
+			->getSingleScalarResult();
 
-	//    public function findOneBySomeField($value): ?Facture
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->getQuery()
-	//            ->getOneOrNullResult()
-	//        ;
-	//    }
+		return $lastChrono ? $lastChrono + 1 : 1;
+	}
 }

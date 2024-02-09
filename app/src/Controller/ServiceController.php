@@ -149,9 +149,9 @@ class ServiceController extends AbstractController
 			$serviceService->archiveService($service);
 			$response->setStatusCode(Response::HTTP_OK);
 			if ($service->getIsArchived()) {
-				$this->addFlash("success", "Le service a bien été désarchivé.");
-			} else {
 				$this->addFlash("success", "Le service a bien été archivé.");
+			} else {
+				$this->addFlash("success", "Le service a bien été désarchivé.");
 			}
 		} catch (\Exception $error) {
 			$this->addFlash("error", $error->getMessage());

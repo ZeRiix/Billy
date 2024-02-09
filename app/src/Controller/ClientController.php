@@ -181,9 +181,9 @@ class ClientController extends AbstractController
 			$clientService->archiveClient($client);
 			$response->setStatusCode(Response::HTTP_OK);
 			if ($client->getIsArchived()) {
-				$this->addFlash("success", "Le client a bien été désarchivé.");
-			} else {
 				$this->addFlash("success", "Le client a bien été archivé.");
+			} else {
+				$this->addFlash("success", "Le client a bien été désarchivé.");
 			}
 		} catch (\Exception $e) {
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
