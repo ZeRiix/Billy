@@ -9,32 +9,31 @@
 	<div class="flex flex-col gap-10 items-start">
 		<div class="flex gap-5">
 			{{ form_row(form.name) }}
-			{{ form_row(form.description) }}
+			{{ form_row(form.quantity) }}
 		</div>
 		<div class="flex gap-5">
 			{{ form_row(form.service) }}
 			{{ form_row(form.unitPrice) }}
-			{{ form_row(form.quantity) }}
 		</div>
-		<div class="w-full flex justify-end">
+		{{ form_row(form.description) }}
+		<a 
+			href="{{ path('app_create_service', { organization: organization.id }) }}?callback={{ path('app_create_commande', { organization: organization.id, devis: devis.id }) }}"
+			class="text-bgreen cursor-pointer hover:underline transition-all duration-300"
+		>
+			<span class="mdi mdi-plus"></span> 
+			Ajouter un service
+		</a>
+		<div class="w-full flex justify-between items-center">
+			<a 
+				href="{{ path('app_update_devis', { organization: organization.id, devis: devis.id }) }}" class="hover:text-bgreen transition-all duration-300"
+			>
+				<span class="mdi mdi-arrow-left"></span> 
+				Retour au devis n°{{ devis.id }}
+			</a>
+
 			{{ form_widget(form.submit) }}
-		</div>		
+		</div>
 	</div>
 	{{ form_end(form) }}
-	<div class="flex flex-col gap-10 items-start">
-	<a 
-		href="{{ path('app_create_service', { organization: organization.id }) }}?callback={{ path('app_create_commande', { organization: organization.id, devis: devis.id }) }}"
-		class="text-bgreen cursor-pointer hover:underline transition-all duration-300"
-	>
-		<span class="mdi mdi-plus"></span> 
-		Ajouter un service
-	</a>
-	<a 
-		href="{{ path('app_update_devis', { organization: organization.id, devis: devis.id }) }}" class="hover:text-bgreen transition-all duration-300"
-	>
-		<span class="mdi mdi-arrow-left"></span> 
-		Retour au devis n°{{ devis.id }}
-	</a>
-	</div>
 </div>
 {% endblock %}

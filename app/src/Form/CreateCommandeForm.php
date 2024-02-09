@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CreateCommandeForm extends AbstractType
@@ -28,8 +28,8 @@ class CreateCommandeForm extends AbstractType
 			->add("description", TextareaType::class, [
 				"label" => "Description de la commande",
 			])
-			->add("unitPrice", MoneyType::class, [
-				"label" => "Prix",
+			->add("unitPrice", NumberType::class, [
+				"label" => "Prix (en €)",
 			])
 			->add("quantity", IntegerType::class, [
 				"label" => "Quantité",
