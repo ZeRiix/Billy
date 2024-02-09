@@ -29,6 +29,7 @@ enum DeviStatus: string
 #[ORM\Entity(repositoryClass: DevisRepository::class)]
 #[ORM\Table(name: "`devis`")]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class Devis
 {
 	#[ORM\Id]
@@ -83,7 +84,7 @@ class Devis
 	]
 	private ?int $discount = null;
 
-	#[Vich\UploadableField(mapping: "organizationImage", fileNameProperty: "devisSign")]
+	#[Vich\UploadableField(mapping: "imageSign", fileNameProperty: "imageSignName")]
 	#[
 		Assert\Image(
 			mimeTypes: ["image/jpeg"],
@@ -94,6 +95,9 @@ class Devis
 	]
 	#[Ignore]
 	private ?File $imageSign = null;
+
+	#[ORM\Column(nullable: true)]
+	private ?string $imageSignName = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -265,17 +269,31 @@ class Devis
 		return $this;
 	}
 
-	public function setImageSign(?File $imageSign = null): void
+	public function setImageSign(?File $imageSign = null): static
 	{
 		$this->imageSign = $imageSign;
 
 		if ($imageSign) {
 			$this->setUpdatedAt();
 		}
+
+		return $this;
 	}
 
 	public function getImageSign(): ?File
 	{
 		return $this->imageSign;
+	}
+
+	public function getImageSignName(): ?string
+	{
+		return $this->imageSignName;
+	}
+
+	public function setImageSignName(string $imageSignName): static
+	{
+		$this->imageSignName = $imageSignName;
+
+		return $this;
 	}
 }

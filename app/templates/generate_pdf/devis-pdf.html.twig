@@ -91,6 +91,7 @@
             }
             .clientSign div {
                 width: 195px;
+				position: relative;
             }
 
             .clientSign div p {
@@ -106,6 +107,14 @@
                 margin-top: 50px;
                 text-align: center;
             }
+			
+			.sign {
+				position: absolute;
+				height: 95px;
+				left: 50%;
+				top: 1px;
+				transform: translateX(-50%);
+			}
         </style>
     </head>
     <body>
@@ -176,7 +185,11 @@
             <section class="clientSign">
                 <div>
                     <p>Date et signature du client :</p>
-                    <div></div>
+                    <div>
+						{% if imageSign != null %}
+							<img src="{{ imageSign }}" alt="image" class="sign"/>
+						{% endif %}
+					</div>
                 </div>
             </section>
         </main>

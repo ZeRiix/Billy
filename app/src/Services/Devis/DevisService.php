@@ -6,6 +6,7 @@ use App\Entity\Devis;
 use App\Entity\DeviStatus;
 use App\Entity\Organization;
 use App\Repository\DevisRepository;
+use App\Services\MailService;
 use Error;
 
 class DevisService
@@ -63,13 +64,31 @@ class DevisService
 			throw new \Exception("Il faut minimum une commande pour envoyer un devis.");
 		}
 
-		if ($devis->getClient() === null) {
+		$client = $devis->getClient();
+
+		if (!$client) {
 			throw new \Exception("Vous n'avez pas selectioner de client pour ce devis.");
+		}
+
+		$email = $client->getEmail();
+
+		if (!$email) {
+			throw new \Exception("Le client selectioner na pas d'adresse email.");
 		}
 
 		$devis->setStatus(DeviStatus::LOCK);
 
-		//send mail
+		$mail = new MailService();
+		$mail->send(
+			$email,
+			"preview devis",
+			"/organization/" .
+				$devis->getOrganization()->getId() .
+				"/quotation/" .
+				$devis->getId() .
+				"/preview",
+			false
+		);
 
 		$this->devisRepository->save($devis);
 	}

@@ -18,32 +18,36 @@
 					{{form_row(form.client)}}
 					{{form_row(form.discount)}}
 				</div>
-				<div class="w-full mb-5 flex {{quotation.status.value != 'editing' ? 'hidden' : ''}}">
+				<div class="w-full mb-5 flexgap-4 text-bgreen">
 					{% if quotation.status.value == 'editing' %}
-						<div class="flex gap-4 text-bgreen">
-							<label 
-								class="cursor-pointer hover:underline"
-								for="redirectCommand" 
-								onclick="
-								setTimeout(() => {
-									document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
-								})
-								"
-							>
-								Ajouter une commande
-							</label>
-							<label 
+						<label 
 							class="cursor-pointer hover:underline"
-								for="redirectSend" 
-								onclick="
-								setTimeout(() => {
-									document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
-								})
-								"
-							>
-								Envoyer
-							</label>
-						</div>
+							for="redirectCommand" 
+							onclick="
+							setTimeout(() => {
+								document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+							})
+							"
+						>
+							Ajouter une commande
+						</label>
+						<label 
+						class="cursor-pointer hover:underline"
+							for="redirectSend" 
+							onclick="
+							setTimeout(() => {
+								document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+							})
+							"
+						>
+							Envoyer
+						</label>
+					{% endif %}
+
+					{% if quotation.status.value == 'lock' %}
+						<a href="{{path('app_unlock_devis', {devis: quotation.id, organization: organization.id})}}">
+							Dévérouiller
+						</a>
 					{% endif %}
 				</div>
 				{% if quotation.status.value == 'editing' %}

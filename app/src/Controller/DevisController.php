@@ -17,6 +17,8 @@ use App\Entity\Organization;
 //form
 use App\Form\CreateDevisForm;
 use App\Form\EditDevisForm;
+use App\Form\SignDevisForm;
+use App\Repository\DevisRepository;
 use App\Security\Voter\OrganizationVoter;
 use App\Services\Pdf\GeneratePdfService;
 
@@ -152,7 +154,7 @@ class DevisController extends AbstractController
 	): Response {
 		if (
 			$organization->getId() !== $devis->getOrganization()->getId() ||
-			$devis->getStatus() !== DeviStatus::LOCK
+			($devis->getStatus() !== DeviStatus::LOCK && $devis->getStatus() !== DeviStatus::SIGN)
 		) {
 			return new Response("Devis inaccessible.", 400);
 		}
@@ -173,10 +175,15 @@ class DevisController extends AbstractController
 				$devis->getOrganization()->getLogoName();
 		}
 
+		$imageSign = $devis->getImageSignName();
+
 		$html = $this->renderView("generate_pdf/devis-pdf.html.twig", [
 			"devis" => $devis,
 			"totalHt" => $totalHt,
 			"logoPath" => $imagePath,
+			"imageSign" => $imageSign
+				? $kernel_dir . "/public/storage/images/devis/sign/" . $imageSign
+				: null,
 		]);
 
 		$filenamePdf = $organization->getName() . "-devis-" . $devis->getId() . ".pdf";
@@ -223,27 +230,78 @@ class DevisController extends AbstractController
 		Route(
 			"/organization/{organization}/quotation/{devis}/preview",
 			name: "app_preview_devis",
-			methods: ["GET"]
+			methods: ["GET", "POST"]
 		)
 	]
-	public function previewDevis(Devis $devis, Organization $organization)
-	{
+	public function previewDevis(
+		Devis $devis,
+		Organization $organization,
+		Request $request,
+		DevisRepository $devisRepository
+	) {
 		if (
 			$organization->getId() !== $devis->getOrganization()->getId() ||
-			$devis->getStatus() !== DeviStatus::LOCK
+			($devis->getStatus() !== DeviStatus::LOCK && $devis->getStatus() !== DeviStatus::SIGN)
 		) {
 			return new Response("Devis inaccessible.", 400);
 		}
 
+		$form = $this->createForm(SignDevisForm::class, $devis);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid() && $devis->getStatus() === DeviStatus::LOCK) {
+			try {
+				$devis->setStatus(DeviStatus::SIGN);
+				$devisRepository->save($devis);
+			} catch (\Exception $e) {
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+
 		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
 		$logoName = $devis->getOrganization()->getLogoName();
+		$imageSign = $devis->getImageSignName();
 
 		return $this->render("devis/devis.preview.html.twig", [
+			"form" => $form,
 			"devis" => $devis,
 			"totalHt" => $totalHt,
 			"logoPath" => $logoName
 				? "/storage/images/organizations/" . $logoName
 				: "/assets/images/default.jpg",
+			"imageSign" => $imageSign ? "/storage/images/devis/sign/" . $imageSign : null,
+		]);
+	}
+
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}/unlock",
+			name: "app_unlock_devis",
+			methods: ["GET"]
+		)
+	]
+	public function unlockDevis(Devis $devis, DevisRepository $devisRepository)
+	{
+		$organization = $devis->getOrganization();
+		if (
+			!$this->isGranted(OrganizationVoter::WRITE_DEVIS, $organization) ||
+			$devis->getStatus() !== DeviStatus::LOCK
+		) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour éditer ce devis.");
+			return $this->redirectToRoute("app_devis", ["organization" => $organization->getId()]);
+		}
+
+		try {
+			$devis->setStatus(DeviStatus::EDITING);
+			$devisRepository->save($devis);
+			$this->addFlash("success", "Le devis a bien étais éditer.");
+		} catch (\Exception $e) {
+			$this->addFlash("error", $e->getMessage());
+		}
+
+		return $this->redirectToRoute("app_update_devis", [
+			"organization" => $organization->getId(),
+			"devis" => $devis->getId(),
 		]);
 	}
 }
