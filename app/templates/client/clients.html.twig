@@ -32,11 +32,11 @@
 			</a>
 			{% if  row.isArchived == false %}
 			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-eye-outline text-xl text-gray-500"></span>
+				<span class="mdi mdi-archive-outline text-xl text-gray-500"></span>
 			</a>
 			{% else %}
 			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-eye-remove-outline text-xl text-gray-500"></span>
+				<span class="mdi mdi-archive-off-outline text-xl text-gray-500"></span>
 			</a>
 			{% endif %}
 		</twig:Table>

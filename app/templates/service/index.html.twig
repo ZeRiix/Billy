@@ -8,7 +8,7 @@
 			<h1 class="text-2xl font-semibold pb-4">Mes Services</h1>
 			<twig:Toggle title="Archivé" :isChecked="isArchived"></twig:Toggle>
 		</div>
-		<twig:Button value="Ajouter un service" :href="path('app_create_service', { organization: getCurrentOrganization().id })"></twig:Button>
+		<twig:Button value="Ajouter" :href="path('app_create_service', { organization: getCurrentOrganization().id })"></twig:Button>
 	</div>
 	<twig:Table
 		:data="services"
@@ -23,11 +23,11 @@
 		</a>
 		{% if  row.isArchived == false %}
 		<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
-			<span class="mdi mdi-eye-outline text-xl text-gray-500"></span>
+			<span class="mdi mdi-archive-outline text-xl text-gray-500"></span>
 		</a>
 		{% else %}
 		<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
-			<span class="mdi mdi-eye-remove-outline text-xl text-gray-500"></span>
+			<span class="mdi mdi-archive-off-outline text-xl text-gray-500"></span>
 		</a>
 		{% endif %}
 	</twig:Table>
