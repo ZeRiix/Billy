@@ -1,19 +1,20 @@
 <aside id="aside" class="fixed z-50 -left-64 md:left-0 w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green transition-all duration-300 ease-in">
 	<span data-controller="burger" class="md:hidden mdi mdi-menu-close text-4xl text-center text-white cursor-pointer"></span>
-	<a href="{{ path('app_organizations') }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">
-		{% if getCurrentOrganization() %}
-			{% set logoName = getCurrentOrganization().logoName %}
-			<img src="{{ logoName ? asset('storage/images/organizations/' ~ logoName) : asset('assets/images/default.jpg') }}" alt="logo" class="w-full h-full rounded-lg object-fill">
-		{% else %}
-			<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-full h-full rounded-lg object-fill">
-		{% endif %}
-	</a>
 	{% if getCurrentOrganization() %}
+		{% set logoName = getCurrentOrganization().logoName %}
+		<a href="{{ path('app_organization_get_id', { organization: getCurrentOrganization().id }) }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">
+			<img src="{{ logoName ? asset('storage/images/organizations/' ~ logoName) : asset('assets/images/default.jpg') }}" alt="logo" class="w-full h-full rounded-lg object-fill">
+		</a>
 		<h3 class="text-center text-white/50 mb-6">
 			{{ getCurrentOrganization().name }}
 		</h3>
 	{% else %}
-		<h3 class="invisible mt-6">énorme zob</h3>
+		<a href="{{ path('app_organizations') }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">
+			<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-full h-full rounded-lg object-fill">
+		</a>
+		<h3 class="text-center text-white/50 mb-6">
+			Billy
+		</h3>
 	{% endif %}
 	<div class="h-full flex flex-col gap-6 justify-between text-white/50 overflow-y-scroll no-scrollbar">
 		<nav>
