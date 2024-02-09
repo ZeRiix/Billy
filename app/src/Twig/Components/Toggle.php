@@ -9,4 +9,6 @@ class Toggle
 {
 	public bool $isChecked = false;
 	public string $title;
+	public ?string $onClick = null;
+	public ?string $name = null;
 }
