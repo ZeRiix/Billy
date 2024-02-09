@@ -45,9 +45,9 @@
 		<section class="p-12">
 			<h2 class="text-3xl font-semibold text-center md:text-4xl">Les questions fréquemment posées</h2>
 			<div class="max-w-[570px] m-auto mt-8 flex flex-col gap-2.5">
-				{% include 'components/accordion.html.twig' with {'question': 'Question 1', 'answer': 'Réponse 1'} %}
-				{% include 'components/accordion.html.twig' with {'question': 'Question 2', 'answer': 'Réponse 2'} %}
-				{% include 'components/accordion.html.twig' with {'question': 'Question 3', 'answer': 'Réponse 3'} %}
+				<twig:Accordion question="Question 1" answer="Réponse 1"></twig:Accordion>
+				<twig:Accordion question="Question 2" answer="Réponse 2"></twig:Accordion>
+				<twig:Accordion question="Question 3" answer="Réponse 3"></twig:Accordion>
 			</div>
 		</section>
 	</main>
