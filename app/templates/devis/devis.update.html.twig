@@ -49,6 +49,12 @@
 							Dévérouiller
 						</a>
 					{% endif %}
+
+					{% if quotation.status.value != 'editing' and quotation.status.value != 'canceled' %}
+						<a href="{{path('app_preview_devis', {devis: quotation.id, organization: organization.id})}}">
+							preview
+						</a>
+					{% endif %}
 				</div>
 				{% if quotation.status.value == 'editing' %}
 					<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
