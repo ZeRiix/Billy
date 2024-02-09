@@ -21,7 +21,7 @@
 				<div class="w-full flex gap-4 text-bgreen">
 					{% if quotation.status.value == 'editing' %}
 						<label 
-							class="cursor-pointer hover:underline"
+							class="cursor-pointer hover:underline transition-all duration-300"
 							for="redirectCommand" 
 							onclick="
 							setTimeout(() => {
@@ -33,7 +33,7 @@
 							Ajouter une commande
 						</label>
 						<label 
-						class="cursor-pointer hover:underline"
+						class="cursor-pointer hover:underline transition-all duration-300"
 							for="redirectSend" 
 							onclick="
 							setTimeout(() => {
@@ -47,13 +47,13 @@
 					{% endif %}
 
 					{% if quotation.status.value == 'lock' %}
-						<a href="{{ path('app_unlock_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline">
+						<a href="{{ path('app_unlock_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
 							Dévérouiller
 						</a>
 					{% endif %}
 
 					{% if quotation.status.value != 'editing' and quotation.status.value != 'canceled' %}
-						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline">
+						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
 							Aperçu
 						</a>
 					{% endif %}
@@ -92,8 +92,8 @@
 					<a href="#">Générer ma facture</a>
 				{% endif %}
 			</div>
-			<div class="w-full² flex justify-between items-center">
-				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="hover:text-bgreen">
+			<div class="w-full flex justify-between items-center">
+				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="hover:text-bgreen transition-all duration-300">
 					<span class="mdi mdi-arrow-left"></span> 
 					Retour aux devis
 				</a>

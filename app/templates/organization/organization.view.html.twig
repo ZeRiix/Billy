@@ -11,7 +11,7 @@
 			{% endif %}
 			{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
 				<a href="{{ path('app_update_organization', { organization: organization.id }) }}" title="Modifier">
-					<span class="mdi mdi-pencil text-2xl text-gray-500"></span>
+					<span class="mdi mdi-pencil text-2xl text-gray-500 hover:text-bgreen transition-all duration-300"></span>
 				</a>
 			{% endif %}
 		</div>

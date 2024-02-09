@@ -26,12 +26,12 @@
 {%- endblock checkbox_row -%}
 
 {%- block widget_attributes -%}
-	{%- set attr = attr|merge({ class: attr.class|default(widget_class|default('w-60 sm:w-80 p-2 rounded-lg outline-none border-2 focus:border-bgreen')) }) -%}
+	{%- set attr = attr|merge({ class: attr.class|default(widget_class|default('w-60 sm:w-80 p-2 rounded-lg outline-none border-2 focus:border-bgreen transition-all duration-300')) }) -%}
 	{{- parent() -}}
 {%- endblock widget_attributes -%}
 
 {%- block submit_widget -%}
     {%- set type = type|default('submit') -%}
-	{%- set attr = attr|merge({ class: (attr.class|default('') ~ ' px-6 py-2 text-white font-semibold bg-blighter-green border-blighter-green rounded-large hover:bg-bgreen hover:border-bgreen ease-in-out duration-300')|trim}) -%}
+	{%- set attr = attr|merge({ class: (attr.class|default('') ~ ' px-6 py-2 text-white font-semibold bg-blighter-green border-blighter-green rounded-large hover:bg-bgreen hover:border-bgreen transition-all duration-300')|trim}) -%}
 	{{- parent() -}}
 {%- endblock submit_widget -%}

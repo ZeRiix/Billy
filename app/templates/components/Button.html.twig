@@ -1,7 +1,7 @@
 
 <a 
 	href="{{ href }}"
-	class="px-6 py-2 {{ style == 'full' ? 'text-white bg-blighter-green border-blighter-green hover:bg-bgreen hover:border-bgreen' : 'text-bgreen border-bgreen hover:text-white hover:bg-bgreen' }} font-semibold rounded-large border-solid border-2 ease-in-out duration-300"
+	class="px-6 py-2 {{ style == 'full' ? 'text-white bg-blighter-green border-blighter-green hover:bg-bgreen hover:border-bgreen' : 'text-bgreen border-bgreen hover:text-white hover:bg-bgreen' }} font-semibold rounded-large border-solid border-2 transition-all duration-300"
 	{{ blank ? 'target="_blank"' : ''}}
 >
 	{{ value }}
