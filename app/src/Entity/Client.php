@@ -84,7 +84,7 @@ class Client
 	]
 	private ?string $email = null; //Pas testé si regex fonctionne à test quand on aura un form
 
-	#[ORM\Column(length: 10)]
+	#[ORM\Column(length: 10, nullable: true)]
 	#[Assert\NotBlank(message: "Veuillez renseigner le numéro de téléphone du client")]
 	#[
 		Assert\Regex(

@@ -65,7 +65,7 @@ class Service
 	private ?string $unitPrice = null;
 
 	#[Groups(["service"])]
-	#[ORM\Column(type: Types::BOOLEAN)]
+	#[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
 	private ?bool $isArchived = false;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
