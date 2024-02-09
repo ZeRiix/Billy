@@ -163,8 +163,9 @@ class ServiceController extends AbstractController
 			]);
 		}
 
-		return $this->redirectToRoute("app_archived_services", [
+		return $this->redirectToRoute("app_services", [
 			"organization" => $service->getOrganization()->getId(),
+			"archived" => true,
 		]);
 	}
 }

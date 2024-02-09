@@ -194,6 +194,9 @@ class ClientController extends AbstractController
 			return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
 		}
 
-		return $this->redirectToRoute("app_archived_clients", ["organization" => $organization->getId()]);
+		return $this->redirectToRoute("app_clients", [
+			"organization" => $organization->getId(),
+			"archived" => true,
+		]);
 	}
 }
