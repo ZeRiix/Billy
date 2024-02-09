@@ -5,9 +5,10 @@ namespace App\Twig\Components;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
-class Table
+class Button
 {
-	public bool $action;
-	public mixed $data;
-	public array $cols;
+	public string $style = "full";
+	public string $value;
+	public string $href;
+	public bool $blank = false;
 }

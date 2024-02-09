@@ -20,7 +20,10 @@
 				</label>
 			{% endif %}
 		</div>
-		<a href="{{ path('app_client_create', { 'organization': getCurrentOrganization().id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Créer</a>
+		<twig:Button
+			value="Ajouter"
+			:href="path('app_client_create', { 'organization': getCurrentOrganization().id })"
+		></twig:Button>
 	</div>
 
 	{% if clients is not empty %}

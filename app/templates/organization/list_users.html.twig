@@ -5,7 +5,7 @@
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
 		<h1 class="text-3xl font-semibold">Liste des utilisateurs</h1>
-		<a href="{{ path('organization_invite_user', { 'organization': getCurrentOrganization().id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
+		<twig:Button value="Ajouter" :href="path('organization_invite_user', { 'organization': getCurrentOrganization().id })"></twig:Button>
 	</div>
 
 	{% if users is not empty %}

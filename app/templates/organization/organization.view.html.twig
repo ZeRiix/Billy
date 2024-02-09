@@ -10,7 +10,9 @@
 				<span class="mdi mdi-crown text-3xl text-amber-500"></span>
 			{% endif %}
 			{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
-				<a href="{{ path('app_update_organization', {organization: organization.id}) }}" title="Modifier"><span class="mdi mdi-pencil text-2xl text-gray-500"></span></a>
+				<a href="{{ path('app_update_organization', { organization: organization.id }) }}" title="Modifier">
+					<span class="mdi mdi-pencil text-2xl text-gray-500"></span>
+				</a>
 			{% endif %}
 		</div>
 	</h1>

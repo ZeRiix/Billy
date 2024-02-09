@@ -20,7 +20,7 @@
 				</label>
 			{% endif %}
 		</div>
-		<a href="{{ path('app_create_service', { organization: getCurrentOrganization().id }) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter un service</a>
+		<twig:Button value="Ajouter un service" :href="path('app_create_service', { organization: getCurrentOrganization().id })"></twig:Button>
 	</div>
 	<twig:Table
 		:data="services"

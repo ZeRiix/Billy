@@ -5,11 +5,11 @@
 		</a>
 		<div class="flex gap-6 items-center">
 			{% if app.user %}
-				<a href="{{ path('app_logout') }}" class="text-white text-lg font-semibold">Déconnexion</a>
-				<a href="{{ path('app_organizations') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Dashboard</a>
+				<a href="{{ path('app_logout') }}" class="text-white text-lg font-semibold hover:underline">Déconnexion</a>
+				<twig:Button value="Dashboard" :href="path('app_organizations')"></twig:Button>
 			{% else %}
-				<a href="{{ path('app_login') }}" class="text-white text-lg font-semibold">Connexion</a>
-				<a href="{{ path('app_register') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">S'inscrire</a>
+				<a href="{{ path('app_login') }}" class="text-white text-lg font-semibold hover:underline">Connexion</a>
+				<twig:Button value="S'inscrire" :href="path('app_register')"></twig:Button>
 			{% endif %}
 		</div>
 	</div>

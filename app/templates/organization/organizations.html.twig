@@ -7,7 +7,7 @@
 		<h1 class="text-2xl font-semibold">Mes organisations</h1>
 		
 		{% if canCreate == true %}
-			<a href="{{ path('app_create_organization') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
+			<twig:Button value="Ajouter" :href="path('app_create_organization')"></twig:Button>
 		{% endif %}
 	</div>
 	<twig:Table
@@ -23,7 +23,7 @@
 		:action="true"
 	>
 		<a href="{{ path('app_organization_get_id', { organization: row.id }) }}">
-			<span class="mdi mdi-open-in-new text-bgrey"></span>
+			<span class="mdi mdi-open-in-new hover:text-bgreen"></span>
 		</a>
 
 		{% if app.user.id == row.createdBy.id %}

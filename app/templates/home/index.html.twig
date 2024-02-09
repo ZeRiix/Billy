@@ -13,16 +13,20 @@
 						Devis et factures, unifiés pour plus d'efficacité. Optez pour la simplicité 
 						avec notre solution de gestion tout-en-un.
 					</p>
-					<div class="flex flex-col gap-9 justify-center items-center md:flex-row">
+					<div class="flex flex-col gap-6 justify-center items-center md:flex-row">
 						{% if app.user %}
-							<a href="{{ path('app_organizations') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Dashboard</a>
+							<twig:Button value="Dashboard" :href="path('app_organizations')"></twig:Button>
 						{% else %}
-							<a href="{{ path('app_register') }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">S'inscrire</a>
+							<twig:Button value="S'inscrire" :href="path('app_register')"></twig:Button>
 						{% endif %}
-						<a href="mailto:support@billy.com" target="_bkank" class="px-12 py-4 text-bgreen text-lg font-semibold border-solid border-2 border-bgreen rounded-large hover:text-white hover:bg-bgreen ease-in-out duration-300">Contact</a>
+						<twig:Button
+							value="Contact"
+							style="stroke"
+							href="mailto:support@billy.com"
+							blank="true"
+						></twig:Button>
 					</div>
 				</div>
-				
 			</div>
 			<div class="max-w-[600px]">
 				<img src="{{ asset('assets/images/hero.jpeg') }}" alt="Comptable" class="w-full h-full object-cover">
