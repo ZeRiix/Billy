@@ -50,8 +50,8 @@
 			></a>
 			{% if row.status.value == 'sign' %}
 				<a 
-					class="mdi mdi-note-text text-xl text-gray-500"
-					{# href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}" #}
+					class="mdi mdi-note text-xl text-gray-500"
+					href="{{ path('app_bills_by_devis', { organization: organization.id, devis: row.id }) }}"
 				></a>
 			{% endif %}
 		{% endif %}

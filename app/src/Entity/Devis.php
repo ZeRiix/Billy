@@ -83,7 +83,7 @@ class Devis
 			notInRangeMessage: "Le taux de remise doit être compris entre 0 et 100."
 		)
 	]
-	private ?int $discount = null;
+	private ?int $discount = 0;
 
 	#[Vich\UploadableField(mapping: "imageSign", fileNameProperty: "imageSignName")]
 	#[
@@ -206,12 +206,12 @@ class Devis
 		return $this;
 	}
 
-	public function getDiscount(): ?string
+	public function getDiscount(): ?int
 	{
 		return $this->discount;
 	}
 
-	public function setDiscount(?string $discount): static
+	public function setDiscount(?int $discount): static
 	{
 		$this->discount = $discount;
 

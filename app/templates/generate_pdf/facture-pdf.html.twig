@@ -1,0 +1,161 @@
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ facture.organization.name }}-{{ facture.id }}</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                padding: 50px;
+            }
+            header {
+                position: relative;
+                width: 100%;
+                height: 150px;
+                margin-bottom: 50px;
+            }
+            .logo {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 150px;
+            }
+            .infos {
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+            .infos h1 {
+                margin-bottom: 20px;
+            }
+            .billInfos {
+                position: relative;
+                width: 100%;
+                height: 180px;
+                margin-bottom: 25px;
+            }
+            .billInfos ul {
+                position: absolute;
+                top: 0;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }
+            .billInfos .left {
+                left: 0;
+                width: 50%;
+            }
+            .billInfos .right {
+                right: 0;
+                width: 50%;
+            }
+            .billInfos ul li {
+                margin-bottom: 15px;
+            }
+            .billContent {
+                width: 100%;
+                margin-bottom: 25px;
+            }
+            table {
+                min-width: 100%;
+                line-height: 1.5;
+            }
+            th {
+                padding: 3px 5px;
+                border-bottom: 2px solid;
+                border-color: gray;
+                background-color: gray;
+                text-align: left;
+                font-size: 0.75rem;
+                line-height: 1rem;
+                border-color: rgb(229 231 235);
+                background-color: rgb(243 244 246);
+                font-weight: 600;
+                color: rgb(75 85 99);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            td {
+                padding: 5px;
+                background-color: white;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                border-bottom: 1px solid;
+                border-color: rgb(229 231 235);
+            }
+            tr {
+                position: relative;
+            }
+            footer {
+                width: 100%;
+                margin-top: 50px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <img src="{{ logoPath }}" alt="logo" class="logo" />
+            <div class="infos">
+                <h1>Facture n°{{ facture.id }}</h1>
+                <p>Facture établi le : {{ facture.createdAt | date('d/m/y') }}</p>
+            </div>
+        </header>
+        <main>
+            <section class="billInfos">
+                <ul class="left">
+                    <li><strong>Nom de l'entreprise : {{ facture.organization.name }}</strong></li>
+                    <li>Adresse de l'entreprise : {{ facture.organization.address }}</li>
+                    <li>Téléphone de l'entreprise : {{ facture.organization.phone }}</li>
+                    <li>Mail de l'entreprise : {{ facture.organization.email }}</li>
+                    <li>Activité de l'entreprise : {{ facture.organization.activity }}</li>
+                </ul>
+                <ul class="right">
+                    <li><strong>Nom du client : {{ facture.client.name }}</strong></li>
+                    <li>Adresse du client : {{ facture.client.address }}</li>
+                    <li>Téléphone du client : {{ facture.client.phone }}</li>
+                </ul>
+            </section>
+            <section class="billContent">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Quantité</th>
+                            <th>Prix unitaire</th>
+                            <th>Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commande in facture.commandes %}
+                        <td>{{ commande.description }}</td>
+                        <td>{{ commande.quantity }}</td>
+                        <td>{{ commande.unitPrice }} €</td>
+                        <td>{{ commande.montant }} €</td>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">Total HT</td>
+                            <td>{{ totalHt }} €</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">TVA</td>
+                            <td>?</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Total TTC</td>
+                            <td>?</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        </main>
+        <footer>
+            <p>© {{'now' | date('Y')}} - Tous droits réservés - Mentions légales</p>
+        </footer>
+    </body>
+</html>

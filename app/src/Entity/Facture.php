@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
@@ -12,6 +13,15 @@ use App\Repository\FactureRepository;
 use App\Entity\Organization;
 use App\Entity\Client;
 use App\Entity\Devis;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
+enum FactureStatus: string
+{
+	case WAITING = "waiting";
+	case CANCELED = "canceled";
+	case PAID = "payé";
+}
 
 #[ORM\Entity(repositoryClass: FactureRepository::class)]
 #[ORM\Table(name: "`facture`")]
@@ -19,193 +29,127 @@ use App\Entity\Devis;
 class Facture
 {
 	#[ORM\Id]
-   	#[ORM\Column(type: UuidType::NAME, unique: true)]
-   	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-   	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
-   	private ?Uuid $id;
+	#[ORM\Column(type: UuidType::NAME, unique: true)]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+	private ?Uuid $id;
 
-	#[ORM\ManyToOne(inversedBy: 'factures')]
+	#[ORM\ManyToOne(inversedBy: "factures")]
 	private ?Organization $organization = null;
 
 	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: "factures")]
-   	#[ORM\JoinColumn(nullable: false)]
-   	private Client $client;
+	#[ORM\JoinColumn(nullable: false)]
+	private Client $client;
+
+	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "facture")]
+	private Collection $commandes;
 
 	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: "factures")]
-   	#[ORM\JoinColumn(nullable: false)]
-   	private Devis $devis;
+	#[ORM\JoinColumn(nullable: false)]
+	private Devis $devis;
 
-	#[ORM\Column(type: Types::TEXT)]
-   	private ?string $num_facture = null;
-
-	#[ORM\Column(length: 100)]
-   	private ?string $name = null;
-
-	#[ORM\Column(type: Types::TEXT)]
-   	private ?string $description = null;
-
-	#[ORM\Column(type: Types::BOOLEAN)]
-   	private ?bool $is_signed = null;
-
-	#[
-   		ORM\Column(
-   			type: Types::DECIMAL,
-   			nullable: false,
-   			precision: 10,
-   			scale: 2
-   		)
-   	]
-   	private ?string $total_ht = null;
-
-	#[
-   		ORM\Column(
-   			type: Types::DECIMAL,
-   			nullable: false,
-   			precision: 10,
-   			scale: 2
-   		)
-   	]
-   	private ?string $total_ttc = null;
+	#[ORM\Column(type: Types::STRING, enumType: FactureStatus::class)]
+	private FactureStatus $statut = FactureStatus::WAITING;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-   	private ?\DateTimeImmutable $created_at = null;
+	private ?\DateTimeImmutable $created_at = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-   	private ?\DateTimeImmutable $updated_at = null;
+	private ?\DateTimeImmutable $updated_at = null;
+
+	public function __construct()
+	{
+		$this->commandes = new ArrayCollection();
+	}
 
 	public function getId(): ?Uuid
-   	{
-   		return $this->id;
-   	}
+	{
+		return $this->id;
+	}
+
+	public function getCommandes(): Collection
+	{
+		return $this->commandes;
+	}
+
+	public function addCommande(Commande $commande): self
+	{
+		if (!$this->commandes->contains($commande)) {
+			$this->commandes[] = $commande;
+			$commande->setFacture($this);
+		}
+
+		return $this;
+	}
 
 	public function getOrganization(): ?Organization
-   	{
-   		return $this->Organization;
-   	}
+	{
+		return $this->organization;
+	}
 
-	public function setOrganization(?Organization $Organization): self
-   	{
-   		$this->Organization = $Organization;
-   
-   		return $this;
-   	}
+	public function setOrganization(?Organization $organization): self
+	{
+		$this->organization = $organization;
+
+		return $this;
+	}
 
 	public function getClient(): ?Client
-   	{
-   		return $this->client;
-   	}
+	{
+		return $this->client;
+	}
 
 	public function setClient(Client $client): self
-   	{
-   		$this->client = $client;
-   
-   		return $this;
-   	}
+	{
+		$this->client = $client;
+
+		return $this;
+	}
 
 	public function getDevis(): ?Devis
-   	{
-   		return $this->devis;
-   	}
+	{
+		return $this->devis;
+	}
 
 	public function setDevis(Devis $devis): self
-   	{
-   		$this->devis = $devis;
-   
-   		return $this;
-   	}
+	{
+		$this->devis = $devis;
 
-	public function getNumFacture(): ?string
-   	{
-   		return $this->num_facture;
-   	}
+		return $this;
+	}
 
-	public function setNumFacture(string $num_facture): self
-   	{
-   		$this->num_facture = $num_facture;
-   
-   		return $this;
-   	}
+	public function getStatut(): ?FactureStatus
+	{
+		return $this->statut;
+	}
 
-	public function getName(): ?string
-   	{
-   		return $this->name;
-   	}
+	public function setStatut(FactureStatus $statut): static
+	{
+		$this->statut = $statut;
 
-	public function setName(string $name): static
-   	{
-   		$this->name = $name;
-   
-   		return $this;
-   	}
-
-	public function getDescription(): ?string
-   	{
-   		return $this->description;
-   	}
-
-	public function setDescription(string $description): static
-   	{
-   		$this->description = $description;
-   
-   		return $this;
-   	}
-
-	public function getIsSigned(): ?bool
-   	{
-   		return $this->is_signed;
-   	}
-
-	public function setIsSigned(bool $is_signed): static
-   	{
-   		$this->is_signed = $is_signed;
-   
-   		return $this;
-   	}
-
-	public function getTotalHt(): ?string
-   	{
-   		return $this->total_ht;
-   	}
-
-	public function setTotalHt(string $total_ht): static
-   	{
-   		$this->total_ht = $total_ht;
-   
-   		return $this;
-   	}
-
-	public function getTotalTtc(): ?string
-   	{
-   		return $this->total_ttc;
-   	}
-
-	public function setTotalTtc(string $total_ttc): static
-   	{
-   		$this->total_ttc = $total_ttc;
-   
-   		return $this;
-   	}
+		return $this;
+	}
 
 	public function getCreatedAt(): ?\DateTimeImmutable
-   	{
-   		return $this->created_at;
-   	}
+	{
+		return $this->created_at;
+	}
 
 	#[ORM\PrePersist]
-   	public function setCreatedAt(): void
-   	{
-   		$this->created_at = new \DateTimeImmutable();
-   	}
+	public function setCreatedAt(): void
+	{
+		$this->created_at = new \DateTimeImmutable();
+	}
 
 	public function getUpdatedAt(): ?\DateTimeImmutable
-   	{
-   		return $this->updated_at;
-   	}
+	{
+		return $this->updated_at;
+	}
 
 	#[ORM\PrePersist]
-   	#[ORM\PreUpdate]
-   	public function setUpdatedAt(): void
-   	{
-   		$this->updated_at = new \DateTimeImmutable();
-   	}
+	#[ORM\PreUpdate]
+	public function setUpdatedAt(): void
+	{
+		$this->updated_at = new \DateTimeImmutable();
+	}
 }

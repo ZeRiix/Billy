@@ -27,6 +27,10 @@ class Commande
 	#[ORM\JoinColumn(nullable: false)]
 	private Service $service;
 
+	#[ORM\ManyToOne(targetEntity: Facture::class, inversedBy: "commandes")]
+	#[ORM\JoinColumn(nullable: true)]
+	private ?Facture $facture;
+
 	#[ORM\Column(length: 100)]
 	#[Assert\NotBlank(message: "Veuillez renseigner le nom de la commande.")]
 	#[
@@ -92,6 +96,18 @@ class Commande
 	public function setService(Service $service): self
 	{
 		$this->service = $service;
+
+		return $this;
+	}
+
+	public function getFacture(): ?Facture
+	{
+		return $this->facture;
+	}
+
+	public function setFacture(?Facture $facture): self
+	{
+		$this->facture = $facture;
 
 		return $this;
 	}

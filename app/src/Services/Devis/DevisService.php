@@ -2,6 +2,7 @@
 
 namespace App\Services\Devis;
 
+use App\Entity\Commande;
 use App\Entity\Devis;
 use App\Entity\DeviStatus;
 use App\Entity\Organization;
@@ -35,6 +36,14 @@ class DevisService
 			);
 		}
 		$this->devisRepository->save($devis);
+	}
+
+	public function getCommandesNotInFacture(Devis $devis): array
+	{
+		return array_filter(
+			$devis->getCommandes()->toArray(),
+			fn(Commande $commande) => $commande->getFacture() === null
+		);
 	}
 
 	public function findById(int $id): bool

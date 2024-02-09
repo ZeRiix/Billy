@@ -1,0 +1,42 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Facture n°{{bill.id}}{% endblock %}
+
+{% block body %}
+	<h1 class="mb-14 text-3xl font-semibold">Facture n°{{bill.id}}</h1>
+	<div class="p-14 flex flex-col gap-20 items-center rounded-xl bg-white">
+		<div class="flex flex-row justify-between gap-4 w-full">
+		    <ul class="flex flex-col gap-4">
+				<li><strong>Nom de l'organisation : </strong>{{ bill.organization.name }}</li>
+				<li><strong>Nom et prénom du client : </strong>{{ bill.client.name ~ " " ~ bill.client.firstname }}</li>
+				<li><strong>Nom du devis : </strong>{{ bill.devis.name }}</li>
+			</ul>
+			<ul class="flex flex-col gap-4">
+				<li>
+				<strong>Statut du paiement : </strong>
+					{% if bill.statut.value == 'payé' %}
+						<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-check-circle"> Payé</span>
+					{% elseif bill.statut.value == 'canceled' %}
+						<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-cancel"> Annulé</span>
+					{% elseif bill.statut.value == 'waiting' %}
+						<span class="px-4 py-2 bg-orange-500 font-semibold text-white uppercase rounded-full mdi mdi-clock-alert-outline"> En attente</span>
+					{% endif %}
+				</li>
+				<li><strong>Date de création : </strong>{{bill.createdAt | date('d/m/y')}}</li>
+			</ul>
+		</div>
+		<twig:Table
+			:data="commands"
+			:cols="{
+				name: 'Nom de la commande',
+				'service.name': 'Nom du service',
+				'unitPrice': 'Prix (en €)',
+				quantity: 'Quantité',
+				montant: 'Montant (en €)'
+			}"
+			:action="false"
+		>
+		</twig:Table>
+		Télécharger
+	</div>
+{% endblock %}
