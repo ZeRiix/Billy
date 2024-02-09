@@ -80,4 +80,15 @@ class ClientService
 		}
 		$this->clientRepository->save($client);
 	}
+
+	public function archiveClient(Client $client)
+	{
+		if ($client->getIsArchived()) {
+			$client->setIsArchived(false);
+		} else {
+			$client->setIsArchived(true);
+		}
+
+		$this->clientRepository->save($client);
+	}
 }

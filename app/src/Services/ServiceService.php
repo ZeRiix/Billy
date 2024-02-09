@@ -43,14 +43,11 @@ class ServiceService
 
 	public function archiveService(Service $service)
 	{
-		$service->setIsArchived(true);
-
-		$this->serviceRepository->save($service);
-	}
-
-	public function unArchiveService(Service $service)
-	{
-		$service->setIsArchived(false);
+		if ($service->getIsArchived()) {
+			$service->setIsArchived(false);
+		} else {
+			$service->setIsArchived(true);
+		}
 
 		$this->serviceRepository->save($service);
 	}

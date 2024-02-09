@@ -13,12 +13,38 @@ use App\Entity\Organization;
 use App\Security\Voter\ClientVoter;
 // form
 use App\Form\CreateClientForm;
-use App\Form\UpdateClientForm;
 
 class ClientController extends AbstractController
 {
-	#[Route("/organization/{organization}/clients", name: "app_clients", methods: ["GET", "POST"])]
-	public function getAll(ClientService $clientService, Organization $organization): Response
+	#[Route("/organization/{organization}/clients", name: "app_clients", methods: ["GET"])]
+	public function getAll(Request $request, Organization $organization): Response
+	{
+		if (!$this->isGranted(ClientVoter::VIEW, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour consulter les clients dans cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
+		// gets clients
+		if ($request->query->get("archived")) {
+			$clients = $organization->getClients();
+		} else {
+			$clients = $organization->getClients()->filter(fn(Client $client) => !$client->getIsArchived());
+		}
+
+		return $this->render(
+			"client/clients.html.twig",
+			[
+				"clients" => $clients,
+				"isArchived" => $request->query->get("archived") ? true : false,
+			],
+			new Response(status: Response::HTTP_OK)
+		);
+	}
+
+	#[Route("/organization/{organization}/clients/archived", name: "app_archived_clients", methods: ["GET"])]
+	public function geAllArchivedClients(Organization $organization): Response
 	{
 		if (!$this->isGranted(ClientVoter::VIEW, $organization)) {
 			$this->addFlash(
@@ -29,13 +55,11 @@ class ClientController extends AbstractController
 		}
 		$response = new Response();
 
-		// gets clients
-		$clients = $clientService->getAll($organization);
-
 		return $this->render(
 			"client/clients.html.twig",
 			[
-				"clients" => $clients,
+				"clients" => $organization->getClients(),
+				"isArchived" => true,
 			],
 			$response
 		);
@@ -131,5 +155,45 @@ class ClientController extends AbstractController
 			],
 			$response
 		);
+	}
+
+	#[
+		Route(
+			"/organization/{organization}/client/{client}/archived",
+			name: "app_client_archive",
+			methods: ["GET"]
+		)
+	]
+	public function archive(
+		Client $client,
+		ClientService $clientService,
+		Organization $organization
+	): Response {
+		if (!$this->isGranted(ClientVoter::UPDATE, $client)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour archiver un client dans cette organisation."
+			);
+			return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
+		}
+		$response = new Response();
+		try {
+			$clientService->archiveClient($client);
+			$response->setStatusCode(Response::HTTP_OK);
+			if ($client->getIsArchived()) {
+				$this->addFlash("success", "Le client a bien été désarchivé.");
+			} else {
+				$this->addFlash("success", "Le client a bien été archivé.");
+			}
+		} catch (\Exception $e) {
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$this->addFlash("error", $e->getMessage());
+		}
+
+		if ($client->getIsArchived()) {
+			return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
+		}
+
+		return $this->redirectToRoute("app_archived_clients", ["organization" => $organization->getId()]);
 	}
 }

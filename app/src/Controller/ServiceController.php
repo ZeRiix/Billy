@@ -15,41 +15,32 @@ use Symfony\Component\Routing\Annotation\Route;
 class ServiceController extends AbstractController
 {
 	#[Route("/organization/{organization}/services", name: "app_services", methods: ["GET"])]
-	public function view(Organization $organization): Response
+	public function view(Request $request, Organization $organization): Response
 	{
 		if (!$this->isGranted(ServiceVoter::VIEW, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour consulter les services dans cette organisation."
+			);
 			return $this->redirectToRoute("app_organizations");
 		}
-
-		$services = $organization->getServices();
-		foreach ($services as $service) {
-			if ($service->getIsArchived()) {
-				$services->removeElement($service);
-			}
+		// gets services
+		if ($request->query->get("archived")) {
+			$services = $organization->getServices();
+		} else {
+			$services = $organization
+				->getServices()
+				->filter(fn(Service $service) => !$service->getIsArchived());
 		}
 
-		return $this->render("service/index.html.twig", [
-			"services" => $services,
-		]);
-	}
-
-	#[
-		Route(
-			"/organization/{organization}/services/archived",
-			name: "app_archived_services",
-			methods: ["GET"]
-		)
-	]
-	public function viewArchived(Organization $organization): Response
-	{
-		if (!$this->isGranted(ServiceVoter::VIEW, $organization)) {
-			return $this->redirectToRoute("app_organizations");
-		}
-
-		return $this->render("service/index.html.twig", [
-			"services" => $organization->getServices(),
-			"isArchived" => true,
-		]);
+		return $this->render(
+			"service/index.html.twig",
+			[
+				"services" => $services,
+				"isArchived" => $request->query->get("archived") ? true : false,
+			],
+			new Response(status: Response::HTTP_OK)
+		);
 	}
 
 	#[Route("/organization/{organization}/service", name: "app_create_service", methods: ["GET", "POST"])]
@@ -146,39 +137,30 @@ class ServiceController extends AbstractController
 	public function archive(Service $service, ServiceService $serviceService): Response
 	{
 		if (!$this->isGranted(ServiceVoter::UPDATE, $service)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour archiver le service dans cette organisation."
+			);
 			return $this->redirectToRoute("app_services", ["id" => $service->getOrganization()->getId()]);
 		}
 
+		$response = new Response();
 		try {
 			$serviceService->archiveService($service);
-			$this->addFlash("success", "Le service a bien été archivé.");
+			$response->setStatusCode(Response::HTTP_OK);
+			if ($service->getIsArchived()) {
+				$this->addFlash("success", "Le service a bien été désarchivé.");
+			} else {
+				$this->addFlash("success", "Le service a bien été archivé.");
+			}
 		} catch (\Exception $error) {
 			$this->addFlash("error", $error->getMessage());
 		}
 
-		return $this->redirectToRoute("app_services", [
-			"organization" => $service->getOrganization()->getId(),
-		]);
-	}
-
-	#[
-		Route(
-			"/organization/{organization}/service/{service}/unarchived",
-			name: "app_unarchive_service",
-			methods: ["GET"]
-		)
-	]
-	public function unarchive(Service $service, ServiceService $serviceService): Response
-	{
-		if (!$this->isGranted(ServiceVoter::UPDATE, $service)) {
-			return $this->redirectToRoute("app_services", ["id" => $service->getOrganization()->getId()]);
-		}
-
-		try {
-			$serviceService->unArchiveService($service);
-			$this->addFlash("success", "Le service a bien été désarchivé.");
-		} catch (\Exception $error) {
-			$this->addFlash("error", $error->getMessage());
+		if ($service->getIsArchived()) {
+			return $this->redirectToRoute("app_services", [
+				"organization" => $service->getOrganization()->getId(),
+			]);
 		}
 
 		return $this->redirectToRoute("app_archived_services", [

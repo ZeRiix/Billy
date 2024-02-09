@@ -119,6 +119,9 @@ class Client
 	#[Assert\Length(min: 14, max: 14, exactMessage: "Le siret doit contenir {{ limit }} caractères.")]
 	private ?string $siret = null;
 
+	#[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
+	private ?bool $isArchived = false;
+
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
 
@@ -263,5 +266,17 @@ class Client
 	public function setUpdatedAt(): void
 	{
 		$this->updated_at = new \DateTimeImmutable();
+	}
+
+	public function getIsArchived(): ?bool
+	{
+		return $this->isArchived;
+	}
+
+	public function setIsArchived(bool $isArchived): static
+	{
+		$this->isArchived = $isArchived;
+
+		return $this;
 	}
 }
