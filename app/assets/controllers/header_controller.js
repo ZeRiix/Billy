@@ -79,6 +79,11 @@ export default class extends Controller {
 			pathname: "Modifier le devis",
 			path: null,
 		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/quotation\/[0-9-]\/commande+$/,
+			pathname: "Création de la commande",
+			path: null,
+		},
 	];
 
 	connect() {

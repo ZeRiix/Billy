@@ -40,17 +40,17 @@
 	
 		{% if row.status.value == 'editing' %}
 			<a 
-				class="mdi mdi-pencil text-xl text-gray-500"
+				class="mdi mdi-pencil text-xl text-bgrey hover:text-bgreen transition-all duration-300"
 				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
 			></a>
 		{% else %}
 			<a 
-				class="mdi mdi-eye text-xl text-gray-500"
+				class="mdi mdi-eye text-xl text-bgrey hover:text-bgreen transition-all duration-300"
 				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
 			></a>
 			{% if row.status.value == 'sign' %}
 				<a 
-					class="mdi mdi-note-text text-xl text-gray-500"
+					class="mdi mdi-note-text text-xl text-bgrey hover:text-bgreen transition-all duration-300"
 					{# href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}" #}
 				></a>
 			{% endif %}

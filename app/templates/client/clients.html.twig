@@ -36,15 +36,15 @@
 			:action="true"
 		>
 			<a href="{{ path('app_client_update', { 'organization': getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-pencil text-base text-bgrey"></span>
+				<span class="mdi mdi-pencil text-xl text-bgrey hover:text-bgreen transition-all duration-300"></span>
 			</a>
 			{% if  row.isArchived == false %}
 			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-archive-outline text-xl text-gray-500"></span>
+				<span class="mdi mdi-archive-outline text-xl text-bgrey hover:text-orange-400 transition-all duration-300"></span>
 			</a>
 			{% else %}
 			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-archive-off-outline text-xl text-gray-500"></span>
+				<span class="mdi mdi-archive-off-outline text-xl text-bgrey hover:text-orange-400 transition-all duration-300"></span>
 			</a>
 			{% endif %}
 		</twig:Table>

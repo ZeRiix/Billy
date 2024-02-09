@@ -23,7 +23,7 @@
 		:action="true"
 	>
 		<a href="{{ path('app_organization_get_id', { organization: row.id }) }}">
-			<span class="mdi mdi-open-in-new hover:text-bgreen transition-all duration-300"></span>
+			<span class="mdi mdi-open-in-new text-xl text-bgrey hover:text-bgreen transition-all duration-300"></span>
 		</a>
 
 		{% if app.user.id == row.createdBy.id %}

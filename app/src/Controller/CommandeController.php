@@ -21,7 +21,7 @@ use App\Security\Voter\CommandeVoter;
 
 class CommandeController extends AbstractController
 {
-	#[Route('/organization/{organization}/devis/{devis}/commande', name: 'app_create_commande', methods: ["GET", "POST"])]
+	#[Route('/organization/{organization}/quotation/{devis}/commande', name: 'app_create_commande', methods: ["GET", "POST"])]
 	public function create(Request $request, Devis $devis, CommandeService $commandeService): Response
 	{
 		$organization = $devis->getOrganization();

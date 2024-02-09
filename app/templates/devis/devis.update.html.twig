@@ -77,7 +77,7 @@
 					:action="quotation.status.value == 'editing'"
 				>
 					<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
-						<span class="mdi mdi-pencil text-xl text-gray-500"></span>
+						<span class="mdi mdi-pencil text-xl text-bgrey"></span>
 					</a>
 					<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
 						<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
