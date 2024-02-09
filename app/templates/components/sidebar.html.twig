@@ -3,9 +3,9 @@
 	<a href="{{ path('app_organizations') }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">
 		{% if getCurrentOrganization() %}
 			{% set logoName = getCurrentOrganization().logoName %}
-			<img src="{{ logoName ? asset('storage/images/organizations/' ~ logoName) : asset('assets/images/default.jpg') }}" alt="logo" class="h-full rounded-lg">
+			<img src="{{ logoName ? asset('storage/images/organizations/' ~ logoName) : asset('assets/images/default.jpg') }}" alt="logo" class="w-full h-full rounded-lg object-fill">
 		{% else %}
-			<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="h-full rounded-lg">
+			<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-full h-full rounded-lg object-fill">
 		{% endif %}
 	</a>
 	{% if getCurrentOrganization() %}
