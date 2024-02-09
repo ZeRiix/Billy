@@ -36,9 +36,9 @@
 			<div class="container m-auto min-h-[480px] p-12 flex flex-col justify-between items-center">
 				<h2 class="text-3xl font-semibold text-center md:text-4xl">Pourquoi choisir Billy ?</h2>
 				<div class="mt-8 flex flex-wrap justify-center gap-16">
-					{% include 'components/advantage.html.twig' with {'image': 'checkbox.png', 'title': 'Avantage 1', 'description': 'Description de l\'avantage.'} %}
-					{% include 'components/advantage.html.twig' with {'image': 'checkbox.png', 'title': 'Avantage 2', 'description': 'Description de l\'avantage.'} %}
-					{% include 'components/advantage.html.twig' with {'image': 'checkbox.png', 'title': 'Avantage 3', 'description': 'Description de l\'avantage.'} %}
+					<twig:AdvantageCard title="Avantage 1" description="Description 1"></twig:AdvantageCard>
+					<twig:AdvantageCard title="Avantage 2" description="Description 2"></twig:AdvantageCard>
+					<twig:AdvantageCard title="Avantage 3" description="Description 3"></twig:AdvantageCard>
 				</div>
 			</div>
 		</section>
@@ -51,9 +51,4 @@
 			</div>
 		</section>
 	</main>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('assets/js/accordion.js') }}"></script>
 {% endblock %}
