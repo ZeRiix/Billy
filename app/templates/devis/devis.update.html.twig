@@ -7,18 +7,18 @@
 	<div class="p-14 rounded-xl bg-white">
 		{{ form_start(form) }}
 			<fieldset 
-				{{quotation.status.value != 'editing'? 'disabled' : ''}} 
+				{{ quotation.status.value != 'editing'? 'disabled' : '' }} 
 				class="flex flex-col gap-10 items-start"
 			>
 				<div class="flex gap-5">
-					{{form_row(form.name)}}
-					{{form_row(form.description)}}
+					{{ form_row(form.name) }}
+					{{ form_row(form.description) }}
 				</div>
 				<div class="flex gap-5">
-					{{form_row(form.client)}}
-					{{form_row(form.discount)}}
+					{{ form_row(form.client) }}
+					{{ form_row(form.discount) }}
 				</div>
-				<div class="w-full mb-5 flexgap-4 text-bgreen">
+				<div class="w-full flex gap-4 text-bgreen">
 					{% if quotation.status.value == 'editing' %}
 						<label 
 							class="cursor-pointer hover:underline"
@@ -29,6 +29,7 @@
 							})
 							"
 						>
+							<span class="mdi mdi-plus"></span>
 							Ajouter une commande
 						</label>
 						<label 
@@ -40,19 +41,20 @@
 							})
 							"
 						>
+							<span class="mdi mdi-send"></span>
 							Envoyer
 						</label>
 					{% endif %}
 
 					{% if quotation.status.value == 'lock' %}
-						<a href="{{path('app_unlock_devis', {devis: quotation.id, organization: organization.id})}}">
+						<a href="{{ path('app_unlock_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline">
 							Dévérouiller
 						</a>
 					{% endif %}
 
 					{% if quotation.status.value != 'editing' and quotation.status.value != 'canceled' %}
-						<a href="{{path('app_preview_devis', {devis: quotation.id, organization: organization.id})}}">
-							preview
+						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline">
+							Aperçu
 						</a>
 					{% endif %}
 				</div>
@@ -61,7 +63,7 @@
 					<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
 				{% endif %}
 			</fieldset>
-			<div class="flex flex-col gap-10">
+			<div class="my-5 flex flex-col gap-10">
 				<!-- table d'affichage des commandes ajoutées  -->
 				<twig:Table
 					:data="commandes"

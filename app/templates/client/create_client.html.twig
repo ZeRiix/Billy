@@ -3,7 +3,7 @@
 {% block title %}{{ isCreating is defined ? 'Création' : 'Modification' }} d'un client{% endblock %}
 
 {% block body %}
-<div data-controller="clientForm" data-clientform-entreprise-value="{{isEntrprise is defined ? isEntrprise : "null"}}">
+<div data-controller="clientForm" data-clientform-entreprise-value="{{ isEntrprise is defined ? isEntrprise : "null" }}">
 	<div class="mb-14 flex justify-between items-center">
 		<h1 class="text-3xl font-semibold pb-6">{{ isCreating is defined ? 'Création' : 'Modification' }} d'un client</h1>
 		{% if isCreating is defined %} 
@@ -26,7 +26,7 @@
 				</div>
 				<fieldset 
 					class="E-field"
-					{{isCreating is defined? '' : 'disabled'}} 
+					{{ isCreating is defined? '' : 'disabled' }} 
 				>
 					{{ form_row(form.siret) }}
 				</fieldset>

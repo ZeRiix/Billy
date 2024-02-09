@@ -18,7 +18,7 @@
 	</h1>
 	<div class="p-14 flex flex-col lg:flex-row gap-10 items-center rounded-xl bg-white">
 		{% if vich_uploader_asset(organization, 'logoFile') %}
-			<img class="w-64 aspect-square object-contain" src="{{ vich_uploader_asset(organization, 'logoFile') }}" alt="Logo de {{organization.name}}">
+			<img class="w-64 aspect-square object-contain" src="{{ vich_uploader_asset(organization, 'logoFile') }}" alt="Logo de {{ organization.name }}">
 		{% else %}
 			<div class="w-64 aspect-square bg-gray-200 rounded flex items-center justify-center">
 				<span class="mdi mdi-domain text-6xl text-gray-400"></span>

@@ -8,15 +8,15 @@
 		{{ form_start(form) }}
 		<div class="flex flex-col gap-10 items-start">
 			<div class="flex flex-col lg:flex-row gap-5">
-				{{form_row(form.email)}}
-				{{form_row(form.phone)}}
+				{{ form_row(form.email) }}
+				{{ form_row(form.phone) }}
 			</div>
 			<div class="flex flex-col lg:flex-row gap-5">
-				{{form_row(form.activity)}}
-				{{form_row(form.logoFile)}}
+				{{ form_row(form.activity) }}
+				{{ form_row(form.logoFile) }}
 			</div>
 			<div class="w-full flex justify-between items-end">
-				<a href="{{ path('app_organization_get_id', {'organization': organization.id}) }}" class="hover:text-bgreen">
+				<a href="{{ path('app_organization_get_id', { 'organization': organization.id }) }}" class="hover:text-bgreen">
 					<span class="mdi mdi-arrow-left"></span> 
 					Retour à l'organisation
 				</a>
