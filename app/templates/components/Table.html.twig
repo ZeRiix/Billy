@@ -24,7 +24,11 @@
 							{% if block(key|replace({'.': '_'})) is defined %}
 								{{block(key|replace({'.': '_'}))|raw}}
 							{% else %}
-								{{currentValue}}
+								{% if currentValue.timestamp is defined %}
+									{{currentValue|date('d/m/Y')}}
+								{% else %}
+									{{currentValue}}	
+								{% endif %}
 							{% endif %}
 						</td>
 					{% endfor %}

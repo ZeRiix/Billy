@@ -21,30 +21,45 @@ use App\Security\Voter\CommandeVoter;
 
 class CommandeController extends AbstractController
 {
-	#[Route('/organization/{organization}/quotation/{devis}/commande', name: 'app_create_commande', methods: ["GET", "POST"])]
+	#[
+		Route(
+			"/organization/{organization}/devis/{devis}/commande",
+			name: "app_create_commande",
+			methods: ["GET", "POST"]
+		)
+	]
 	public function create(Request $request, Devis $devis, CommandeService $commandeService): Response
 	{
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(CommandeVoter::CREATE, $devis)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour créer une commande.");
-			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+			return $this->redirectToRoute("app_update_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
-		if($devis->getStatus() !== DeviStatus::EDITING){
-			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		if ($devis->getStatus() !== DeviStatus::EDITING) {
+			return $this->redirectToRoute("app_update_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
 		$response = new Response();
 		$commande = new Commande();
 		$form = $this->createForm(CreateCommandeForm::class, $commande, [
-			"organization_id" => $organization->getId()
+			"organization_id" => $organization->getId(),
 		]);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			try {
 				$commandeService->create($commande, $devis);
 				$this->addFlash("success", "La commande a bien été créée.");
-				return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+				return $this->redirectToRoute("app_update_devis", [
+					"organization" => $organization->getId(),
+					"devis" => $devis->getId(),
+				]);
 			} catch (\Exception $e) {
 				die($e->getMessage());
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -52,69 +67,100 @@ class CommandeController extends AbstractController
 			}
 		}
 
-		return $this->render('commande/commande.create.html.twig', [
-			'form' => $form->createView(),
-			'organization' => $organization,
-			'devis' => $devis,
-			'isUpdate' => false,
-		],
+		return $this->render(
+			"commande/commande.create.html.twig",
+			[
+				"form" => $form->createView(),
+				"organization" => $organization,
+				"devis" => $devis,
+				"isUpdate" => false,
+			],
 			$response
 		);
 	}
 
-	#[Route('/organization/{organization}/devis/{devis}/commande/{commande}', name: 'app_update_commande', methods: ["GET", "POST"])]
+	#[
+		Route(
+			"/organization/{organization}/devis/{devis}/commande/{commande}",
+			name: "app_update_commande",
+			methods: ["GET", "POST"]
+		)
+	]
 	public function update(Request $request, Commande $commande, CommandeService $commandeService)
 	{
 		$devis = $commande->getDevis();
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(CommandeVoter::UPDATE, $commande)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour modifier une commande.");
-			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+			return $this->redirectToRoute("app_update_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
-		if($devis->getStatus() !== DeviStatus::EDITING){
-			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		if ($devis->getStatus() !== DeviStatus::EDITING) {
+			return $this->redirectToRoute("app_update_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
 		$response = new Response();
 		$form = $this->createForm(CreateCommandeForm::class, $commande, [
-			"organization_id" => $organization->getId()
+			"organization_id" => $organization->getId(),
 		]);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			try {
 				$commandeService->update($commande);
 				$this->addFlash("success", "La commande a bien été modifiée.");
-				return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+				return $this->redirectToRoute("app_update_devis", [
+					"organization" => $organization->getId(),
+					"devis" => $devis->getId(),
+				]);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
 			}
 		}
 
-		return $this->render('commande/commande.create.html.twig', [
-			'form' => $form->createView(),
-			'organization' => $organization,
-			'devis' => $devis,
-			'commande' => $commande,
-			'isUpdate' => true
-		],
+		return $this->render(
+			"commande/commande.create.html.twig",
+			[
+				"form" => $form->createView(),
+				"organization" => $organization,
+				"devis" => $devis,
+				"commande" => $commande,
+				"isUpdate" => true,
+			],
 			$response
 		);
 	}
 
-	#[Route('/organization/{organization}/devis/{devis}/commande/{commande}/delete', name: 'app_delete_commande', methods: ["GET"])]
+	#[
+		Route(
+			"/organization/{organization}/devis/{devis}/commande/{commande}/delete",
+			name: "app_delete_commande",
+			methods: ["GET"]
+		)
+	]
 	public function delete(Commande $commande, CommandeService $commandeService)
 	{
 		$devis = $commande->getDevis();
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(CommandeVoter::DELETE, $commande)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer une commande.");
-			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+			return $this->redirectToRoute("app_update_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
-		if($devis->getStatus() !== DeviStatus::EDITING){
-			return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		if ($devis->getStatus() !== DeviStatus::EDITING) {
+			return $this->redirectToRoute("app_update_devis", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+			]);
 		}
 
 		try {
@@ -124,6 +170,9 @@ class CommandeController extends AbstractController
 			$this->addFlash("error", $e->getMessage());
 		}
 
-		return $this->redirectToRoute("app_update_devis", ["organization" => $organization->getId(), "devis" => $devis->getId()]);
+		return $this->redirectToRoute("app_update_devis", [
+			"organization" => $organization->getId(),
+			"devis" => $devis->getId(),
+		]);
 	}
 }

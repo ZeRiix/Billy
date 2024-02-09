@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Devis;
 use App\Entity\Client;
 use App\Repository\ClientRepository;
-use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

@@ -8,16 +8,17 @@
 		{{ form_start(form) }}
 			<fieldset 
 				{{ quotation.status.value != 'editing'? 'disabled' : '' }} 
-				class="flex flex-col gap-10 items-start"
+				class="flex flex-row gap-10 justify-between items-start"
 			>
-				<div class="flex gap-5">
-					{{ form_row(form.name) }}
-					{{ form_row(form.description) }}
-				</div>
-				<div class="flex gap-5">
-					{{ form_row(form.client) }}
-					{{ form_row(form.discount) }}
-				</div>
+				<div>
+					<div class="flex gap-5">
+						{{ form_row(form.name) }}
+						{{ form_row(form.description) }}
+					</div>
+					<div class="flex gap-5">
+						{{ form_row(form.client) }}
+						{{ form_row(form.discount) }}
+					</div>
 				<div class="w-full flex gap-4 text-bgreen">
 					{% if quotation.status.value == 'editing' %}
 						<label 
@@ -62,6 +63,11 @@
 					<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
 					<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
 				{% endif %}
+				</div>
+				<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-bgreen">
+					Voir mes factures
+					<span class="mdi mdi-arrow-right"></span> 
+				</a>
 			</fieldset>
 			<div class="my-5 flex flex-col gap-10">
 				<!-- table d'affichage des commandes ajoutées  -->

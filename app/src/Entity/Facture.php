@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
@@ -12,6 +13,15 @@ use App\Repository\FactureRepository;
 use App\Entity\Organization;
 use App\Entity\Client;
 use App\Entity\Devis;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
+enum FactureStatus: string
+{
+	case WAITING = "waiting";
+	case CANCELED = "canceled";
+	case PAID = "payé";
+}
 
 #[ORM\Entity(repositoryClass: FactureRepository::class)]
 #[ORM\Table(name: "`facture`")]
@@ -34,33 +44,26 @@ class Facture
 	#[ORM\JoinColumn(nullable: false)]
 	private Client $client;
 
+	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "facture")]
+	private Collection $commandes;
+
 	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: "factures")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Devis $devis;
 
-	#[ORM\Column(type: Types::TEXT)]
-	private ?string $num_facture = null;
-
-	#[ORM\Column(length: 100)]
-	private ?string $name = null;
-
-	#[ORM\Column(type: Types::TEXT)]
-	private ?string $description = null;
-
-	#[ORM\Column(type: Types::BOOLEAN)]
-	private ?bool $is_signed = null;
-
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
-	private ?string $total_ht = null;
-
-	#[ORM\Column(type: Types::DECIMAL, nullable: false, precision: 10, scale: 2)]
-	private ?string $total_ttc = null;
+	#[ORM\Column(type: Types::STRING, enumType: FactureStatus::class)]
+	private FactureStatus $statut = FactureStatus::WAITING;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $updated_at = null;
+
+	public function __construct()
+	{
+		$this->commandes = new ArrayCollection();
+	}
 
 	public function getId(): ?Uuid
 	{
@@ -75,6 +78,21 @@ class Facture
 	public function setChrono(int $chrono): self
 	{
 		$this->chrono = $chrono;
+
+		return $this;
+	}
+
+	public function getCommandes(): Collection
+	{
+		return $this->commandes;
+	}
+
+	public function addCommande(Commande $commande): self
+	{
+		if (!$this->commandes->contains($commande)) {
+			$this->commandes[] = $commande;
+			$commande->setFacture($this);
+		}
 
 		return $this;
 	}
@@ -115,74 +133,14 @@ class Facture
 		return $this;
 	}
 
-	public function getNumFacture(): ?string
+	public function getStatut(): ?FactureStatus
 	{
-		return $this->num_facture;
+		return $this->statut;
 	}
 
-	public function setNumFacture(string $num_facture): self
+	public function setStatut(FactureStatus $statut): static
 	{
-		$this->num_facture = $num_facture;
-
-		return $this;
-	}
-
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
-
-	public function setName(string $name): static
-	{
-		$this->name = $name;
-
-		return $this;
-	}
-
-	public function getDescription(): ?string
-	{
-		return $this->description;
-	}
-
-	public function setDescription(string $description): static
-	{
-		$this->description = $description;
-
-		return $this;
-	}
-
-	public function getIsSigned(): ?bool
-	{
-		return $this->is_signed;
-	}
-
-	public function setIsSigned(bool $is_signed): static
-	{
-		$this->is_signed = $is_signed;
-
-		return $this;
-	}
-
-	public function getTotalHt(): ?string
-	{
-		return $this->total_ht;
-	}
-
-	public function setTotalHt(string $total_ht): static
-	{
-		$this->total_ht = $total_ht;
-
-		return $this;
-	}
-
-	public function getTotalTtc(): ?string
-	{
-		return $this->total_ttc;
-	}
-
-	public function setTotalTtc(string $total_ttc): static
-	{
-		$this->total_ttc = $total_ttc;
+		$this->statut = $statut;
 
 		return $this;
 	}

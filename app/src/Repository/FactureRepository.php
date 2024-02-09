@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Facture;
-use App\Entity\Organization;
 use App\Repository\Traits\SaveTrait;
+use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

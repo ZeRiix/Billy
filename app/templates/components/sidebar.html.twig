@@ -73,6 +73,14 @@
 						</a>
 					</li>
 				{% endif %}
+				{% if checkPermissionOnOrganization(app.user, 'read_factures') %}
+					<li>
+						<a href="{{ path('app_organization_bills', { organization: getCurrentOrganization().id }) }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">
+							<span class="mdi mdi-note text-2xl"></span>
+							Mes Factures
+						</a>
+					</li>
+				{% endif %}
 			</ul>
 		</nav>
 		<a href="{{ path('app_logout') }}" class="flex gap-2 items-center transition-all duration-300 hover:text-white">

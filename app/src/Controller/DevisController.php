@@ -20,6 +20,7 @@ use App\Form\EditDevisForm;
 use App\Form\SignDevisForm;
 use App\Repository\DevisRepository;
 use App\Security\Voter\OrganizationVoter;
+use App\Services\Calculation\CalculationService;
 use App\Services\Pdf\GeneratePdfService;
 
 class DevisController extends AbstractController
@@ -76,8 +77,12 @@ class DevisController extends AbstractController
 			methods: ["GET", "POST"]
 		)
 	]
-	public function update(Request $request, Devis $devis, DevisService $devisService): Response
-	{
+	public function update(
+		Request $request,
+		Devis $devis,
+		DevisService $devisService,
+		CalculationService $calculationService
+	): Response {
 		$organization = $devis->getOrganization();
 		if (!$this->isGranted(DevisVoter::UPDATE, $devis)) {
 			$this->addFlash("error", "Vous n'avez pas les droits pour éditer ce devis.");
@@ -101,7 +106,7 @@ class DevisController extends AbstractController
 		}
 
 		$commandes = $devis->getCommandes();
-		$totalHt = $this->doCalculationForTotalHT($commandes, $devis->getDiscount());
+		$totalHt = $calculationService->doCalculationForTotalHT($commandes, $devis->getDiscount());
 
 		if ($request->get("redirectCommand") === "on" && $form->isValid()) {
 			return $this->redirectToRoute("app_create_commande", [
@@ -126,20 +131,6 @@ class DevisController extends AbstractController
 		]);
 	}
 
-	private function doCalculationForTotalHT($commandes, $discount)
-	{
-		$totalHt = 0;
-		foreach ($commandes as $commande) {
-			$totalHt += $commande->getQuantity() * $commande->getUnitPrice();
-		}
-
-		if ($discount > 0) {
-			$totalHt = $totalHt * (1 - $discount / 100);
-		}
-
-		return $totalHt;
-	}
-
 	#[
 		Route(
 			"/organization/{organization}/quotation/{devis}/generate-pdf",
@@ -150,7 +141,8 @@ class DevisController extends AbstractController
 	public function generatePdf(
 		Devis $devis,
 		Organization $organization,
-		GeneratePdfService $generatePdfService
+		GeneratePdfService $generatePdfService,
+		CalculationService $calculationService
 	): Response {
 		if (
 			$organization->getId() !== $devis->getOrganization()->getId() ||
@@ -162,7 +154,10 @@ class DevisController extends AbstractController
 		$response = new Response();
 		$organization = $devis->getOrganization();
 
-		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
+		$totalHt = $calculationService->doCalculationForTotalHT(
+			$devis->getCommandes(),
+			$devis->getDiscount()
+		);
 
 		$kernel_dir = $this->getParameter("kernel.project_dir");
 
@@ -237,7 +232,8 @@ class DevisController extends AbstractController
 		Devis $devis,
 		Organization $organization,
 		Request $request,
-		DevisRepository $devisRepository
+		DevisRepository $devisRepository,
+		CalculationService $calculationService
 	) {
 		if (
 			$organization->getId() !== $devis->getOrganization()->getId() ||
@@ -258,7 +254,10 @@ class DevisController extends AbstractController
 			}
 		}
 
-		$totalHt = $this->doCalculationForTotalHT($devis->getCommandes(), $devis->getDiscount());
+		$totalHt = $calculationService->doCalculationForTotalHT(
+			$devis->getCommandes(),
+			$devis->getDiscount()
+		);
 		$logoName = $devis->getOrganization()->getLogoName();
 		$imageSign = $devis->getImageSignName();
 
