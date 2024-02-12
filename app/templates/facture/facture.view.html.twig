@@ -37,6 +37,6 @@
 			:action="false"
 		>
 		</twig:Table>
-		Télécharger
+		<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}">Télécharger</a>
 	</div>
 {% endblock %}
