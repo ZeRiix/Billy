@@ -64,10 +64,12 @@
 					<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
 				{% endif %}
 				</div>
-				<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-bgreen">
-					Voir mes factures
-					<span class="mdi mdi-arrow-right"></span> 
-				</a>
+				{% if quotation.status.value == 'sign' %}
+					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-bgreen">
+						Voir mes factures
+						<span class="mdi mdi-arrow-right"></span> 
+					</a>
+				{% endif %}
 			</fieldset>
 			<div class="my-5 flex flex-col gap-10">
 				<!-- table d'affichage des commandes ajoutées  -->

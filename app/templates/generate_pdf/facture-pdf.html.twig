@@ -94,6 +94,15 @@
                 margin-top: 50px;
                 text-align: center;
             }
+
+			.badge {
+				padding: 4px 2px;
+				background-color: rgb(34 197 94);
+				font-weight: 600;
+				color: white;
+				text-transform: uppercase;
+				border-radius: 100%;
+			}
         </style>
     </head>
     <body>
@@ -102,6 +111,17 @@
             <div class="infos">
                 <h1>Facture n°{{ facture.id }}</h1>
                 <p>Facture établi le : {{ facture.createdAt | date('d/m/y') }}</p>
+				<p>Statut du paiment : 
+				<span class="badge">
+				{% if facture.statut.value == 'payé' %}
+						Payé
+					{% elseif facture.statut.value == 'canceled' %}
+						Annulé
+					{% elseif facture.statut.value == 'waiting' %}
+						En attente
+				{% endif %}
+				</span>
+				</p>
             </div>
         </header>
         <main>
@@ -122,7 +142,7 @@
             <section class="billContent">
                 <table>
                     <thead>
-                        <tr>
+                        <tr>	
                             <th>Description</th>
                             <th>Quantité</th>
                             <th>Prix unitaire</th>

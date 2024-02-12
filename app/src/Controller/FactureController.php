@@ -29,7 +29,10 @@ class FactureController extends AbstractController
 	]
 	public function index(Devis $devis, DevisService $devisService)
 	{
-		if (!$this->isGranted(OrganizationVoter::READ_FACTURE, $devis->getOrganization())) {
+		if (
+			!$this->isGranted(OrganizationVoter::READ_FACTURE, $devis->getOrganization()) ||
+			$devis->getStatus() != DeviStatus::SIGN
+		) {
 			$this->addFlash(
 				"error",
 				"Vous n'avez pas les droits pour voir les factures de ce devis ou le devis n'est pas signé."
@@ -115,6 +118,7 @@ class FactureController extends AbstractController
 	public function view(Facture $facture)
 	{
 		$devis = $facture->getDevis();
+		//die(var_dump($devis->getOrganization()->getName()));
 		if (
 			!$this->isGranted(OrganizationVoter::READ_FACTURE, $devis->getOrganization()) ||
 			($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED)
@@ -131,6 +135,8 @@ class FactureController extends AbstractController
 		return $this->render("facture/facture.view.html.twig", [
 			"bill" => $facture,
 			"commands" => $facture->getCommandes(),
+			"organization" => $devis->getOrganization(),
+			"devis" => $devis,
 		]);
 	}
 

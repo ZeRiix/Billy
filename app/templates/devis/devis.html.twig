@@ -48,7 +48,7 @@
 				class="mdi mdi-eye text-xl text-bgrey hover:text-bgreen transition-all duration-300"
 				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
 			></a>
-			{% if row.status.value == 'sign' %}
+			{% if row.status.value == 'sign' and checkPermissionOnOrganization(app.user, 'read_factures') %}
 				<a 
 					class="mdi mdi-note text-xl text-gray-500"
 					href="{{ path('app_bills_by_devis', { organization: organization.id, devis: row.id }) }}"
