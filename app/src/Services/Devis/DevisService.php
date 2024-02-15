@@ -38,7 +38,7 @@ class DevisService
 		$this->devisRepository->save($devis);
 	}
 
-	public function getCommandesNotInFacture(Devis $devis): array
+	public function getCommandesNotFactured(Devis $devis): array
 	{
 		return array_filter(
 			$devis->getCommandes()->toArray(),

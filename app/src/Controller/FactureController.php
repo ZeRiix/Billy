@@ -42,7 +42,7 @@ class FactureController extends AbstractController
 				"devis" => $devis->getId(),
 			]);
 		}
-		$canCreate = empty($devisService->getCommandesNotInFacture($devis));
+		$canCreate = !empty($devisService->getCommandesNotFactured($devis));
 		return $this->render("facture/factures.html.twig", [
 			"bills" => $devis->getFactures(),
 			"organization" => $devis->getOrganization(),
@@ -100,7 +100,7 @@ class FactureController extends AbstractController
 		return $this->render(
 			"facture/facture.create.html.twig",
 			[
-				"commandes" => $devisService->getCommandesNotInFacture($devis),
+				"commandes" => $devisService->getCommandesNotFactured($devis),
 				"organization" => $devis->getOrganization(),
 				"devis" => $devis,
 			],
