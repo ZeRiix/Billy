@@ -29,23 +29,25 @@ class FactureController extends AbstractController
 	]
 	public function index(Devis $devis, DevisService $devisService)
 	{
+		$organization = $devis->getOrganization();
+
 		if (
-			!$this->isGranted(OrganizationVoter::READ_FACTURE, $devis->getOrganization()) ||
-			$devis->getStatus() != DeviStatus::SIGN
+			!$this->isGranted(OrganizationVoter::READ_FACTURE, $organization) ||
+			($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED)
 		) {
 			$this->addFlash(
 				"error",
 				"Vous n'avez pas les droits pour voir les factures de ce devis ou le devis n'est pas signé."
 			);
 			return $this->redirectToRoute("app_update_devis", [
-				"organization" => $devis->getOrganization()->getId(),
+				"organization" => $organization->getId(),
 				"devis" => $devis->getId(),
 			]);
 		}
 		$canCreate = !empty($devisService->getCommandesNotFactured($devis));
 		return $this->render("facture/factures.html.twig", [
 			"bills" => $devis->getFactures(),
-			"organization" => $devis->getOrganization(),
+			"organization" => $organization,
 			"devis" => $devis,
 			"canCreate" => $canCreate,
 		]);
@@ -64,8 +66,9 @@ class FactureController extends AbstractController
 		FactureService $factureService,
 		DevisService $devisService
 	): Response {
+		$organization = $devis->getOrganization();
 		if (
-			!$this->isGranted(OrganizationVoter::WRITE_FACTURE, $devis->getOrganization()) ||
+			!$this->isGranted(OrganizationVoter::WRITE_FACTURE, $organization) ||
 			$devis->getStatus() != DeviStatus::SIGN
 		) {
 			$this->addFlash(
@@ -73,10 +76,11 @@ class FactureController extends AbstractController
 				"Vous n'avez pas les droits pour créer une facture pour cette Organisation ou le devis n'est pas signé."
 			);
 			return $this->redirectToRoute("app_update_devis", [
-				"organization" => $devis->getOrganization()->getId(),
+				"organization" => $organization->getId(),
 				"devis" => $devis->getId(),
 			]);
 		}
+
 		$response = new Response();
 		if ($request->getMethod() == "POST") {
 			/** @var array $commandes */
@@ -85,13 +89,17 @@ class FactureController extends AbstractController
 				//appel du service
 				$factureService->create(
 					new Facture(),
-					$devis->getOrganization(),
+					$organization,
 					$devis->getClient(),
 					$devis,
 					$commandeIds
 				);
 
 				$this->addFlash("success", "La facture à bien été créee.");
+				return $this->redirectToRoute("app_bills_by_devis", [
+					"organization" => $organization->getId(),
+					"devis" => $devis->getId(),
+				]);
 			} catch (\Exception $e) {
 				$this->addFlash("error", $e->getMessage());
 			}

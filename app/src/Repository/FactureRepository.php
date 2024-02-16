@@ -27,15 +27,14 @@ class FactureRepository extends ServiceEntityRepository
 
 	public function genChrono(Organization $organization): int
 	{
-		$lastChrono = $this->createQueryBuilder("f")
-			->select("f.chrono")
-			->where("f.organization = :organization")
-			->setParameter("organization", $organization)
-			->orderBy("f.chrono", "DESC")
-			->setMaxResults(1)
-			->getQuery()
-			->getSingleScalarResult();
+		$conn = $this->_em->getConnection();
+		$sql = "SELECT count(*) FROM facture WHERE organization_id = :organization_id";
 
-		return $lastChrono ? $lastChrono + 1 : 1;
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"organization_id" => $organization->getId(),
+		]);
+
+		return $res->fetchAllAssociative()[0]["count"] + 1;
 	}
 }

@@ -14,18 +14,11 @@ use Doctrine\Common\Collections\Collection;
 
 class FactureService
 {
-	private FactureRepository $factureRepository;
-	private CommandeRepository $commandeRepository;
-	private DevisRepository $devisRepository;
-
 	public function __construct(
-		FactureRepository $factureRepository,
-		CommandeRepository $commandeRepository,
-		DevisRepository $devisRepository
+		private FactureRepository $factureRepository,
+		private CommandeRepository $commandeRepository,
+		private DevisRepository $devisRepository
 	) {
-		$this->factureRepository = $factureRepository;
-		$this->commandeRepository = $commandeRepository;
-		$this->devisRepository = $devisRepository;
 	}
 
 	public function create(
@@ -55,6 +48,7 @@ class FactureService
 		$facture->setOrganization($organization);
 		$facture->setClient($client);
 		$facture->setDevis($devis);
+		$facture->setChrono($this->factureRepository->genChrono($organization));
 		$this->factureRepository->save($facture);
 		foreach ($commands as $commande) {
 			$commande->setFacture($facture);

@@ -1,9 +1,9 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Facture n°{{bill.id}}{% endblock %}
+{% block title %}Facture n°{{bill.chrono}}{% endblock %}
 
 {% block body %}
-	<h1 class="mb-14 text-3xl font-semibold">Facture n°{{bill.id}}</h1>
+	<h1 class="mb-14 text-3xl font-semibold">Facture n°{{bill.chrono}}</h1>
 	<div class="p-14 flex flex-col gap-20 items-center rounded-xl bg-white">
 		<div class="flex flex-row justify-between gap-4 w-full">
 		    <ul class="flex flex-col gap-4">

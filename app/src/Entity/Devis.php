@@ -75,7 +75,7 @@ class Devis
 	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
 	private ?string $total_ttc = null;
 
-	#[ORM\Column(type: Types::INTEGER, nullable: true, precision: 10, scale: 2)]
+	#[ORM\Column(type: Types::INTEGER, nullable: false, precision: 10, scale: 2, options: ["default" => 0])]
 	#[
 		Assert\Range(
 			min: 0,
