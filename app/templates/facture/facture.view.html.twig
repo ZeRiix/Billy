@@ -9,15 +9,16 @@
 		    <ul class="flex flex-col gap-4">
 				<li><strong>Nom de l'organisation : </strong>{{ bill.organization.name }}</li>
 				<li><strong>Nom et prénom du client : </strong>{{ bill.client.name ~ " " ~ bill.client.firstname }}</li>
-				<li><strong>Nom du devis : </strong>{{ bill.devis.name }}</li>
+				<li>
+					<strong>Devis : </strong>
+					<a href="{{ path('app_update_devis', {organization: bill.organization.id, devis: bill.devis.id}) }}" class="underline">{{bill.devis.name}}</a>
+				</li>
 			</ul>
 			<ul class="flex flex-col gap-4">
 				<li>
 				<strong>Statut du paiement : </strong>
 					{% if bill.statut.value == 'payé' %}
 						<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-check-circle"> Payé</span>
-					{% elseif bill.statut.value == 'canceled' %}
-						<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-cancel"> Annulé</span>
 					{% elseif bill.statut.value == 'waiting' %}
 						<span class="px-4 py-2 bg-orange-500 font-semibold text-white uppercase rounded-full mdi mdi-clock-alert-outline"> En attente</span>
 					{% endif %}

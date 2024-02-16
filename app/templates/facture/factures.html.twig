@@ -4,7 +4,10 @@
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-2xl font-semibold">Mes factures</h1>
+		<h1 class="text-2xl font-semibold">
+			Factures du devis 
+			<a href="{{ path('app_update_devis', {organization: organization.id, devis: devis.id}) }}" class="underline">{{devis.name}}</a>
+		</h1>
 		{% if canCreate == true %}
 		<a href="{{ path('app_create_facture', {organization: organization.id, devis: devis.id}) }}" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">Ajouter</a>
 		{% endif %}

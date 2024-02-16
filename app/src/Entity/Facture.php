@@ -19,7 +19,6 @@ use Doctrine\Common\Collections\Collection;
 enum FactureStatus: string
 {
 	case WAITING = "waiting";
-	case CANCELED = "canceled";
 	case PAID = "payé";
 }
 
