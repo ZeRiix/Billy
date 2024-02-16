@@ -39,7 +39,7 @@ class EditDevisForm extends AbstractType
 					return $clientRepository
 						->createQueryBuilder("c")
 						->orderBy("c.name", "ASC")
-						->where("c.organization = :organization")
+						->where("c.organization = :organization AND c.isArchived = false")
 						->setParameter("organization", $organizationId);
 				},
 			])

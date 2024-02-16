@@ -14,6 +14,7 @@ use App\Entity\Commande;
 use App\Entity\Organization;
 use App\Entity\Devis;
 use App\Entity\DeviStatus;
+use App\Entity\Service;
 //form
 use App\Form\CreateCommandeForm;
 use App\Form\EditCommandeForm;
@@ -67,6 +68,13 @@ class CommandeController extends AbstractController
 			}
 		}
 
+		$services = [];
+		foreach ($organization->getServices() as $s) {
+			if (!$s->getIsArchived()) {
+				$services[] = $s;
+			}
+		}
+
 		return $this->render(
 			"commande/commande.create.html.twig",
 			[
@@ -74,6 +82,7 @@ class CommandeController extends AbstractController
 				"organization" => $organization,
 				"devis" => $devis,
 				"isUpdate" => false,
+				"services" => $services,
 			],
 			$response
 		);
@@ -124,6 +133,13 @@ class CommandeController extends AbstractController
 			}
 		}
 
+		$services = [];
+		foreach ($organization->getServices() as $s) {
+			if (!$s->getIsArchived()) {
+				$services[] = $s;
+			}
+		}
+
 		return $this->render(
 			"commande/commande.create.html.twig",
 			[
@@ -132,6 +148,7 @@ class CommandeController extends AbstractController
 				"devis" => $devis,
 				"commande" => $commande,
 				"isUpdate" => true,
+				"services" => $services,
 			],
 			$response
 		);

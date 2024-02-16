@@ -35,8 +35,6 @@
 				<span class="mdi mdi-archive-arrow-down-outline text-xl text-bgrey"></span>
 			</a>
 		{% else %}
-			<span class="absolute left-1 top-1/2 -translate-y-1/2 mdi mdi-crown text-base text-amber-500"></span>
-
 			<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
 				<span class="mdi mdi-archive-arrow-up-outline text-xl text-bgrey"></span>
 			</a>

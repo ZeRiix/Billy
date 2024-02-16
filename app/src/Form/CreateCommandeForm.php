@@ -43,7 +43,7 @@ class CreateCommandeForm extends AbstractType
 					return $serviceRepository
 						->createQueryBuilder("s")
 						->orderBy("s.name", "ASC")
-						->where("s.organization = :organization")
+						->where("s.organization = :organization AND s.isArchived = false")
 						->setParameter("organization", $organizationId);
 				},
 			])
