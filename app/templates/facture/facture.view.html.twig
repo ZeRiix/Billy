@@ -38,6 +38,13 @@
 			:action="false"
 		>
 		</twig:Table>
-		<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}">Télécharger</a>
+		<div class="flex gap-10">
+			<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}">Télécharger</a>
+			{% if bill.statut.value == 'waiting' %}
+				<a href="{{ path('app_pay_facture', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 text-bgreen">
+					Payé ?
+				</a>
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}

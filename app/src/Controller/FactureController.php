@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Entity\Devis;
 use App\Entity\DeviStatus;
 use App\Entity\Facture;
+use App\Entity\FactureStatus;
 use App\Entity\Organization;
+use App\Repository\FactureRepository;
 use App\Security\Voter\OrganizationVoter;
 use App\Services\Calculation\CalculationService;
 use App\Services\Devis\DevisService;
@@ -236,5 +238,46 @@ class FactureController extends AbstractController
 		}
 
 		return $response;
+	}
+
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}/bill/{facture}/pay",
+			name: "app_pay_facture",
+			methods: ["GET"]
+		)
+	]
+	public function payBill(Facture $facture, FactureRepository $factureRepository)
+	{
+		$devis = $facture->getDevis();
+		if ($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED) {
+			$this->addFlash(
+				"error",
+				"Vous ne pouvez pas changer le statut d'une facture si le devis n'est pas signé ou complété."
+			);
+			return $this->redirectToRoute("app_facture_get_id", [
+				"organization" => $devis->getOrganization()->getId(),
+				"devis" => $devis->getId(),
+				"facture" => $facture->getId(),
+			]);
+		}
+
+		try {
+			if ($facture->getStatut() == FactureStatus::WAITING) {
+				$facture->setStatut(FactureStatus::PAID);
+				$factureRepository->save($facture);
+				$this->addFlash("success", "La facture est maintenant payée.");
+			} else {
+				$this->addFlash("error", "La facture est déjà payée.");
+			}
+		} catch (\Exception $e) {
+			$this->addFlash("error", $e->getMessage());
+		}
+
+		return $this->redirectToRoute("app_facture_get_id", [
+			"organization" => $devis->getOrganization()->getId(),
+			"devis" => $devis->getId(),
+			"facture" => $facture->getId(),
+		]);
 	}
 }
