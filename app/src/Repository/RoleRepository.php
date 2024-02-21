@@ -31,6 +31,7 @@ class RoleRepository extends ServiceEntityRepository
 		$role->setManageService(true);
 		$role->setReadDevis(true);
 		$role->setReadFactures(true);
+		$role->setViewStats(true);
 		$role->setOrganization($organization);
 		$role->addUser($user);
 		$this->save($role);
@@ -57,18 +58,24 @@ class RoleRepository extends ServiceEntityRepository
 		return $res->fetchAllAssociative();
 	}
 
-	public function userHasPermission(Organization $org, User $user, string $permission): bool{
-		if(preg_match("/[a-z_]+/", $permission) === false) return false;
+	public function userHasPermission(Organization $org, User $user, string $permission): bool
+	{
+		if (preg_match("/[a-z_]+/", $permission) === false) {
+			return false;
+		}
 
 		$conn = $this->_em->getConnection();
-		$sql = 'WITH org_role as (
+		$sql =
+			'WITH org_role as (
 			SELECT * FROM role WHERE organization_id = :organization_id
 		), user_org_role as (
 			SELECT org_role.* FROM org_role 
 			INNER JOIN user_role on org_role.id = user_role.role_id
 			WHERE user_role.user_id = :user_id
 		)
-		SELECT * from user_org_role WHERE ' . $permission .' = TRUE';
+		SELECT * from user_org_role WHERE ' .
+			$permission .
+			" = TRUE";
 
 		$conn->prepare($sql);
 		$res = $conn->executeQuery($sql, [
@@ -80,7 +87,7 @@ class RoleRepository extends ServiceEntityRepository
 		return isset($res->fetchAllAssociative()[0]);
 	}
 
-	public function isOwner(User $user) : bool
+	public function isOwner(User $user): bool
 	{
 		$conn = $this->_em->getConnection();
 		$sql = "SELECT * from role
@@ -94,8 +101,11 @@ class RoleRepository extends ServiceEntityRepository
 		return count($res->fetchAllAssociative()) > 0;
 	}
 
-	public function checkPermissionOnOrganization(User $user, Organization $organization, string $permission): bool
-	{
+	public function checkPermissionOnOrganization(
+		User $user,
+		Organization $organization,
+		string $permission
+	): bool {
 		$roles = $this->getUserRolesForOrganization($organization, $user);
 		// check if user has permission
 		foreach ($roles as $role) {
