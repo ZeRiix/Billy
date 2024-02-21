@@ -20,6 +20,7 @@ class OrganizationVoter extends Voter
 	public const READ_FACTURE = "ORGANIZATION_READ_FACTURE";
 	public const WRITE_FACTURE = "ORGANIZATION_WRITE_FACTURE";
 	public const WRITE_DEVIS = "ORGANIZATION_WRITE_DEVIS";
+	public const VIEW_STATS = "ORGANIZATION_VIEW_STATS";
 
 	public function __construct(
 		private RoleRepository $roleRepository,
@@ -37,6 +38,7 @@ class OrganizationVoter extends Voter
 			self::READ_FACTURE,
 			self::WRITE_FACTURE,
 			self::WRITE_DEVIS,
+			self::VIEW_STATS,
 		]) &&
 			$subject instanceof Organization) ||
 			$attribute === self::CREATE;
@@ -68,6 +70,8 @@ class OrganizationVoter extends Voter
 			return $this->roleRepository->userHasPermission($organization, $user, "read_factures");
 		} elseif ($attribute === self::WRITE_FACTURE) {
 			return $this->roleRepository->userHasPermission($organization, $user, "write_factures");
+		} elseif ($attribute === self::VIEW_STATS) {
+			return $this->roleRepository->userHasPermission($organization, $user, "view_stats");
 		}
 		return false;
 	}

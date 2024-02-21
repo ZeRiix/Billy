@@ -59,6 +59,87 @@ class OrganizationRepository extends ServiceEntityRepository
 		return $this->find(["id" => $organization->getId()])->getUsers();
 	}
 
+	public function statsService(Organization $organization, string $from, string $to)
+	{
+		$conn = $this->_em->getConnection();
+		$sql = "SELECT
+			service.name as name,
+			service.id as id,
+			SUM(commande.quantity) as quantity
+		FROM service
+		INNER JOIN commande on commande.service_id = service.id
+		WHERE 
+			service.organization_id = :organization_id AND
+			TO_DATE(:from, 'YYYY-MM-DD')::timestamp <= commande.updated_at::timestamp AND
+			TO_DATE(:to, 'YYYY-MM-DD')::timestamp >= commande.updated_at::timestamp
+		GROUP BY service.id, service.name
+		ORDER BY quantity desc
+		LIMIT 15
+		";
+
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"organization_id" => $organization->getId(),
+			"from" => $from,
+			"to" => $to,
+		]);
+		$result = $res->fetchAllAssociative();
+
+		return $result;
+	}
+
+	public function statsStatusDevis(Organization $organization, string $from, string $to)
+	{
+		$conn = $this->_em->getConnection();
+		$sql = "SELECT
+			status,
+			COUNT(*) as count
+		FROM devis
+		WHERE 
+			organization_id = :organization_id AND
+			TO_DATE(:from, 'YYYY-MM-DD')::timestamp <= updated_at::timestamp AND
+			TO_DATE(:to, 'YYYY-MM-DD')::timestamp >= updated_at::timestamp
+		GROUP BY status
+		";
+
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"organization_id" => $organization->getId(),
+			"from" => $from,
+			"to" => $to,
+		]);
+		$result = $res->fetchAllAssociative();
+
+		return $result;
+	}
+
+	public function statsCompletedDevis(Organization $organization, string $from, string $to)
+	{
+		$conn = $this->_em->getConnection();
+		$sql = "SELECT
+			status,
+			updated_at::date as date,
+			COUNT(*)
+		FROM devis
+		WHERE 
+			organization_id = :organization_id AND
+			TO_DATE(:from, 'YYYY-MM-DD')::timestamp <= updated_at::timestamp AND
+			TO_DATE(:to, 'YYYY-MM-DD')::timestamp >= updated_at::timestamp AND
+			status = 'completed'
+		GROUP BY date, status
+		";
+
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"organization_id" => $organization->getId(),
+			"from" => $from,
+			"to" => $to,
+		]);
+		$result = $res->fetchAllAssociative();
+
+		return $result;
+	}
+
 	//    /**
 	//     * @return Organization[] Returns an array of Organization objects
 	//     */

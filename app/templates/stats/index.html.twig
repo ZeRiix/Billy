@@ -1,0 +1,35 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Billy - Stats{% endblock %}
+
+{% block body %}
+<form 
+	class="w-full flex-col" 
+	data-controller="stats" 
+	data-stats-service-value="{{ statsService }}"
+	data-stats-status-devis-value="{{ statsStatusDevis }}"
+	data-stats-completed-devis-value="{{ statsCompletedDevis }}"
+>
+	<div class="w-full flex justify-center gap-3">
+		<input type="date" name="from" id="inputFrom">
+
+		<input type="date" name="to" id="inputTo">
+
+		<input type="submit" value="cherhcer">
+	</div>
+
+	<div class="w-full flex flex-wrap gap-3 justify-center">
+		<div class="w-[300px] h-[300px]">
+			<canvas id="pieServiceSum"></canvas>
+		</div>
+
+		<div class="w-[300px] h-[300px]">
+			<canvas id="pieStatusDevis"></canvas>
+		</div>
+
+		<div class="w-[600px] h-[300px]">
+			<canvas id="lineCompletedDevis"></canvas>
+		</div>
+	</div>
+</form>
+{% endblock %}
