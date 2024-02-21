@@ -5,11 +5,24 @@ require_once __DIR__ . "/../vendor/autoload.php";
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\Multipart\RelatedPart;
 
+use App\Services\MailService;
+/** // code test
 $transport = new GmailSmtpTransport("billy.esgi@gmail.com", "qmrp leef onim orrj");
 $mailer = new Mailer($transport);
-$mailer->send((new Email())
+$email = (new Email())
 	->from("no-reply.billy@gmail.com")
-	->to("mail@mail.com") // test
+	->to("mail46@gmail.com")
 	->subject("Test")
-	->html("Test"));
+	->html("Test");
+$email->attachFromPath(__DIR__ . "/../public/assets/images/billy.png", "test.png");
+$mailer->send($email);
+**/
+
+$body = MailService::createHtmlBodyWithTwig("test.html.twig", ["test" => "Billy"]);
+// exemple avec piece jointe
+//MailService::send("mail@gmail.com", "Test", $body, false, __DIR__ . "/../public/assets/images/billy.png");
+// exemple sans piece jointe
+MailService::send("mail@gmail.com", "Test", $body, false); // pas oublier de mettre son mail pour tester
