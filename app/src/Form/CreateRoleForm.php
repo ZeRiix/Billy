@@ -49,6 +49,10 @@ class CreateRoleForm extends AbstractType
 				"label" => "Lire les factures",
 				"required" => false,
 			])
+			->add("view_stats", CheckboxType::class, [
+				"label" => "Voir les statistiques",
+				"required" => false,
+			])
 			->add("submit", SubmitType::class, [
 				"label" => "Créer",
 			]);

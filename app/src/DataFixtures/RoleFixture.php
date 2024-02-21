@@ -41,7 +41,7 @@ class RoleFixture extends Fixture implements DependentFixtureInterface
 		$roleFacManager->setManageService(false);
 		$roleFacManager->setReadDevis(true); // true
 		$roleFacManager->setReadFactures(true); // true
-		$roleFacManager->setViewStats(true); // true
+		$roleFacManager->setViewStats(false);
 		$manager->persist($roleFacManager);
 
 		$manager->flush();
