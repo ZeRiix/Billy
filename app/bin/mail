@@ -1,0 +1,15 @@
+<?php
+
+require_once __DIR__ . "/../vendor/autoload.php";
+
+use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
+
+$transport = new GmailSmtpTransport("billy.esgi@gmail.com", "qmrp leef onim orrj");
+$mailer = new Mailer($transport);
+$mailer->send((new Email())
+	->from("no-reply.billy@gmail.com")
+	->to("mail@mail.com") // test
+	->subject("Test")
+	->html("Test"));
