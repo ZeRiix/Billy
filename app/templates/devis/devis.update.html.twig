@@ -48,13 +48,13 @@
 					{% endif %}
 
 					{% if quotation.status.value == 'lock' %}
-						<a href="{{ path('app_unlock_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
+						<a href="{{ path('app_unlock_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-lock-open">
 							Dévérouiller
 						</a>
 					{% endif %}
 
 					{% if quotation.status.value != 'editing' and quotation.status.value != 'canceled' %}
-						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
+						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
 							Aperçu
 						</a>
 					{% endif %}

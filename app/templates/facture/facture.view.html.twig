@@ -39,16 +39,18 @@
 		>
 		</twig:Table>
 		<div class="flex gap-10 text-bgreen">
-			<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300">Télécharger</a>
+			<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-download-circle">
+				Télécharger
+			</a>
 			{% if bill.statut.value == 'waiting' %}
 				<a href="{{ path('app_pay_facture', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
 					Payé ?
 				</a>
 			{% endif %}
-			<a href="{{ path('app_preview_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
+			<a href="{{ path('app_preview_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
 				Aperçu
 			</a>
-			<a href="{{ path('app_send_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
+			<a href="{{ path('app_send_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-send">
 				Envoyer par mail
 			</a>
 		</div>
