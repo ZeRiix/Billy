@@ -109,7 +109,7 @@
         <header>
             <img src="{{ logoPath }}" alt="logo" class="logo" />
             <div class="infos">
-                <h1>Facture n°{{ facture.id }}</h1>
+                <h1>Facture n°{{ facture.chrono }}</h1>
                 <p>Facture établi le : {{ facture.createdAt | date('d/m/y') }}</p>
 				<p>Statut du paiment : 
 				<span class="badge">

@@ -10,6 +10,7 @@ use App\Entity\Organization;
 use App\Repository\CommandeRepository;
 use App\Repository\DevisRepository;
 use App\Repository\FactureRepository;
+use App\Services\MailService;
 use Doctrine\Common\Collections\Collection;
 
 class FactureService
@@ -27,7 +28,7 @@ class FactureService
 		Client $client,
 		Devis $devis,
 		array $commandeIds
-	) {
+	): void {
 		$arrayKeys = array_keys($commandeIds);
 		$commands = [];
 		foreach ($arrayKeys as $commandeId) {
@@ -55,6 +56,45 @@ class FactureService
 			$this->commandeRepository->save($commande);
 		}
 		$this->checkIfDevisIsCompleted($devis->getCommandes());
+		$this->sendBill($facture);
+	}
+
+	public function sendBill(Facture $bill): void
+	{
+		$mail = new MailService();
+		//Entity
+		$devis = $bill->getDevis();
+		$organization = $bill->getOrganization();
+		$client = $bill->getClient();
+		//Entity Ids
+		$organizationId = $organization->getId();
+		$devisId = $devis->getId();
+		$factureId = $bill->getId();
+
+		if (!$client) {
+			throw new \Exception("Vous n'avez pas sélectionné de client pour cette facture.");
+		}
+
+		$email = $client->getEmail();
+
+		if (!$email) {
+			throw new \Exception("Le client sélectionné n'a pas d'adresse email.");
+		}
+
+		$subject = "Facture N°" . $bill->getChrono();
+		$htmlContent =
+			"Bonjour " .
+			$client->getName() .
+			" " .
+			$client->getFirstname() .
+			",<br><br>" .
+			"Vous trouverez votre facture en cliquant sur ce lien : <a href='http://localhost:8000/organization/$organizationId/quotation/$devisId/bill/$factureId/preview'>Facture N°" .
+			$bill->getChrono() .
+			"</a>.<br><br>" .
+			"Cordialement,<br><br>" .
+			$organization->getName() .
+			".";
+		$mail->send($email, $subject, $htmlContent, false);
 	}
 
 	public function checkIfDevisIsCompleted(Collection $commandes)

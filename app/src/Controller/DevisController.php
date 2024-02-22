@@ -210,7 +210,7 @@ class DevisController extends AbstractController
 
 		try {
 			$devisService->sendDevis($devis);
-			$this->addFlash("success", "Le devis a bien étais envoyer.");
+			$this->addFlash("success", "Le devis a bien été envoyé.");
 		} catch (\Exception $e) {
 			$this->addFlash("error", $e->getMessage());
 		}

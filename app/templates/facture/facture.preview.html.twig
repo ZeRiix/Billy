@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aperçu de la facture{% endblock %}
+
+{% block layout %}
+	<div class="w-full h-[100vh]">
+		{% include '/generate_pdf/facture-pdf.html.twig' with { facture: facture, totalHt: totalHt, logoPath: logoPath } %}
+	</div>
+	<div class="fixed bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+		<a href="{{ path('app_facture_download', { organization: facture.organization.id, devis: devis.id, facture: facture.id }) }}">Télécharger</a>
+	</div>
+{% endblock %}

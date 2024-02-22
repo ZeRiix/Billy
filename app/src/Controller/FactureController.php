@@ -128,7 +128,6 @@ class FactureController extends AbstractController
 	public function view(Facture $facture)
 	{
 		$devis = $facture->getDevis();
-		//die(var_dump($devis->getOrganization()->getName()));
 		if (
 			!$this->isGranted(OrganizationVoter::READ_FACTURE, $devis->getOrganization()) ||
 			($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED)
@@ -150,6 +149,40 @@ class FactureController extends AbstractController
 		]);
 	}
 
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}/bill/{facture}/send",
+			name: "app_send_bill",
+			methods: ["GET"]
+		)
+	]
+	public function sendBill(Facture $facture, FactureService $factureService)
+	{
+		$devis = $facture->getDevis();
+		$organization = $devis->getOrganization();
+		if (!$this->isGranted(OrganizationVoter::WRITE_FACTURE, $organization)) {
+			$this->addFlash("error", "Vous n'avez pas les droits pour éditer cette facture.");
+			return $this->redirectToRoute("app_facture_get_id", [
+				"organization" => $organization->getId(),
+				"devis" => $devis->getId(),
+				"facture" => $facture->getId(),
+			]);
+		}
+
+		try {
+			$factureService->sendBill($facture);
+			$this->addFlash("success", "La facture a bien été envoyé.");
+		} catch (\Exception $e) {
+			$this->addFlash("error", $e->getMessage());
+		}
+
+		return $this->redirectToRoute("app_facture_get_id", [
+			"organization" => $organization->getId(),
+			"devis" => $devis->getId(),
+			"facture" => $facture->getId(),
+		]);
+	}
+
 	//a faire function pour recup toutes les factures sans devis ID et generation pdf de facture au click du bouton télécharger facture
 	#[Route("/organization/{organization}/bills", name: "app_organization_bills", methods: ["GET"])]
 	public function organizationBills(Organization $organization)
@@ -161,12 +194,60 @@ class FactureController extends AbstractController
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
+
+		$bills = array_filter(
+			$organization->getFactures()->toArray(),
+			fn(Facture $facture) => $facture->getDevis()->getStatus() !== DeviStatus::EDITING &&
+				$facture->getDevis()->getStatus() !== DeviStatus::CANCELED &&
+				$facture->getDevis()->getStatus() !== DeviStatus::LOCK
+		);
+
 		return $this->render("facture/organization.factures.html.twig", [
-			"bills" => $organization->getFactures(),
+			"bills" => $bills,
 			"organization" => $organization,
 		]);
 	}
 
+	#[
+		Route(
+			"/organization/{organization}/quotation/{devis}/bill/{facture}/preview",
+			name: "app_preview_bill",
+			methods: ["GET"]
+		)
+	]
+	public function previewBill(
+		Facture $facture,
+		Devis $devis,
+		Organization $organization,
+		CalculationService $calculationService
+	) {
+		if (
+			$organization->getId() !== $facture->getOrganization()->getId() ||
+			$devis->getId() !== $facture->getDevis()->getId()
+		) {
+			$devisFromFacture = $facture->getDevis();
+			$this->addFlash("error", "Vous ne pouvez pas visualiser cette facture.");
+			return $this->redirectToRoute("app_bills_by_devis", [
+				"organization" => $devisFromFacture->getOrganization()->getId(),
+				"devis" => $devisFromFacture->getId(),
+			]);
+		}
+
+		$totalHt = $calculationService->doCalculationForTotalHT(
+			$devis->getCommandes(),
+			$devis->getDiscount()
+		);
+		$logoName = $organization->getLogoName();
+
+		return $this->render("facture/facture.preview.html.twig", [
+			"facture" => $facture,
+			"totalHt" => $totalHt,
+			"logoPath" => $logoName
+				? "/storage/images/organizations/" . $logoName
+				: "/assets/images/default.jpg",
+			"devis" => $facture->getDevis(),
+		]);
+	}
 	#[
 		Route(
 			"/organization/{organization}/quotation/{devis}/bill/{facture}/download",
@@ -206,10 +287,7 @@ class FactureController extends AbstractController
 		if ($organization->getLogoName() === null) {
 			$imagePath = $kernel_dir . "/public/assets/images/default.jpg";
 		} else {
-			$imagePath =
-				$kernel_dir .
-				"/public/storage/images/organizations/" .
-				$devis->getOrganization()->getLogoName();
+			$imagePath = $kernel_dir . "/public/storage/images/organizations/" . $organization->getLogoName();
 		}
 
 		$html = $this->renderView("generate_pdf/facture-pdf.html.twig", [
@@ -218,7 +296,7 @@ class FactureController extends AbstractController
 			"logoPath" => $imagePath,
 		]);
 
-		$filenamePdf = $organization->getName() . "-facture-" . $facture->getId() . ".pdf";
+		$filenamePdf = $organization->getName() . "-facture-" . $facture->getChrono() . ".pdf";
 
 		try {
 			/** @var Dompdf $pdf */

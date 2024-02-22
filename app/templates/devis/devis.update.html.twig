@@ -64,7 +64,7 @@
 					<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
 				{% endif %}
 				</div>
-				{% if quotation.status.value == 'sign' %}
+				{% if quotation.status.value == 'sign' or quotation.status.value == 'completed' %}
 					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-bgreen">
 						Voir mes factures
 						<span class="mdi mdi-arrow-right"></span> 

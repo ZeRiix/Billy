@@ -6,8 +6,6 @@ use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Part\DataPart;
-use Symfony\Component\Mime\Part\Multipart\RelatedPart;
 
 class MailService
 {

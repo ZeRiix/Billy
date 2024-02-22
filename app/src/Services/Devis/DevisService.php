@@ -88,16 +88,25 @@ class DevisService
 		$devis->setStatus(DeviStatus::LOCK);
 
 		$mail = new MailService();
-		$mail->send(
-			$email,
-			"preview devis",
-			"/organization/" .
-				$devis->getOrganization()->getId() .
-				"/quotation/" .
-				$devis->getId() .
-				"/preview",
-			false
-		);
+		$organization = $devis->getOrganization();
+
+		$organizationId = $organization->getId();
+		$devisId = $devis->getId();
+
+		$subject = "Devis n°" . $devis->getId();
+		$htmlContent =
+			"Bonjour " .
+			$client->getName() .
+			" " .
+			$client->getFirstname() .
+			",<br><br>" .
+			"Vous trouverez votre devis en cliquant sur ce lien : <a href='http://localhost:8000/organization/$organizationId/quotation/$devisId/preview'>Devis N°" .
+			$devis->getId() .
+			"</a>.<br><br>" .
+			"Cordialement,<br><br>" .
+			$organization->getName() .
+			".";
+		$mail->send($email, $subject, $htmlContent, false);
 
 		$this->devisRepository->save($devis);
 	}
