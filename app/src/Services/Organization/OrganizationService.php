@@ -155,7 +155,7 @@ class OrganizationService
 		$invitation = $this->inviteOrganizationRepository->findOneBy(["user" => $user]);
 		if ($invitation) {
 			if (date($invitation->getCreatedAt()->getTimestamp()) + 604800 >= date(now()->getTimestamp())) {
-				//throw new \Exception("Cette utilisateur a déja été invité.");
+				throw new \Exception("Cette utilisateur a déja été invité.");
 			}
 			// delete last invitation
 			$this->inviteOrganizationRepository->delete($invitation);
