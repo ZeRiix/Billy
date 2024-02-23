@@ -7,6 +7,17 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
 
+use Symfony\Bridge\Twig\Extension\AssetExtension;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Symfony\Component\Asset\Packages;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
+use Vich\UploaderBundle\Twig\Extension\UploaderExtension;
+use App\Entity\Organization;
+
 class MailService
 {
 	public static function send(
@@ -36,11 +47,32 @@ class MailService
 			->subject($subject)
 			->html($body);
 	}
-
 	public static function createHtmlBodyWithTwig(string $template, array $context): string
 	{
-		return (new \Twig\Environment(
-			new \Twig\Loader\FilesystemLoader(__DIR__ . "/../../templates")
-		))->render($template, $context);
+		$twig = new Environment(new FilesystemLoader(__DIR__ . "/../../templates"));
+		$twig->addExtension(
+			new AssetExtension(
+				new Packages(
+					new \Symfony\Component\Asset\Package(
+						new \Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy()
+					)
+				)
+			)
+		);
+		$twig->addExtension(
+			new RoutingExtension(new UrlGenerator(new RouteCollection(), new RequestContext()))
+		);
+		$twig->addFunction(
+			new \Twig\TwigFunction("absolute_url", function (string $path) {
+				return $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . "/" . $path;
+			})
+		);
+		$twig->addFunction(
+			new \Twig\TwigFunction("get_logo_org", function (Organization $organization) {
+				return "storage/images/organizations/" . $organization->getLogoName();
+			})
+		);
+
+		return $twig->render($template, $context);
 	}
 }

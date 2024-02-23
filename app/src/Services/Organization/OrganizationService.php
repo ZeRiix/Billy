@@ -155,7 +155,7 @@ class OrganizationService
 		$invitation = $this->inviteOrganizationRepository->findOneBy(["user" => $user]);
 		if ($invitation) {
 			if (date($invitation->getCreatedAt()->getTimestamp()) + 604800 >= date(now()->getTimestamp())) {
-				throw new \Exception("Cette utilisateur a déja été invité.");
+				//throw new \Exception("Cette utilisateur a déja été invité.");
 			}
 			// delete last invitation
 			$this->inviteOrganizationRepository->delete($invitation);
@@ -163,15 +163,9 @@ class OrganizationService
 		// save invitation
 		$this->inviteOrganizationRepository->create($organization, $user);
 
-		// send invitation email to user
-		$mail = new MailService();
-		$mail->send(
-			$email,
-			"Invitation à rejoindre l'organisation " . $organization->getName(),
-			"Bonjour, vous avez été invité à rejoindre l'organisation " .
-				$organization->getName() .
-				"." .
-				"<a href=\"" .
+		// make email template
+		$mail = MailService::createHtmlBodyWithTwig("organization/invite_email.html.twig", [
+			"invite" =>
 				$_SERVER["REQUEST_SCHEME"] .
 				"://" .
 				$_SERVER["HTTP_HOST"] .
@@ -179,7 +173,14 @@ class OrganizationService
 				$organization->getId() .
 				"/user/" .
 				$user->getId() .
-				"/join\"> Joindre l'organisation </a>",
+				"/join",
+			"organization" => $organization,
+		]);
+		// send invitation email to user
+		MailService::send(
+			$email,
+			"Invitation à rejoindre l'organisation " . $organization->getName(),
+			$mail,
 			false
 		);
 	}
