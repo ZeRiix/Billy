@@ -1,200 +1,199 @@
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{{ devis.organization.name }}-{{ devis.id }}</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-            }
-            body {
-                padding: 50px;
-            }
-            header {
-                position: relative;
-                width: 100%;
-                height: 150px;
-                margin-bottom: 50px;
-            }
-            .logo {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 150px;
-            }
-            .infos {
-                position: absolute;
-                top: 0;
-                right: 0;
-            }
-            .infos h1 {
-                margin-bottom: 20px;
-            }
-            .devisInfos {
-                position: relative;
-                width: 100%;
-                height: 180px;
-                margin-bottom: 25px;
-            }
-            .devisInfos ul {
-                position: absolute;
-                top: 0;
-                padding: 0;
-                margin: 0;
-                list-style: none;
-            }
-            .devisInfos .left {
-                left: 0;
-                width: 50%;
-            }
-            .devisInfos .right {
-                right: 0;
-                width: 50%;
-            }
-            .devisInfos ul li {
-                margin-bottom: 15px;
-            }
-            .devisContent {
-                width: 100%;
-                margin-bottom: 25px;
-            }
-            table {
-                min-width: 100%;
-                line-height: 1.5;
-            }
-            th {
-                padding: 3px 5px;
-                border-bottom: 2px solid;
-                border-color: gray;
-                background-color: gray;
-                text-align: left;
-                font-size: 0.75rem;
-                line-height: 1rem;
-                border-color: rgb(229 231 235);
-                background-color: rgb(243 244 246);
-                font-weight: 600;
-                color: rgb(75 85 99);
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-            td {
-                padding: 5px;
-                background-color: white;
-                font-size: 0.875rem;
-                line-height: 1.25rem;
-                border-bottom: 1px solid;
-                border-color: rgb(229 231 235);
-            }
-            tr {
-                position: relative;
-            }
-            .clientSign div {
-                width: 195px;
-				position: relative;
-            }
 
-            .clientSign div p {
-                margin-bottom: 10px;
-            }
-            .clientSign div div {
-                width: 100%;
-                height: 100px;
-                border: solid 1px;
-            }
-            footer {
-                width: 100%;
-                margin-top: 50px;
-                text-align: center;
-            }
-			
-			.sign {
-				position: absolute;
-				height: 95px;
-				left: 50%;
-				top: 1px;
-				transform: translateX(-50%);
-			}
-        </style>
-    </head>
-    <body>
-        <header>
-            <img src="{{ logoPath }}" alt="logo" class="logo" />
-            <div class="infos">
-                <h1>Devis n°{{ devis.id }}</h1>
-                <p>Devis établi le : {{ devis.createdAt | date('d/m/y') }}</p>
-            </div>
-        </header>
-        <main>
-            <section class="devisInfos">
-                <ul class="left">
-                    <li><strong>Nom de l'entreprise : {{ devis.organization.name }}</strong></li>
-                    <li>Adresse de l'entreprise : {{ devis.organization.address }}</li>
-                    <li>Téléphone de l'entreprise : {{ devis.organization.phone }}</li>
-                    <li>Mail de l'entreprise : {{ devis.organization.email }}</li>
-                    <li>Activité de l'entreprise : {{ devis.organization.activity }}</li>
-                </ul>
-                <ul class="right">
-                    <li><strong>Nom du client : {{ devis.client.name }}</strong></li>
-                    <li>Adresse du client : {{ devis.client.address }}</li>
-                    <li>Téléphone du client : {{ devis.client.phone }}</li>
-                </ul>
-            </section>
-            <section class="devisContent">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Quantité</th>
-                            <th>Prix unitaire</th>
-                            <th>Montant</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for commande in devis.commandes %}
-                        <td>{{ commande.description }}</td>
-                        <td>{{ commande.quantity }}</td>
-                        <td>{{ commande.unitPrice }} €</td>
-                        <td>{{ commande.montant }} €</td>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3">Total HT</td>
-                            <td>{{ totalHt }} €</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">TVA</td>
-                            <td>?</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Remise</td>
-                            {% if devis.discount == 0 %}
-                            <td>Pas de remise</td>
-                            {% else %}
-                            <td>{{ devis.discount }} %</td>
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            <td colspan="3">Total TTC</td>
-                            <td>?</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </section>
-            <section class="clientSign">
-                <div>
-                    <p>Date et signature du client :</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ devis.organization.name }}-{{ devis.id }}</title>
+    <style>
+        body {
+            margin: 30px;
+			font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+		
+        h4 {
+            margin: 0;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .w-half {
+            width: 50%;
+        }
+
+        .margin-top {
+            margin-top: 1.25rem;
+        }
+
+        .footer {
+            font-size: 0.875rem;
+            padding: 1rem;
+            background-color: rgb(241 245 249);
+        }
+
+		.text-right {
+			text-align: right;
+		}
+
+        .line-through {
+            text-decoration: line-through;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+			border-collapse: collapse;
+        }
+
+        table.products {
+            font-size: 0.875rem;
+        }
+
+        table.products tr {
+            background-color: #b6c6bc;
+			border: solid 1px #b6c6bc;
+        }
+
+        table.products th {
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+
+        table tr.items {
+            background-color: rgb(241 245 249);
+			border: solid 1px #b6c6bc;
+        }
+
+        table tr.items td {
+            padding: 0.5rem;
+			border: solid 1px #b6c6bc;
+        }
+
+        .logo {
+            height: 150px;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .signature {
+            width: 50%;
+            height: 100px;
+            margin-top: 1rem;
+            border: solid 1px;
+            text-align: center;
+        }
+
+        .signature img {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="w-full">
+        <tr>
+            <td class="w-half">
+                <img src="{{ logoPath }}" alt="logo" class="logo" />
+            </td>
+            <td class="w-half text-right">
+                <h2 class="text-4xl font-semibold">Devis n°{{ devis.id }}</h2>
+                <div>Réalisé le : {{ devis.createdAt | date('d/m/y') }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="margin-top">
+        <table class="w-full">
+            <tr>
+                <td class="w-half">
                     <div>
-						{% if imageSign != null %}
-							<img src="{{ imageSign }}" alt="image" class="sign"/>
-						{% endif %}
-					</div>
-                </div>
-            </section>
-        </main>
-        <footer>
-            <p>© {{'now' | date('Y')}} - Tous droits réservés - Mentions légales</p>
-        </footer>
-    </body>
+                        <h4 class="text-xl font-semibold">Destinataire :</h4>
+                    </div>
+                    <div>{{ devis.client.name }}</div>
+                    <div>{{ devis.client.address }}</div>
+                    <div>{{ devis.client.phone }}</div>
+                </td>
+                <td class="w-half text-right">
+                    <div>
+                        <h4 class="text-xl font-semibold">Émetteur :</h4>
+                    </div>
+                    <div>{{ devis.organization.name }}</div>
+                    <div>{{ devis.organization.address }}</div>
+                    <div>{{ devis.organization.phone }}</div>
+                    <div>{{ devis.organization.email }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="margin-top">
+        <table class="products">
+            <tr>
+				<th>Produit</th>
+                <th>Description</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Montant</th>
+            </tr>
+			{% for commande in devis.commandes %}
+            <tr class="items">
+				<td>{{ commande.name }}</td>
+                <td>{{ commande.description }}</td>
+                <td>{{ commande.quantity }}</td>
+                <td>{{ commande.unitPrice }} €</td>
+                <td>{{ commande.montant }} €</td>
+            </tr>
+			{% endfor %}
+        </table>
+
+        <div class="total">
+            <div>Total HT : {{ totalHt }} €</div>
+        </div>
+
+        {# <div class="total">
+            <div>TVA : {{ tva }}</div>
+        </div> #}
+
+        {% if devis.discount > 0 %}
+        <div class="total">
+            <div>Remise : {{ devis.discount }} %</div>
+        </div>
+        {% endif %}
+
+        {# <div class="total">
+            {% if devis.discount == 0 %}
+            <div>Total TTC : {{ totalTtc }}</div>
+            {% else %}
+            <div class="line-through">Total TTC : {{ totalTtc }}</div>
+            <div>Total TTC : {{ totalTtc - (totalTtc * devis.discount / 100) }}</div>
+            {% endif %}
+        </div> #}
+    </div>
+
+    <div class="margin-top">
+        <table class="w-full">
+            <tr>
+                <td class="w-half">
+                    <div>Date et signature du client :</div>
+                    <div class="signature">
+                        {% if imageSign != null %}
+                        <img src="{{ imageSign }}" alt="image" class="sign" />
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="w-half"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer margin-top">
+        <div>&copy; {{ 'now' | date('Y') }} - Tous droits réservés - Mentions légales</div>
+    </div>
+</body>
+
 </html>

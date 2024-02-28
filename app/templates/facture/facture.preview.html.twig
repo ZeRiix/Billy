@@ -7,6 +7,10 @@
 		{% include '/generate_pdf/facture-pdf.html.twig' with { facture: facture, totalHt: totalHt, logoPath: logoPath } %}
 	</div>
 	<div class="fixed bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-		<a href="{{ path('app_facture_download', { organization: facture.organization.id, devis: devis.id, facture: facture.id }) }}">Télécharger</a>
+		<a href="{{ path('app_facture_download', { organization: facture.organization.id, devis: devis.id, facture: facture.id }) }}"
+			class="px-6 py-2 text-white bg-blighter-green border-blighter-green hover:bg-bgreen hover:border-bgreen font-semibold rounded-large border-solid border-2 transition-all duration-300"
+		>
+		Télécharger
+		</a>
 	</div>
 {% endblock %}
