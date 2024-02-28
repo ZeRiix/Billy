@@ -3,9 +3,34 @@
 {% block title %}Facture de {{organization.name}}{% endblock %}
 
 {% block body %}
-	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-2xl font-semibold">Facture de {{organization.name}}</h1>
+	<div class="mb-14">
+		<h1 class="text-2xl font-semibold pb-4">Facture de {{organization.name}}</h1>
+
+		<form id="searchForm" action="" class="flex gap-4">
+			<twig:Toggle 
+			title="En attente" 
+			:isChecked="waitingCheck"
+			name="waiting"
+			onClick="
+				setTimeout(() => {
+					document.getElementById('searchForm').requestSubmit()
+				})
+			">
+			</twig:Toggle>
+
+			<twig:Toggle 
+			title="Payé" 
+			:isChecked="payeCheck"
+			name="payé"
+			onClick="
+				setTimeout(() => {
+					document.getElementById('searchForm').requestSubmit()
+				})
+			">
+			</twig:Toggle>
+		</form>
 	</div>
+	
 	<twig:Table
 		:data="bills"
 		:cols="{

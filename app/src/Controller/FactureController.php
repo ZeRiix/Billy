@@ -185,8 +185,11 @@ class FactureController extends AbstractController
 
 	//a faire function pour recup toutes les factures sans devis ID et generation pdf de facture au click du bouton télécharger facture
 	#[Route("/organization/{organization}/bills", name: "app_organization_bills", methods: ["GET"])]
-	public function organizationBills(Organization $organization)
-	{
+	public function organizationBills(
+		Organization $organization,
+		FactureRepository $factureRepository,
+		Request $request
+	) {
 		if (!$this->isGranted(OrganizationVoter::READ_FACTURE, $organization)) {
 			$this->addFlash(
 				"error",
@@ -195,16 +198,36 @@ class FactureController extends AbstractController
 			return $this->redirectToRoute("app_organizations");
 		}
 
-		$bills = array_filter(
-			$organization->getFactures()->toArray(),
-			fn(Facture $facture) => $facture->getDevis()->getStatus() !== DeviStatus::EDITING &&
-				$facture->getDevis()->getStatus() !== DeviStatus::CANCELED &&
-				$facture->getDevis()->getStatus() !== DeviStatus::LOCK
+		$payeCheck = !!$request->query->get("payé");
+		$waitingCheck = !!$request->query->get("waiting");
+
+		if (!$payeCheck && !$waitingCheck) {
+			return $this->redirect("/organization/{$organization->getId()}/bills?waiting=on");
+		}
+
+		$status = [];
+		if ($payeCheck) {
+			$status[] = FactureStatus::PAID;
+		}
+		if ($waitingCheck) {
+			$status[] = FactureStatus::WAITING;
+		}
+
+		$bills = $factureRepository->findBy(
+			[
+				"organization" => $organization,
+				"statut" => $status,
+			],
+			[
+				"created_at" => "desc",
+			]
 		);
 
 		return $this->render("facture/organization.factures.html.twig", [
 			"bills" => $bills,
 			"organization" => $organization,
+			"payeCheck" => $payeCheck,
+			"waitingCheck" => $waitingCheck,
 		]);
 	}
 

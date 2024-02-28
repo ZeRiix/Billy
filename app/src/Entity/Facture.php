@@ -131,7 +131,7 @@ class Facture
 		return $this;
 	}
 
-	public function getStatut(): ?FactureStatus
+	public function getStatut(): FactureStatus
 	{
 		return $this->statut;
 	}
