@@ -1,7 +1,7 @@
-<label for="toggle-button-element" class="inline-flex relative items-center cursor-pointer">
+<label for="{{name}}" class="inline-flex relative items-center cursor-pointer">
 	<input 
 		type="checkbox" 
-		id="toggle-button-element" 
+		id="{{name}}" 
 		class="sr-only peer" {{ isChecked ? 'checked' : '' }} 
 		onClick="{{ onClick }}"
 		{{ name ? 'name=' ~ name : '' }}

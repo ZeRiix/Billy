@@ -3,7 +3,24 @@
 {% block title %}Modification du devis n° {{ quotation.id }}{% endblock %}
 
 {% block body %}
-	<h1 class="mb-14 text-3xl font-semibold">Modification du devis n° {{ quotation.id }}</h1>
+	<div class="mb-14 flex gap-10">
+		<h1 class="text-3xl font-semibold">
+				Modification du devis n° {{ quotation.id }} 
+		</h1>
+
+		{% if  quotation.status.value == 'editing' %}
+			<span class="px-4 py-2 bg-yellow-500 font-semibold text-white uppercase rounded-full mdi mdi-pencil"> Édition</span>
+		{% elseif  quotation.status.value == 'lock' %}
+			<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-lock"> Verrouillé</span>
+		{% elseif  quotation.status.value == 'canceled' %}
+			<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-close"> Annulé</span>
+		{% elseif  quotation.status.value == 'sign' %}
+			<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-fountain-pen-tip"> Signé</span>
+		{% elseif  quotation.status.value == 'completed' %}
+			<span class="px-4 py-2 bg-blue-500 font-semibold text-white uppercase rounded-full mdi mdi-check"> Facturé</span>
+		{% endif %}
+	</div>
+	
 	<div class="p-14 rounded-xl bg-white">
 		{{ form_start(form) }}
 			<fieldset 
@@ -44,6 +61,21 @@
 						>
 							<span class="mdi mdi-send"></span>
 							Envoyer
+						</label>
+
+						
+						<label 
+							class="cursor-pointer hover:underline transition-all duration-300"
+							for="redirectSend" 
+							onclick="
+							setTimeout(() => {
+								if(!confirm('Etes vous sur de vouloir annuler ce devis')) return;
+								document.querySelector('#cancelForm').requestSubmit();
+							}, 50)
+							"
+						>
+							<span class="mdi mdi-close"></span>
+							Annuler
 						</label>
 					{% endif %}
 
@@ -111,4 +143,5 @@
 			</div>		
 		{{ form_end(form) }}
 	</div>
+	<form id="cancelForm" action="{{ path('app_cancel_devis', { devis: quotation.id, organization: organization.id })}}" class="fixed top-full"></form>
 {% endblock %}

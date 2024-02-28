@@ -4,7 +4,67 @@
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-2xl font-semibold">Mes devis</h1>
+		<form id="searchForm" action="" class>
+			<h1 class="text-2xl font-semibold pb-4">Mes devis</h1>
+
+			<div class="flex gap-4">
+				<twig:Toggle 
+				title="Édition" 
+				:isChecked="editingCheck"
+				name="editing"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Verrouillé" 
+				:isChecked="lockCheck"
+				name="lock"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Signé" 
+				:isChecked="signCheck"
+				name="sign"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Facturé" 
+				:isChecked="completedCheck"
+				name="completed"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Annulé" 
+				:isChecked="canceledCheck"
+				name="canceled"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+			</div>
+		</form>
+
 		{% if canCreate == true %}
 			<twig:Button value="Ajouter" :href="path('app_create_devis', { organization: organization.id })"></twig:Button>
 		{% endif %}
@@ -25,6 +85,8 @@
 				<span class="px-4 py-2 bg-yellow-500 font-semibold text-white uppercase rounded-full mdi mdi-pencil"> Édition</span>
 			{% elseif currentValue.value == 'lock' %}
 				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-lock"> Verrouillé</span>
+			{% elseif currentValue.value == 'canceled' %}
+				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-close"> Annulé</span>
 			{% elseif currentValue.value == 'sign' %}
 				<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-fountain-pen-tip"> Signé</span>
 			{% elseif currentValue.value == 'completed' %}

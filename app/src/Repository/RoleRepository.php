@@ -106,35 +106,7 @@ class RoleRepository extends ServiceEntityRepository
 		Organization $organization,
 		string $permission
 	): bool {
-		$roles = $this->getUserRolesForOrganization($organization, $user);
-		// check if user has permission
-		foreach ($roles as $role) {
-			return $this->checkPermissionOnRole($role, $permission);
-		}
-		return false;
-	}
-
-	private function checkPermissionOnRole(array $role, string $permission): bool
-	{
-		if ($role["manage_org"] && $permission === "manage_org") {
-			return true;
-		}
-		if ($role["manage_user"] && $permission === "manage_user") {
-			return true;
-		}
-		if ($role["manage_client"] && $permission === "manage_client") {
-			return true;
-		}
-		if ($role["write_devis"] && $permission === "write_devis") {
-			return true;
-		}
-		if ($role["write_factures"] && $permission === "write_factures") {
-			return true;
-		}
-		if ($role["manage_service"] && $permission === "manage_service") {
-			return true;
-		}
-		return false;
+		return $this->userHasPermission($organization, $user, $permission);
 	}
 
 	public function getRolesForUser(User $user): array
