@@ -17,8 +17,9 @@ services:
     volumes:
       - ./app:/var/www
       - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    command: php-fpm
+      - ./.docker/php/crontab:/etc/crontabs/root
     user: 1000:1000
+    command: php-fpm
     depends_on:
       composer:
         condition: service_completed_successfully
