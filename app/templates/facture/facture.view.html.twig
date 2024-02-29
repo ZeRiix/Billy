@@ -24,6 +24,11 @@
 					{% endif %}
 				</li>
 				<li><strong>Date de création : </strong>{{bill.createdAt | date('d/m/y')}}</li>
+				{% if bill.statut.value == 'waiting' %}
+					<a href="{{ path('app_create_remind_facture', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-send text-bgreen">
+						Créer un rappel
+					</a>
+				{% endif %}
 			</ul>
 		</div>
 		<twig:Table
@@ -49,9 +54,6 @@
 			{% endif %}
 			<a href="{{ path('app_preview_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
 				Aperçu
-			</a>
-			<a href="{{ path('app_send_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-send">
-				Envoyer par mail
 			</a>
 		</div>
 	</div>

@@ -4,13 +4,16 @@ namespace App\Controller;
 
 //local
 
+use App\Entity\BillReminder;
 use App\Entity\Devis;
 use App\Entity\DeviStatus;
 use App\Entity\Facture;
 use App\Entity\FactureStatus;
 use App\Entity\Organization;
+use App\Form\CreateBillReminderForm;
 use App\Repository\FactureRepository;
 use App\Security\Voter\OrganizationVoter;
+use App\Services\BillReminder\BillReminderService;
 use App\Services\Calculation\CalculationService;
 use App\Services\Devis\DevisService;
 use App\Services\Facture\FactureService;
@@ -120,6 +123,55 @@ class FactureController extends AbstractController
 
 	#[
 		Route(
+			"/organization/{organization}/quotation/{devis}/bill/{facture}/remind",
+			name: "app_create_remind_facture",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function createRemindBill(
+		Request $request,
+		Facture $facture,
+		BillReminderService $billReminderService
+	): Response {
+		$organization = $facture->getOrganization();
+		if (
+			!$this->isGranted(OrganizationVoter::WRITE_FACTURE, $organization) ||
+			$facture->getStatut() != FactureStatus::WAITING
+		) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour créer une facture pour cette Organisation ou la facture est déjà payée."
+			);
+			return $this->redirectToRoute("app_facture_get_id", [
+				"organization" => $organization->getId(),
+				"devis" => $facture->getDevis()->getId(),
+				"facture" => $facture->getId(),
+			]);
+		}
+
+		$billReminder = new BillReminder();
+		$form = $this->createForm(CreateBillReminderForm::class, $billReminder);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$billReminder = $form->getData();
+
+			try {
+				$billReminderService->create($billReminder, $facture);
+				$this->addFlash("success", "Le rappel de facture a bien été créé.");
+			} catch (\Exception $e) {
+				$this->addFlash("error", $e->getMessage());
+			}
+		}
+
+		return $this->render("facture/facture.remind.create.html.twig", [
+			"form" => $form->createView(),
+			"facture" => $facture,
+		]);
+	}
+
+	#[
+		Route(
 			"/organization/{organization}/quotation/{devis}/bill/{facture}",
 			name: "app_facture_get_id",
 			methods: ["GET"]
@@ -146,40 +198,6 @@ class FactureController extends AbstractController
 			"commands" => $facture->getCommandes(),
 			"organization" => $devis->getOrganization(),
 			"devis" => $devis,
-		]);
-	}
-
-	#[
-		Route(
-			"/organization/{organization}/quotation/{devis}/bill/{facture}/send",
-			name: "app_send_bill",
-			methods: ["GET"]
-		)
-	]
-	public function sendBill(Facture $facture, FactureService $factureService)
-	{
-		$devis = $facture->getDevis();
-		$organization = $devis->getOrganization();
-		if (!$this->isGranted(OrganizationVoter::WRITE_FACTURE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour éditer cette facture.");
-			return $this->redirectToRoute("app_facture_get_id", [
-				"organization" => $organization->getId(),
-				"devis" => $devis->getId(),
-				"facture" => $facture->getId(),
-			]);
-		}
-
-		try {
-			$factureService->sendBill($facture);
-			$this->addFlash("success", "La facture a bien été envoyé.");
-		} catch (\Exception $e) {
-			$this->addFlash("error", $e->getMessage());
-		}
-
-		return $this->redirectToRoute("app_facture_get_id", [
-			"organization" => $organization->getId(),
-			"devis" => $devis->getId(),
-			"facture" => $facture->getId(),
 		]);
 	}
 
@@ -348,8 +366,11 @@ class FactureController extends AbstractController
 			methods: ["GET"]
 		)
 	]
-	public function payBill(Facture $facture, FactureRepository $factureRepository)
-	{
+	public function payBill(
+		Facture $facture,
+		FactureRepository $factureRepository,
+		BillReminderService $billReminderService
+	) {
 		$devis = $facture->getDevis();
 		if ($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED) {
 			$this->addFlash(
@@ -367,6 +388,7 @@ class FactureController extends AbstractController
 			if ($facture->getStatut() == FactureStatus::WAITING) {
 				$facture->setStatut(FactureStatus::PAID);
 				$factureRepository->save($facture);
+				$billReminderService->deleteAllRemindersForFacture($facture);
 				$this->addFlash("success", "La facture est maintenant payée.");
 			} else {
 				$this->addFlash("error", "La facture est déjà payée.");

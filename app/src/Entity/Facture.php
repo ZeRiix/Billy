@@ -58,9 +58,13 @@ class Facture
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $updated_at = null;
 
+	#[ORM\OneToMany(targetEntity: BillReminder::class, mappedBy: "facture")]
+	private Collection $billReminders;
+
 	public function __construct()
 	{
 		$this->commandes = new ArrayCollection();
+		$this->billReminders = new ArrayCollection();
 	}
 
 	public function getId(): ?Uuid
@@ -139,6 +143,33 @@ class Facture
 	public function setStatut(FactureStatus $statut): static
 	{
 		$this->statut = $statut;
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection<int, BillReminder>
+	 */
+	public function getBillReminders(): Collection
+	{
+		return $this->billReminders;
+	}
+
+	public function addBillReminder(BillReminder $billReminder): static
+	{
+		if (!$this->billReminders->contains($billReminder)) {
+			$this->billReminders->add($billReminder);
+			$billReminder->setFacture($this);
+		}
+
+		return $this;
+	}
+
+	public function removeBillReminder(BillReminder $billReminder): static
+	{
+		if ($this->billReminders->removeElement($billReminder)) {
+			// set the owning side to null (unless already changed)
+		}
 
 		return $this;
 	}
