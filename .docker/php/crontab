@@ -1,1 +1,1 @@
-0 8 * * * cd /var/www && php bin/console billy:commande:symfony
+0 8 * * * cd /var/www && php bin/console app:bill-payment-mailing-reminder

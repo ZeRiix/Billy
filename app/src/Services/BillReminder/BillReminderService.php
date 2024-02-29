@@ -64,7 +64,11 @@ class BillReminderService
 
 		if (!$email) {
 			throw new \Exception(
-				"Aucune adresse mail à été trouvé pour le client " . $client->getName() . "."
+				"Aucune adresse mail à été trouvé pour le client " .
+					$client->getName() .
+					" " .
+					$client->getFirstname() .
+					"."
 			);
 		}
 

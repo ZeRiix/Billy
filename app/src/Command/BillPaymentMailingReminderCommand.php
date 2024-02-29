@@ -39,12 +39,18 @@ class BillPaymentMailingReminderCommand extends Command
 		$reminders = $this->billReminderRepository->findAll();
 		$mailCount = 0;
 
+		$io->title("Envoie de rappel de paiement des factures par mail.");
+
 		foreach ($reminders as $reminder) {
 			$interval = $currentDate->diff($reminder->getDateSend());
 			if ($interval->invert != 0) {
-				$this->billReminderService->sendReminderBill($reminder->getFacture());
-				$this->billReminderRepository->delete($reminder);
-				$mailCount++;
+				try {
+					$this->billReminderService->sendReminderBill($reminder->getFacture());
+					$this->billReminderRepository->delete($reminder);
+					$mailCount++;
+				} catch (\Exception $e) {
+					$io->error($e->getMessage());
+				}
 			}
 		}
 
