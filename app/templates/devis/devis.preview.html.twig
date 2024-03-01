@@ -10,14 +10,14 @@
 	<div class="fixed bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
 		{% if devis.status.value == 'lock' %}
 			<button id="openButton"
-				class="px-6 py-2 text-white bg-blighter-green border-blighter-green hover:bg-bgreen hover:border-bgreen font-semibold rounded-large border-solid border-2 transition-all duration-300"
+				class="px-6 py-2 text-white bg-light-lighter-green border-light-lighter-green hover:bg-light-green hover:border-light-green font-semibold rounded-large border-solid border-2 transition-all duration-300"
 			>
 				Signer
 			</button>
 		{% endif %}
 
 		<a href="{{ path('app_generate_pdf_devis', { organization: getCurrentOrganization().id, devis: devis.id }) }}"
-			class="px-6 py-2 text-white bg-blighter-green border-blighter-green hover:bg-bgreen hover:border-bgreen font-semibold rounded-large border-solid border-2 transition-all duration-300"
+			class="px-6 py-2 text-white bg-light-lighter-green border-light-lighter-green hover:bg-light-green hover:border-light-green font-semibold rounded-large border-solid border-2 transition-all duration-300"
 		>
 			Télécharger
 		</a>
@@ -31,13 +31,13 @@
 			<canvas id="signCanvas" height="200" width="200" class="border-black border-2 rounded-md"></canvas>
 			<div class="w-full flex gap-4 justify-center">
 				<button id="clearButton"
-					class="text-blighter-green cursor-pointer hover:text-bgreen transition-all duration-300"
+					class="text-light-lighter-green cursor-pointer hover:text-light-green transition-all duration-300"
 				>
 					Effacer
 				</button>
 
 				<button id="doneButton"
-					class="px-6 py-2 text-white bg-blighter-green border-blighter-green hover:bg-bgreen hover:border-bgreen font-semibold rounded-large border-solid border-2 transition-all duration-300"
+					class="px-6 py-2 text-white bg-light-lighter-green border-light-lighter-green hover:bg-light-green hover:border-light-green font-semibold rounded-large border-solid border-2 transition-all duration-300"
 				>
 					Valider
 				</button>

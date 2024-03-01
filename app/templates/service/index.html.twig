@@ -5,7 +5,7 @@
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
 		<form id="archivedForm" action="" method="GET">
-			<h1 class="text-2xl font-semibold pb-4">Mes Services</h1>
+			<h1 class="text-2xl font-semibold pb-4 dark:text-dark-white">Mes Services</h1>
 			<twig:Toggle 
 			title="Archivé" 
 			:isChecked="isArchived"
@@ -28,15 +28,15 @@
 		:action="true"
 	>
 		<a href="{{ path('app_update_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
-			<span class="mdi mdi-pencil text-xl text-bgrey"></span>
+			<span class="mdi mdi-pencil text-xl text-light-gray"></span>
 		</a>
 		{% if  row.isArchived == false %}
 			<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
-				<span class="mdi mdi-archive-arrow-down-outline text-xl text-bgrey"></span>
+				<span class="mdi mdi-archive-arrow-down-outline text-xl text-light-gray"></span>
 			</a>
 		{% else %}
 			<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
-				<span class="mdi mdi-archive-arrow-up-outline text-xl text-bgrey"></span>
+				<span class="mdi mdi-archive-arrow-up-outline text-xl text-light-gray"></span>
 			</a>
 		{% endif %}
 	</twig:Table>

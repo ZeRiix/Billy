@@ -5,12 +5,12 @@
 {% block body %}
 <div data-controller="clientForm" data-clientform-entreprise-value="{{ isEntrprise is defined ? isEntrprise : "null" }}">
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-3xl font-semibold pb-6">{{ isCreating is defined ? 'Création' : 'Modification' }} d'un client</h1>
+		<h1 class="text-3xl font-semibold pb-6 dark:text-dark-white">{{ isCreating is defined ? 'Création' : 'Modification' }} d'un client</h1>
 		{% if isCreating is defined %} 
-			<twig:Toggle title="Entreprise" :isChecked="true"></twig:Toggle>
+			<twig:Toggle title="Entreprise" name="clientToggle" :isChecked="true"></twig:Toggle>
 		{% endif %}
 	</div>
-	<div class="p-14 rounded-xl bg-white">
+	<div class="p-14 rounded-xl bg-white dark:bg-dark-light-black">
 		{{ form_start(form) }}
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 				<div class="P-field">
@@ -33,7 +33,10 @@
 				<div class="P-field">
 					{{ form_row(form.address) }}
 				</div>
-				{{ form_row(form.submit) }}
+				<div class="flex items-center">
+					{{ form_row(form.submit) }}
+				</div>
+				</div>
 			</div>
 		{{ form_end(form) }}
 	</div>

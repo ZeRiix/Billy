@@ -10,7 +10,7 @@ export default class extends Controller {
 			return
 		}
 
-		let checkboxInput = this.element.querySelector('#toggle-button-element');
+		let checkboxInput = this.element.querySelector('#clientToggle');
 		checkboxInput.addEventListener('change', () => {
 			this.toggleField(checkboxInput.checked)
 			this.resetField()

@@ -25,7 +25,7 @@
 				</li>
 				<li><strong>Date de création : </strong>{{bill.createdAt | date('d/m/y')}}</li>
 				{% if bill.statut.value == 'waiting' %}
-					<a href="{{ path('app_create_remind_facture', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-send text-bgreen">
+					<a href="{{ path('app_create_remind_facture', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-send text-light-green">
 						Créer un rappel
 					</a>
 				{% endif %}
@@ -43,7 +43,7 @@
 			:action="false"
 		>
 		</twig:Table>
-		<div class="flex gap-10 text-bgreen">
+		<div class="flex gap-10 text-light-green">
 			<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-download-circle">
 				Télécharger
 			</a>

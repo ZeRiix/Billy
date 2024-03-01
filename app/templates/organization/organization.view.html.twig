@@ -3,7 +3,7 @@
 {% block title %}{{ organization.name }}{% endblock %}
 
 {% block body %}
-	<h1 class="mb-14 text-3xl font-semibold">
+	<h1 class="mb-14 text-3xl font-semibold dark:text-dark-white">
 		<div class="flex flex-row items-center gap-[6px]">
 			{{ organization.name }}
 			{% if app.user.id == organization.createdBy.id %}
@@ -11,12 +11,12 @@
 			{% endif %}
 			{% if checkPermissionOnOrganization(app.user, 'manage_org') %}
 				<a href="{{ path('app_update_organization', { organization: organization.id }) }}" title="Modifier">
-					<span class="mdi mdi-pencil text-2xl text-bgrey hover:text-bgreen transition-all duration-300"></span>
+					<span class="mdi mdi-pencil text-2xl text-light-gray hover:text-light-green transition-all duration-300"></span>
 				</a>
 			{% endif %}
 		</div>
 	</h1>
-	<div class="p-14 flex flex-col lg:flex-row gap-10 items-center rounded-xl bg-white">
+	<div class="p-14 flex flex-col lg:flex-row gap-10 items-center rounded-xl bg-white dark:bg-dark-light-black dark:text-dark-white">
 		{% if vich_uploader_asset(organization, 'logoFile') %}
 			<img class="w-64 aspect-square object-contain" src="{{ vich_uploader_asset(organization, 'logoFile') }}" alt="Logo de {{ organization.name }}">
 		{% else %}

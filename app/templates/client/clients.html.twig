@@ -5,7 +5,7 @@
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
 		<form id="archivedForm" action="" method="GET">
-			<h1 class="text-2xl font-semibold pb-4">Mes Clients</h1>
+			<h1 class="text-2xl font-semibold pb-4 dark:text-dark-white">Mes Clients</h1>
 			<twig:Toggle 
 			title="Archivé" 
 			:isChecked="isArchived"
@@ -36,19 +36,19 @@
 			:action="true"
 		>
 			<a href="{{ path('app_client_update', { 'organization': getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-pencil text-xl text-bgrey hover:text-bgreen transition-all duration-300"></span>
+				<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300"></span>
 			</a>
 			{% if  row.isArchived == false %}
 			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-archive-outline text-xl text-bgrey hover:text-orange-400 transition-all duration-300"></span>
+				<span class="mdi mdi-archive-outline text-xl text-light-gray hover:text-orange-400 transition-all duration-300"></span>
 			</a>
 			{% else %}
 			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
-				<span class="mdi mdi-archive-off-outline text-xl text-bgrey hover:text-orange-400 transition-all duration-300"></span>
+				<span class="mdi mdi-archive-off-outline text-xl text-light-gray hover:text-orange-400 transition-all duration-300"></span>
 			</a>
 			{% endif %}
 		</twig:Table>
 	{% else %}
-		<p>Aucun client trouvé.</p>
+		<p class="dark:text-dark-white">Aucun client trouvé.</p>
 	{% endif %}
 {% endblock %}

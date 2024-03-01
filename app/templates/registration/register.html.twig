@@ -3,11 +3,11 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-	<main class="flex justify-center items-center bg-bdark-white">
-		<div class="my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white">
+	<main class="flex justify-center items-center bg-light-dark-white dark:bg-dark-light-black">
+		<div class="my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white dark:bg-dark-light-white">
 			<div class="flex gap-6 flex-col items-center">
 				<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-24 aspect-square rounded-lg">
-				<h1 class="text-2xl font-bold">Inscription</h1>
+				<h1 class="text-2xl font-bold dark:text-dark-white">Inscription</h1>
 			</div>
 			
 			{{ form_start(registrationForm) }}
@@ -23,7 +23,7 @@
 				</div>
 			{{ form_end(registrationForm) }}
 
-			<a href="{{ path('app_login') }}" class="text-sm text-blighter-green hover:text-bgreen transition-all duration-300">Déjà inscrit ?</a>
+			<a href="{{ path('app_login') }}" class="text-sm text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">Déjà inscrit ?</a>
 		</div>
 	</main>
 {% endblock %}

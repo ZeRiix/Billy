@@ -1,5 +1,5 @@
-<aside id="aside" class="fixed z-50 -left-64 md:left-0 w-64 px-10 py-5 h-screen flex flex-col bg-bdarker-green transition-all duration-300 ease-in">
-	<span data-controller="burger" class="md:hidden mdi mdi-menu-close text-4xl text-center text-white cursor-pointer"></span>
+<aside id="aside" class="fixed z-50 -left-64 md:left-0 w-64 px-10 py-5 h-screen flex flex-col bg-light-darker-green dark:bg-dark-darker-green transition-all duration-300 ease-in">
+	<span data-controller="burger" class="md:hidden mdi mdi-menu-close text-4xl text-center text-white dark:text-dark-white cursor-pointer"></span>
 	{% if getCurrentOrganization() %}
 		{% set logoName = getCurrentOrganization().logoName %}
 		<a href="{{ path('app_organization_get_id', { organization: getCurrentOrganization().id }) }}" class="w-24 mx-auto mt-4 mb-9 aspect-square">

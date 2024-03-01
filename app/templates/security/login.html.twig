@@ -3,31 +3,31 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-	<main class="min-h-[calc(100vh-400px)] flex justify-center items-center bg-bdark-white">
-		<div class="my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white">
+	<main class="min-h-[calc(100vh-400px)] flex justify-center items-center bg-light-dark-white dark:bg-dark-light-black">
+		<div class="my-10 p-10 flex gap-14 flex-col items-center rounded-lg bg-white dark:bg-dark-light-white">
 			<div class="flex gap-6 flex-col items-center">
 				<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="w-24 aspect-square rounded-lg">
-				<h1 class="text-2xl font-bold">Connexion</h1>
+				<h1 class="text-2xl font-bold dark:text-dark-white">Connexion</h1>
 			</div>
 			<form action="{{ path('app_login') }}" method="post">
 				<div class="w-fit mx-auto flex flex-col gap-2 items-center">
-					<div class="max-w-xs flex flex-col gap-2">
+					<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
 						<label for="username">Email</label>
-        				<input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control w-80 p-2 rounded-lg outline-none border-2 focus:border-bgreen transition-all duration-300" autocomplete="email" required autofocus>
+        				<input type="email" value="{{ last_username }}" name="_username" id="username" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 dark:border-dark-white focus:border-light-green dark:focus:border-dark-lighter-green transition-all duration-300 dark:bg-dark-light-black dark:border-opacity-50 dark:focus:border-opacity-100" autocomplete="email" required autofocus>
 					</div>
-					<div class="max-w-xs flex flex-col gap-2">
+					<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
 						<label for="password">Password</label>
-        				<input type="password" name="_password" id="password" class="form-control w-80 p-2 rounded-lg outline-none border-2 focus:border-bgreen transition-all duration-300" autocomplete="current-password" required>
+        				<input type="password" name="_password" id="password" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 dark:border-dark-white focus:border-light-green dark:focus:border-dark-lighter-green transition-all duration-300 dark:bg-dark-light-black dark:border-opacity-50 dark:focus:border-opacity-100" autocomplete="current-password" required>
 					</div>
 					<div class="mt-14">
-						<button class="px-6 py-2 text-white font-semibold bg-blighter-green rounded-large hover:bg-bgreen transition-all duration-300" type="submit">Se connecter</button>
+						<button class="px-6 py-2 text-white dark:text-dark-white font-semibold bg-light-lighter-green dark:bg-dark-green border-light-lighter-green dark:border-dark-green rounded-large hover:bg-light-green dark:hover:bg-dark-lighter-green hover:border-light-green dark:hover:border-dark-lighter-green transition-all duration-300" type="submit">Se connecter</button>
 					</div>
 				</div>
 				 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 			</form>
 			<div class="flex gap-4 justify-center">
-				<a href="{{ path('app_register') }}" class="text-sm text-blighter-green hover:text-bgreen transition-all duration-300">Pas encore inscrit ?</a>
-				<a href="{{ path('app_forgot_password_request') }}" class="text-sm text-blighter-green hover:text-bgreen transition-all duration-300">Mot de passe oublié ?</a>
+				<a href="{{ path('app_register') }}" class="text-sm text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">Pas encore inscrit ?</a>
+				<a href="{{ path('app_forgot_password_request') }}" class="text-sm text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">Mot de passe oublié ?</a>
 			</div>
 		</div>
 	</main>

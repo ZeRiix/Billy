@@ -1,11 +1,12 @@
 <label for="{{name}}" class="inline-flex relative items-center cursor-pointer">
-	<input 
+	<input
+		
 		type="checkbox" 
 		id="{{name}}" 
 		class="sr-only peer" {{ isChecked ? 'checked' : '' }} 
 		onClick="{{ onClick }}"
 		{{ name ? 'name=' ~ name : '' }}
 	>
-	<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-bgrey peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-bgreen"></div>
-	<span class="ml-3 text-sm font-medium text-gray-900 dark:text-bgrey">{{ title }}</span>
+	<div class="w-11 h-6 bg-gray-200 dark:bg-light-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-light-green"></div>
+	<span class="ml-3 text-sm font-medium text-gray-900 dark:text-light-gray">{{ title }}</span>
 </label>

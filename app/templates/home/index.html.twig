@@ -3,12 +3,12 @@
 {% block title %}Billy{% endblock %}
 
 {% block body %}
-	<main>
+	<main class="dark:bg-dark-light-black">
 		<section class="container m-auto mt-8 min-h-[640px] flex flex-col gap-16 justify-between items-center md:mt-0 md:flex-row md:items-stretch">
 			<div class="max-w-[800px] flex justify-center items-center">
 				<div class="max-w-[700px] mx-8 flex flex-col justify-center gap-9 md:mx-0">
-					<h1 class="text-4xl md:text-5xl font-bold">Gérez vous devis et factures en toutes simplicité</h1>
-					<p class="opacity-50 font-semibold">
+					<h1 class="text-4xl md:text-5xl font-bold dark:text-dark-white">Gérez vous devis et factures en toutes simplicité</h1>
+					<p class="opacity-50 dark:opacity-100 font-semibold dark:text-dark-text">
 						Automatiser, digitaliser votre gestion financière avec notre plateforme intuitive. 
 						Devis et factures, unifiés pour plus d'efficacité. Optez pour la simplicité 
 						avec notre solution de gestion tout-en-un.
@@ -32,9 +32,9 @@
 				<img src="{{ asset('assets/images/hero.jpeg') }}" alt="Comptable" class="w-full h-full object-cover">
 			</div>
 		</section>
-		<section class="bg-bdark-white">
+		<section class="bg-light-dark-white dark:bg-dark-light-white">
 			<div class="container m-auto min-h-[480px] p-12 flex flex-col justify-between items-center">
-				<h2 class="text-3xl font-semibold text-center md:text-4xl">Pourquoi choisir Billy ?</h2>
+				<h2 class="text-3xl font-semibold text-center md:text-4xl dark:text-dark-white">Pourquoi choisir Billy ?</h2>
 				<div class="mt-8 flex flex-wrap justify-center gap-16">
 					<twig:AdvantageCard title="Avantage 1" description="Description 1"></twig:AdvantageCard>
 					<twig:AdvantageCard title="Avantage 2" description="Description 2"></twig:AdvantageCard>
@@ -43,7 +43,7 @@
 			</div>
 		</section>
 		<section class="p-12">
-			<h2 class="text-3xl font-semibold text-center md:text-4xl">Les questions fréquemment posées</h2>
+			<h2 class="text-3xl font-semibold text-center md:text-4xl dark:text-dark-white">Les questions fréquemment posées</h2>
 			<div class="max-w-[570px] m-auto mt-8 flex flex-col gap-2.5">
 				<twig:Accordion question="Question 1" answer="Réponse 1"></twig:Accordion>
 				<twig:Accordion question="Question 2" answer="Réponse 2"></twig:Accordion>

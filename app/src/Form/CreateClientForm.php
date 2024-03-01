@@ -20,50 +20,29 @@ class CreateClientForm extends AbstractType
 		$builder
 			->add("name", TextType::class, [
 				"label" => "Nom",
-				"attr" => [
-					"placeholder" => "Nom du client",
-				],
 				"required" => false,
 			])
 			->add("firstname", TextType::class, [
 				"label" => "Prénom",
-				"attr" => [
-					"placeholder" => "Prénom du client",
-				],
 				"required" => false,
 			])
 			->add("address", TextareaType::class, [
 				"label" => "Adresse",
-				"attr" => [
-					"placeholder" => "Adresse du client",
-				],
 				"required" => false,
 			])
 			->add("email", EmailType::class, [
 				"label" => "Email",
-				"attr" => [
-					"placeholder" => "Email du client",
-				],
 			])
 			->add("phone", TelType::class, [
 				"required" => false,
 				"label" => "Téléphone",
-				"attr" => [
-					"placeholder" => "Numéro de téléphone du client",
-				],
 			])
 			->add("activity", TextType::class, [
 				"label" => "Activité",
-				"attr" => [
-					"placeholder" => "Activité du client",
-				],
 				"required" => false,
 			])
 			->add("siret", IntegerType::class, [
 				"label" => "SIRET",
-				"attr" => [
-					"placeholder" => "Numéro SIRET du client",
-				],
 				"required" => false,
 			])
 			->add("submit", SubmitType::class, [

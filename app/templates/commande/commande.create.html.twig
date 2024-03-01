@@ -3,8 +3,8 @@
 {% block title %}{{ isUpdate ? 'Modification' : 'Création' }} de la commande{% endblock %}
 
 {% block body %}
-<h1 class="mb-14 text-3xl font-semibold">{{ isUpdate ? 'Modification' : 'Création' }} de la commande</h1>
-<div class="p-14 rounded-xl bg-white">
+<h1 class="mb-14 text-3xl font-semibold dark:text-dark-white">{{ isUpdate ? 'Modification' : 'Création' }} de la commande</h1>
+<div class="p-14 rounded-xl bg-white dark:bg-dark-light-black">
 	{{ form_start(form, { attr: { 'data-controller': 'create-commande', 'data-create-commande-services-value': entityToJson(services, ['service']) } }) }}
 	<div class="flex flex-col gap-10 items-start">
 		<div class="flex gap-5">
@@ -18,14 +18,14 @@
 		{{ form_row(form.description) }}
 		<a 
 			href="{{ path('app_create_service', { organization: organization.id }) }}?callback={{ path('app_create_commande', { organization: organization.id, devis: devis.id }) }}"
-			class="text-bgreen cursor-pointer hover:underline transition-all duration-300"
+			class="text-light-green cursor-pointer hover:underline transition-all duration-300"
 		>
 			<span class="mdi mdi-plus"></span> 
 			Ajouter un service
 		</a>
 		<div class="w-full flex justify-between items-center">
 			<a 
-				href="{{ path('app_update_devis', { organization: organization.id, devis: devis.id }) }}" class="hover:text-bgreen transition-all duration-300"
+				href="{{ path('app_update_devis', { organization: organization.id, devis: devis.id }) }}" class="dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300"
 			>
 				<span class="mdi mdi-arrow-left"></span> 
 				Retour au devis n°{{ devis.id }}

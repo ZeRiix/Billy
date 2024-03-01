@@ -4,7 +4,7 @@
 
 {% block body %}
 	<div class="mb-14 flex gap-10">
-		<h1 class="text-3xl font-semibold">
+		<h1 class="text-3xl font-semibold dark:text-dark-white">
 				Modification du devis n° {{ quotation.id }} 
 		</h1>
 
@@ -21,7 +21,7 @@
 		{% endif %}
 	</div>
 	
-	<div class="p-14 rounded-xl bg-white">
+	<div class="p-14 rounded-xl bg-white dark:bg-dark-light-black">
 		{{ form_start(form) }}
 			<fieldset 
 				{{ quotation.status.value != 'editing'? 'disabled' : '' }} 
@@ -36,7 +36,7 @@
 						{{ form_row(form.client) }}
 						{{ form_row(form.discount) }}
 					</div>
-				<div class="w-full flex gap-4 text-bgreen">
+				<div class="w-full flex gap-4 text-light-green">
 					{% if quotation.status.value == 'editing' %}
 						<label 
 							class="cursor-pointer hover:underline transition-all duration-300"
@@ -97,7 +97,7 @@
 				{% endif %}
 				</div>
 				{% if quotation.status.value == 'sign' or quotation.status.value == 'completed' %}
-					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-bgreen">
+					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-light-green">
 						Voir mes factures
 						<span class="mdi mdi-arrow-right"></span> 
 					</a>
@@ -117,23 +117,23 @@
 					:action="quotation.status.value == 'editing'"
 				>
 					<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
-						<span class="mdi mdi-pencil text-xl text-bgrey"></span>
+						<span class="mdi mdi-pencil text-xl text-light-gray"></span>
 					</a>
 					<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
 						<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
 					</a>
 				</twig:Table>
 
-				<span>
+				<span class="dark:text-dark-white">
 					Total HT : {{ totalHT }} €
 				</span>
 
 				{% if quotation.status.value == 'sign' %}
-					<a href="#">Générer ma facture</a>
+					<a href="#" class="dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">Générer ma facture</a>
 				{% endif %}
 			</div>
 			<div class="w-full flex justify-between items-center">
-				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="hover:text-bgreen transition-all duration-300">
+				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">
 					<span class="mdi mdi-arrow-left"></span> 
 					Retour aux devis
 				</a>

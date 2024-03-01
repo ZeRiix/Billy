@@ -116,9 +116,9 @@ export default class extends Controller {
 		const lastPath = paths[paths.length - 1];
 
 		paths.forEach((path) => {
-			path.classList.remove("text-blighter-grey");
+			path.classList.remove("text-light-lighter-gray");
 		});
 
-		lastPath.classList.add("text-blighter-grey");
+		lastPath.classList.add("text-light-lighter-gray");
 	}
 }
