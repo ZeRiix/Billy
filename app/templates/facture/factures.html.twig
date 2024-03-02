@@ -31,8 +31,12 @@
 				<span class="px-4 py-2 bg-yellow-500 font-semibold text-white uppercase rounded-full mdi mdi-pencil"> Édition</span>
 			{% elseif currentValue.value == 'lock' %}
 				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-lock"> Verrouillé</span>
+			{% elseif currentValue.value == 'canceled' %}
+				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-close"> Annulé</span>
 			{% elseif currentValue.value == 'sign' %}
 				<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-fountain-pen-tip"> Signé</span>
+			{% elseif currentValue.value == 'completed' %}
+				<span class="px-4 py-2 bg-blue-500 font-semibold text-white uppercase rounded-full mdi mdi-check"> Facturé</span>
 			{% endif %}
 		{% endblock %}
 
