@@ -15,4 +15,12 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+
+	#[Route('/design-guide', name:'app_design_guide', methods: ["GET"])]
+	public function designGuide(): Response
+	{
+		return $this->render('home/design-guide.html.twig', [
+			'controller_name' => 'HomeController',
+		]);
+	}
 }
