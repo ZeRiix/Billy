@@ -68,45 +68,35 @@ class DevisService
 		if ($devis->getStatus() !== DeviStatus::EDITING) {
 			throw new \Exception("Vous ne pouvez pas envoyer un devis vérouiller.");
 		}
-
 		if (!isset($devis->getCommandes()[0])) {
 			throw new \Exception("Il faut minimum une commande pour envoyer un devis.");
 		}
-
 		$client = $devis->getClient();
-
 		if (!$client) {
 			throw new \Exception("Vous n'avez pas selectioner de client pour ce devis.");
 		}
-
-		$email = $client->getEmail();
-
-		if (!$email) {
+		if (!$client->getEmail()) {
 			throw new \Exception("Le client selectioner na pas d'adresse email.");
 		}
 
+		// lock the devis
 		$devis->setStatus(DeviStatus::LOCK);
-
-		$mail = new MailService();
-		$organization = $devis->getOrganization();
-
-		$organizationId = $organization->getId();
-		$devisId = $devis->getId();
-
-		$subject = "Devis n°" . $devis->getId();
-		$htmlContent =
-			"Bonjour " .
-			$client->getName() .
-			" " .
-			$client->getFirstname() .
-			",<br><br>" .
-			"Vous trouverez votre devis en cliquant sur ce lien : <a href='http://localhost:8000/organization/$organizationId/quotation/$devisId/preview'>Devis N°" .
-			$devis->getId() .
-			"</a>.<br><br>" .
-			"Cordialement,<br><br>" .
-			$organization->getName() .
-			".";
-		$mail->send($email, $subject, $htmlContent, false);
+		// make mail body
+		$body = MailService::createHtmlBodyWithTwig("devis/email.html.twig", [
+			"devis" =>
+				$_SERVER["REQUEST_SCHEME"] .
+				"://" .
+				$_SERVER["HTTP_HOST"] .
+				"/organization/" .
+				$devis->getOrganization()->getId() .
+				"/quotation/" .
+				$devis->getId() .
+				"/preview",
+			"name" => $client->getName() . " " . $client->getFirstname(),
+			"organization" => $devis->getOrganization(),
+		]);
+		// send mail
+		MailService::send($client->getEmail(), "Devis n°" . $devis->getId(), $body, false);
 
 		$this->devisRepository->save($devis);
 	}

@@ -45,7 +45,6 @@ class BillReminderService
 
 	public function sendReminderBill(Facture $facture): void
 	{
-		$mail = new MailService();
 		$client = $facture->getClient();
 		$organization = $facture->getOrganization();
 		$devis = $facture->getDevis();
@@ -59,10 +58,7 @@ class BillReminderService
 					"."
 			);
 		}
-
-		$email = $client->getEmail();
-
-		if (!$email) {
+		if (!$client->getEmail()) {
 			throw new \Exception(
 				"Aucune adresse mail à été trouvé pour le client " .
 					$client->getName() .
@@ -72,22 +68,18 @@ class BillReminderService
 			);
 		}
 
-		$subject = "Rappel de paiement de la facture N°" . $facture->getChrono();
-		$htmlContent =
-			"Bonjour " .
-			$client->getName() .
-			" " .
-			$client->getFirstname() .
-			",<br><br>" .
-			"Un rappel de paiment pour la <strong>facture N°" .
-			$facture->getChrono() .
-			"</strong> du devis <strong>" .
-			$devis->getName() .
-			"</strong> vous à été envoyé.<br><br>" .
-			"Cordialement,<br>" .
-			$organization->getName() .
-			".";
-		$mail->send($client->getEmail(), $subject, $htmlContent, false);
+		$body = MailService::createHtmlBodyWithTwig("facture/rappel_email.html.twig", [
+			"facture" => $facture->getChrono(),
+			"devis" => $devis->getName(),
+			"client" => $client->getName() . " " . $client->getFirstname(),
+			"organization" => $organization,
+		]);
+		MailService::send(
+			$client->getEmail(),
+			"Rappel de paiement de la facture N°" . $facture->getChrono(),
+			$body,
+			false
+		);
 	}
 
 	public function deleteAllRemindersForFacture(Facture $facture): void

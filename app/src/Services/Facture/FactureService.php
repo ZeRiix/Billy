@@ -61,40 +61,31 @@ class FactureService
 
 	public function sendBill(Facture $bill): void
 	{
-		$mail = new MailService();
-		//Entity
-		$devis = $bill->getDevis();
-		$organization = $bill->getOrganization();
-		$client = $bill->getClient();
-		//Entity Ids
-		$organizationId = $organization->getId();
-		$devisId = $devis->getId();
-		$factureId = $bill->getId();
-
-		if (!$client) {
+		if (!$bill->getClient()) {
 			throw new \Exception("Vous n'avez pas sélectionné de client pour cette facture.");
 		}
-
-		$email = $client->getEmail();
-
-		if (!$email) {
+		$client = $bill->getClient();
+		if (!$client->getEmail()) {
 			throw new \Exception("Le client sélectionné n'a pas d'adresse email.");
 		}
-
-		$subject = "Facture N°" . $bill->getChrono();
-		$htmlContent =
-			"Bonjour " .
-			$client->getName() .
-			" " .
-			$client->getFirstname() .
-			",<br><br>" .
-			"Vous trouverez votre facture en cliquant sur ce lien : <a href='http://localhost:8000/organization/$organizationId/quotation/$devisId/bill/$factureId/preview'>Facture N°" .
-			$bill->getChrono() .
-			"</a>.<br><br>" .
-			"Cordialement,<br><br>" .
-			$organization->getName() .
-			".";
-		$mail->send($email, $subject, $htmlContent, false);
+		// make mail body
+		$body = MailService::createHtmlBodyWithTwig("facture/email.html.twig", [
+			"facture" =>
+				$_SERVER["REQUEST_SCHEME"] .
+				"://" .
+				$_SERVER["HTTP_HOST"] .
+				"/organization/" .
+				$bill->getOrganization()->getId() .
+				"/quotation/" .
+				$bill->getDevis()->getId() .
+				"/bill/" .
+				$bill->getId() .
+				"/preview",
+			"name" => $client->getName() . " " . $client->getFirstname(),
+			"organization" => $bill->getOrganization(),
+		]);
+		// send mail
+		MailService::send($client->getEmail(), "Facture N°" . $bill->getChrono(), $body, false);
 	}
 
 	public function checkIfDevisIsCompleted(Collection $commandes)
