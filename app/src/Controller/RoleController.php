@@ -52,6 +52,7 @@ class RoleController extends AbstractController
 			"role/index.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);
@@ -103,6 +104,7 @@ class RoleController extends AbstractController
 			"role/select_role.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);
@@ -178,6 +180,7 @@ class RoleController extends AbstractController
 			"role/update_role.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);

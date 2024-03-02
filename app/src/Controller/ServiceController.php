@@ -76,6 +76,7 @@ class ServiceController extends AbstractController
 		return $this->render("service/create.html.twig", [
 			"createServiceForm" => $createServiceForm,
 			"update" => false,
+			"organization" => $organization,
 		]);
 	}
 
@@ -116,6 +117,7 @@ class ServiceController extends AbstractController
 		return $this->render("service/create.html.twig", [
 			"createServiceForm" => $createServiceForm,
 			"update" => true,
+			"organization" => $service->getOrganization(),
 		]);
 	}
 

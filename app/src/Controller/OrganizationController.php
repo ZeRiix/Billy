@@ -171,6 +171,7 @@ class OrganizationController extends AbstractController
 			"organization/invite_user.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);

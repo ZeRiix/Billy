@@ -25,10 +25,9 @@
 		</a>
 		<div class="w-full flex justify-between items-center">
 			<a 
-				href="{{ path('app_update_devis', { organization: organization.id, devis: devis.id }) }}" class="dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300"
+				href="{{ path('app_update_devis', { organization: organization.id, devis: devis.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left"
 			>
-				<span class="mdi mdi-arrow-left"></span> 
-				Retour au devis n°{{ devis.id }}
+				Revenir au devis n°{{ devis.id }}
 			</a>
 
 			{{ form_widget(form.submit) }}

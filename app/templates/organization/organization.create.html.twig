@@ -15,7 +15,10 @@
 				{{ form_row(form.activity) }}
 				{{ form_row(form.siret) }}
 			</div>	
-			<div class="w-full flex justify-end">
+			<div class="w-full flex justify-between items-center">
+				<a href="path('app_organizations')" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+					Revenir aux organisations
+				</a>
 				{{ form_widget(form.submit) }}
 			</div>		
 		</div>

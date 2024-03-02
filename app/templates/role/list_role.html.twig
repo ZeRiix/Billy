@@ -1,10 +1,10 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Liste des rôles{% endblock %}
+{% block title %}Gérer les rôles{% endblock %}
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-3xl font-semibold dark:text-dark-white">List des rôles</h1>
+		<h1 class="text-3xl font-semibold dark:text-dark-white">Gérer les rôles</h1>
 		<twig:Button value="Créer" :href="path('app_role', { 'organization': getCurrentOrganization().id })"></twig:Button>
 	</div>
 	

@@ -25,7 +25,7 @@ class UpdateRoleForm extends AbstractType
 			->add("read_devis", CheckboxType::class, ["label" => "Read Devis", "required" => false])
 			->add("read_factures", CheckboxType::class, ["label" => "Read Facture", "required" => false])
 			->add("view_stats", CheckboxType::class, ["label" => "View Stats", "required" => false])
-			->add("submit", SubmitType::class, ["label" => "Éditer"]);
+			->add("submit", SubmitType::class, ["label" => "Modifier"]);
 	}
 
 	public function configureOptions(OptionsResolver $resolver): void

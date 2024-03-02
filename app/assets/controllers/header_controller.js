@@ -16,12 +16,12 @@ export default class extends Controller {
 		},
 		{
 			pattern: /^\/organization\/([a-z0-9-]+)\/edit$/,
-			pathname: "Modifier un organisation",
+			pathname: "Modifier l'organisation",
 			path: null,
 		},
 		{
 			pattern: /^\/organization\/[a-z0-9-]+\/roles$/,
-			pathname: "Liste des rôles",
+			pathname: "Gérer les rôles",
 			path: null,
 		},
 		{
@@ -55,6 +55,11 @@ export default class extends Controller {
 			path: null,
 		},
 		{
+			pattern: /^\/organization\/[a-z0-9-]+\/client+$/,
+			pathname: "Ajouter un client",
+			path: null,
+		},
+		{
 			pattern: /^\/organization\/[a-z0-9-]+\/client\/[a-z0-9-]+$/,
 			pathname: "Modifier le client",
 			path: null,
@@ -62,6 +67,16 @@ export default class extends Controller {
 		{
 			pattern: /^\/organization\/[a-z0-9-]+\/users$/,
 			pathname: "Gérer les utilisateurs",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/invite$/,
+			pathname: "Ajouter un utilisateur",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/user\/[0-9-]+\/selectrole$/,
+			pathname: "Modifier l'utilisateur",
 			path: null,
 		},
 		{
@@ -80,8 +95,13 @@ export default class extends Controller {
 			path: null,
 		},
 		{
-			pattern: /^\/organization\/[a-z0-9-]+\/quotation\/[0-9-]\/commande+$/,
+			pattern: /^\/organization\/[a-z0-9-]+\/devis\/[0-9-]\/commande+$/,
 			pathname: "Création de la commande",
+			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/stats$/,
+			pathname: "Statistiques",
 			path: null,
 		},
 	];

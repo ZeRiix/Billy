@@ -4,7 +4,7 @@
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-2xl font-semibold dark:text-dark-white">Mes organisations</h1>
+		<h1 class="text-3xl font-semibold dark:text-dark-white">Mes organisations</h1>
 		
 		{% if canCreate == true %}
 			<twig:Button value="Ajouter" :href="path('app_create_organization')"></twig:Button>

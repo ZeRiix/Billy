@@ -9,7 +9,13 @@
 	{{ form_start(form) }}
 	<div class="flex flex-col gap-10 items-start">
 		{{ form_row(form.email) }}
-		<div class="w-full flex justify-end">
+		{# <div class="w-full flex justify-end">
+			{{ form_widget(form.submit) }}
+		</div> #}
+		<div class="w-full flex justify-between items-center">
+			<a href="{{ path('organization_list_users', { 'organization': organization.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+				Revenir aux utilisateurs
+			</a>
 			{{ form_widget(form.submit) }}
 		</div>
 	</div>

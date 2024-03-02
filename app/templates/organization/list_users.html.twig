@@ -1,10 +1,10 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Liste des utilisateurs{% endblock %}
+{% block title %}Gérer les utilisateurs{% endblock %}
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
-		<h1 class="text-3xl font-semibold dark:dark:text-dark-white">Liste des utilisateurs</h1>
+		<h1 class="text-3xl font-semibold dark:dark:text-dark-white">Gérer les utilisateurs</h1>
 		<twig:Button value="Ajouter" :href="path('organization_invite_user', { 'organization': getCurrentOrganization().id })"></twig:Button>
 	</div>
 

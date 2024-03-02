@@ -23,9 +23,12 @@
 						{{ form_row(form.view_stats) }}
 					</div>
 				</div>
-				<div class="w-full flex justify-end">
-					{{ form_row(form.submit) }}
-				</div>
+				<div class="w-full flex justify-between items-center">
+					<a href="{{ path('app_roles', { 'organization': organization.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+						Revenir aux rôles
+					</a>
+					{{ form_widget(form.submit) }}
+				</div>	
 			</div>
 		{{ form_end(form) }}
 	</div>

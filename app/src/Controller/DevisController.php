@@ -115,6 +115,7 @@ class DevisController extends AbstractController
 
 		return $this->render("devis/devis.create.html.twig", [
 			"form" => $form->createView(),
+			"organization" => $organization,
 		]);
 	}
 

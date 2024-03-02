@@ -1,11 +1,11 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Modification du devis n° {{ quotation.id }}{% endblock %}
+{% block title %}Modifier le devis {{ quotation.name }} (id : {{ quotation.id }}){% endblock %}
 
 {% block body %}
 	<div class="mb-14 flex gap-10">
 		<h1 class="text-3xl font-semibold dark:text-dark-white">
-				Modification du devis n° {{ quotation.id }} 
+				Modifier le devis {{ quotation.name }} (id : {{ quotation.id }}) 
 		</h1>
 
 		{% if  quotation.status.value == 'editing' %}
@@ -133,9 +133,8 @@
 				{% endif %}
 			</div>
 			<div class="w-full flex justify-between items-center">
-				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">
-					<span class="mdi mdi-arrow-left"></span> 
-					Retour aux devis
+				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+					Revenir aux devis
 				</a>
 				<div class="{{quotation.status.value != 'editing' ? 'hidden': ''}}">
 					{{ form_widget(form.submit) }}

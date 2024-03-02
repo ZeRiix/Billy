@@ -14,7 +14,7 @@ class InviteUserForm extends AbstractType
 	{
 		$builder
 			->add("email", EmailType::class, [
-				"label" => "Adresse e-mail",
+				"label" => "Email",
 			])
 			->add("submit", SubmitType::class, [
 				"label" => "Inviter",

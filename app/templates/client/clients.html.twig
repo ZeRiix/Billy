@@ -1,11 +1,11 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}List des clients{% endblock %}
+{% block title %}Gérer les Clients{% endblock %}
 
 {% block body %}
 	<div class="mb-14 flex justify-between items-center">
 		<form id="archivedForm" action="" method="GET">
-			<h1 class="text-2xl font-semibold pb-4 dark:text-dark-white">Mes Clients</h1>
+			<h1 class="text-3xl font-semibold pb-4 dark:text-dark-white">Gérer les Clients</h1>
 			<twig:Toggle 
 			title="Archivé" 
 			:isChecked="isArchived"

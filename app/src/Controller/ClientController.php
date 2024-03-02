@@ -103,6 +103,7 @@ class ClientController extends AbstractController
 			[
 				"form" => $form->createView(),
 				"isCreating" => true,
+				"organization" => $organization,
 			],
 			$response
 		);
@@ -152,6 +153,7 @@ class ClientController extends AbstractController
 			[
 				"form" => $form->createView(),
 				"isEntrprise" => !!$client->getSiret(),
+				"organization" => $organization,
 			],
 			$response
 		);

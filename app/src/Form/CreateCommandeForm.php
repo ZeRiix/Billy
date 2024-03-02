@@ -48,7 +48,7 @@ class CreateCommandeForm extends AbstractType
 				},
 			])
 			->add("submit", SubmitType::class, [
-				"label" => "Créer la commande",
+				"label" => "Créer",
 			]);
 	}
 
