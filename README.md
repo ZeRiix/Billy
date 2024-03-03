@@ -53,7 +53,7 @@ Start the container
 docker-compose up -d
 ```
 
-## Contributors
+## Contributeurs
 
 -   [ZeRiix](https://github.com/ZeRiix) <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/>
 -   [Maubry94](https://github.com/Maubry94) <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/>
@@ -87,7 +87,7 @@ docker-compose up -d
 -   [x] Invoice system followed with chrono number <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/>
 -   [x] Payment reminder email system (invoice, devis) <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/>
 
-## Others Documentations
+## Autres Documentations
 
 - [MLD](documentation/database/mld.drawio)
 - [MCD](documentation/database/mcd.drawio)
