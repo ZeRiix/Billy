@@ -19,10 +19,10 @@
 			:action="true"
 		>
 			<a href="{{ path('app_role_select', { 'organization': getCurrentOrganization().id, 'user': row.id }) }}">
-				<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300"></span>
+				<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"></span>
 			</a>
 			<a href="{{ path('organization_leave_user_by', { 'organization': getCurrentOrganization().id, 'user': row.id }) }}">
-				<span class="mdi mdi-trash-can-outline text-xl text-red-800 hover:text-red-400"></span>
+				<span class="mdi mdi-trash-can-outline text-xl text-red-600 hover:text-red-400 transition-all duration-300" title="Supprimer"></span>
 			</a>
 		</twig:Table>
 	{% else %}

@@ -1,12 +1,12 @@
 {% extends 'connected.html.twig' %}
 
-{% block title %}Facture n°{{bill.chrono}}{% endblock %}
+{% block title %} Gérer la facture n°{{ bill.chrono }}{% endblock %}
 
 {% block body %}
-	<h1 class="mb-14 text-3xl font-semibold">Facture n°{{bill.chrono}}</h1>
-	<div class="p-14 flex flex-col gap-20 items-center rounded-xl bg-white">
+	<h1 class="mb-14 text-3xl font-semibold dark:text-dark-white">Gérer la facture n°{{ bill.chrono }}</h1>
+	<div class="p-14 flex flex-col gap-20 items-center rounded-xl bg-white dark:bg-dark-light-black">
 		<div class="flex flex-row justify-between gap-4 w-full">
-		    <ul class="flex flex-col gap-4">
+		    <ul class="flex flex-col gap-4 dark:text-dark-white">
 				<li><strong>Nom de l'organisation : </strong>{{ bill.organization.name }}</li>
 				<li><strong>Nom et prénom du client : </strong>{{ bill.client.name ~ " " ~ bill.client.firstname }}</li>
 				<li>
@@ -14,7 +14,7 @@
 					<a href="{{ path('app_update_devis', {organization: bill.organization.id, devis: bill.devis.id}) }}" class="underline">{{bill.devis.name}}</a>
 				</li>
 			</ul>
-			<ul class="flex flex-col gap-4">
+			<ul class="flex flex-col gap-4 dark:text-dark-white">
 				<li>
 				<strong>Statut du paiement : </strong>
 					{% if bill.statut.value == 'payé' %}
@@ -49,7 +49,7 @@
 			</a>
 			{% if bill.statut.value == 'waiting' %}
 				<a href="{{ path('app_pay_facture', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
-					Payé ?
+					Payée ?
 				</a>
 			{% endif %}
 			<a href="{{ path('app_preview_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">

@@ -105,17 +105,17 @@
 	
 		{% if row.status.value == 'editing' %}
 			<a 
-				class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300"
+				class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"
 				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
 			></a>
 		{% else %}
 			<a 
-				class="mdi mdi-eye text-xl text-light-gray hover:text-light-green transition-all duration-300"
+				class="mdi mdi-eye text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Voir le devis"
 				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
 			></a>
 			{% if (row.status.value == 'sign' or row.status.value == 'completed') and checkPermissionOnOrganization(app.user, 'read_factures') %}
 				<a 
-					class="mdi mdi-note text-xl text-gray-500"
+					class="mdi mdi-note text-xl text-light-gray hover:text-orange-400 transition-all duration-300" title="Voir les factures"
 					href="{{ path('app_bills_by_devis', { organization: organization.id, devis: row.id }) }}"
 				></a>
 			{% endif %}

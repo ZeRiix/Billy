@@ -95,9 +95,12 @@ export default class extends Controller {
 			path: null,
 		},
 		{
-			pattern: /^\/organization\/[a-z0-9-]+\/devis\/[0-9-]\/commande+$/,
-			pathname: "Création de la commande",
+			pattern: /^\/organization\/[a-z0-9-]+\/quotation\/[0-9-]+\/bill\/[a-z0-9-]+$/,
+			pathname: "Gérer la facture",
 			path: null,
+		},
+		{
+			pattern: /^\/organization\/[a-z0-9-]+\/devis\/[0-9-]\/commande\/[0-9-]+$/,
 		},
 		{
 			pattern: /^\/organization\/[a-z0-9-]+\/stats$/,

@@ -17,7 +17,7 @@
 			:action="true"
 		>
 			<a href="{{ path('app_role_update', { 'organization': getCurrentOrganization().id, 'role': row.id }) }}">
-				<span class="mdi mdi-pencil text-xl text-light-gray"></span>
+				<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"></span>
 			</a>
 		</twig:Table>
 	{% else %}
