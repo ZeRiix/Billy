@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use App\Repository\RoleRepository;
 use App\Entity\Organization;
 use App\Entity\User;
+use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ORM\Table(name: "`role`")]
@@ -35,25 +37,52 @@ class Role
 	private ?Collection $users;
 
 	#[ORM\Column(length: 100, nullable: false)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le nom du rôle.")]
+	#[
+		Assert\Length(
+			min: 4,
+			max: 100,
+			minMessage: "Le nom du rôle doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le nom du rôle doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $name = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
 	private ?bool $manage_org = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
 	private ?bool $manage_user = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
 	private ?bool $manage_client = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
 	private ?bool $write_devis = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
+	private ?bool $read_devis = null;
+
+	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
 	private ?bool $write_factures = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
+	private ?bool $read_factures = null;
+
+	#[ORM\Column(type: Types::BOOLEAN)]
+	#[Assert\Type(type: "bool")]
 	private ?bool $manage_service = null;
+
+	#[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
+	#[Assert\Type(type: "bool")]
+	private ?bool $view_stats = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -164,6 +193,18 @@ class Role
 		return $this;
 	}
 
+	public function getReadDevis(): ?bool
+	{
+		return $this->read_devis;
+	}
+
+	public function setReadDevis(?bool $read_devis): static
+	{
+		$this->read_devis = $read_devis;
+
+		return $this;
+	}
+
 	public function getWriteFactures(): ?bool
 	{
 		return $this->write_factures;
@@ -176,6 +217,18 @@ class Role
 		return $this;
 	}
 
+	public function getReadFactures(): ?bool
+	{
+		return $this->read_factures;
+	}
+
+	public function setReadFactures(?bool $read_factures): static
+	{
+		$this->read_factures = $read_factures;
+
+		return $this;
+	}
+
 	public function getManageService(): ?bool
 	{
 		return $this->manage_service;
@@ -184,6 +237,18 @@ class Role
 	public function setManageService(?bool $manage_service): static
 	{
 		$this->manage_service = $manage_service;
+
+		return $this;
+	}
+
+	public function getViewStats(): ?bool
+	{
+		return $this->view_stats;
+	}
+
+	public function setViewStats(?bool $view_stats): static
+	{
+		$this->view_stats = $view_stats;
 
 		return $this;
 	}

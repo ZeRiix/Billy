@@ -1,0 +1,28 @@
+html {
+	font-size: 16px;
+}
+
+.fade-out {
+    opacity: 0 !important;
+    transition: opacity 0.5s ease-out;
+}
+
+/* text media queries */
+
+@media (max-width: 768px) {
+	html {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 640px) {
+	html {
+		font-size: 12px;
+	}
+}
+
+@media (max-width: 576px) {
+	html {
+		font-size: 10px;
+	}
+}

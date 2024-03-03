@@ -1,122 +1,54 @@
-{% extends 'base.html.twig' %}
+{% extends 'home.html.twig' %}
 
 {% block title %}Billy{% endblock %}
 
 {% block body %}
-<header class="w-full h-20 px-9 py-2.5 bg-bdarker-green">
-	<div class="container h-full m-auto flex items-center justify-between">
-		<a href="/" class="h-full">
-			<img src="{{ asset('assets/images/billy.png') }}" alt="logo" class="h-full rounded-lg">
-		</a>
-		<div class="flex gap-6 items-center">
-			<a href="/login" class="text-white text-lg font-semibold">Connexion</a>
-			<a href="/register" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">S'inscrire</a>
-		</div>
-	</div>
-</header>
-<main>
-	<section class="container m-auto mt-8 min-h-[640px] flex flex-col gap-16 justify-between items-center md:mt-0 md:flex-row md:items-stretch">
-		<div class="max-w-[800px] flex justify-center items-center">
-			<div class="max-w-[700px] mx-8 flex flex-col justify-center gap-9 md:mx-0">
-				<h1 class="text-4xl md:text-5xl font-bold">Gérez vous devis et factures en toutes simplicité</h1>
-				<p class="opacity-50 font-semibold">
-					Automatiser, digitaliser votre gestion financière avec notre plateforme intuitive. 
-					Devis et factures, unifiés pour plus d'efficacité. Optez pour la simplicité 
-					avec notre solution de gestion tout-en-un.
-				</p>
-				<div class="flex flex-col gap-9 justify-center items-center md:flex-row">
-					<a href="/register" class="px-12 py-4 text-white text-lg font-semibold bg-blighter-green rounded-large hover:bg-bgreen ease-in-out duration-300">S'inscrire</a>
-					<a href="mailto:contact@billy.fr" target="_bkank" class="px-12 py-4 text-bgreen text-lg font-semibold border-solid border-2 border-bgreen rounded-large hover:text-white hover:bg-bgreen ease-in-out duration-300">Contact</a>
-				</div>
-			</div>
-			
-		</div>
-		<div class="max-w-[600px]">
-			<img src="{{ asset('assets/images/hero.jpeg') }}" alt="Comptable" class="w-full h-full object-cover">
-		</div>
-	</section>
-	<section class="bg-bdark-white">
-		<div class="container m-auto min-h-[480px] p-12 flex flex-col justify-between items-center">
-			<h2 class="text-3xl font-semibold text-center md:text-4xl">Pourquoi choisir Billy ?</h2>
-			<div class="mt-8 flex flex-wrap justify-center gap-16">
-				<div class="w-80 h-60 px-16 py-14 flex flex-col gap-6 bg-white">
-					<img src="{{ asset('assets/images/advantages/checkbox.png') }}" alt="avantage" class="w-12 aspect-square">
-					<div>
-						<h3 class="mb-2.5 text-2xl font-semibold">Avantage 1</h3>
-						<p class="opacity-50 font-semibold"> Description de l'avantage.</p>
-					</div>
-				</div>
-				<div class="w-80 h-60 px-16 py-14 flex flex-col gap-6 bg-white">
-					<img src="{{ asset('assets/images/advantages/checkbox.png') }}" alt="avantage" class="w-12 aspect-square">
-					<div>
-						<h3 class="mb-2.5 text-2xl font-semibold">Avantage 2</h3>
-						<p class="opacity-50 font-semibold"> Description de l'avantage.</p>
-					</div>
-					
-				</div>
-				<div class="w-80 h-60 px-16 py-14 flex flex-col gap-6 bg-white">
-					<img src="{{ asset('assets/images/advantages/checkbox.png') }}" alt="avantage" class="w-12 aspect-square">
-					<div>
-						<h3 class="mb-2.5 text-2xl font-semibold">Avantage 3</h3>
-						<p class="opacity-50 font-semibold"> Description de l'avantage.</p>
+	<main class="dark:bg-dark-light-black">
+		<section class="container m-auto mt-8 min-h-[640px] flex flex-col gap-16 justify-between items-center md:mt-0 md:flex-row md:items-stretch">
+			<div class="max-w-[800px] flex justify-center items-center">
+				<div class="max-w-[700px] mx-8 flex flex-col justify-center gap-9 md:mx-0">
+					<h1 class="text-4xl md:text-5xl font-bold dark:text-dark-white">Gérez vous devis et factures en toutes simplicité</h1>
+					<p class="opacity-50 dark:opacity-100 font-semibold dark:text-dark-text">
+						Automatiser, digitaliser votre gestion financière avec notre plateforme intuitive. 
+						Devis et factures, unifiés pour plus d'efficacité. Optez pour la simplicité 
+						avec notre solution de gestion tout-en-un.
+					</p>
+					<div class="flex flex-col gap-6 justify-center items-center md:flex-row">
+						{% if app.user %}
+							<twig:Button value="Dashboard" :href="path('app_organizations')"></twig:Button>
+						{% else %}
+							<twig:Button value="S'inscrire" :href="path('app_register')"></twig:Button>
+						{% endif %}
+						<twig:Button
+							value="Contact"
+							style="stroke"
+							href="mailto:support@billy.com"
+							blank="true"
+						></twig:Button>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section class="p-12">
-		<h2 class="text-3xl font-semibold text-center md:text-4xl">Les questions fréquemment posées</h2>
-		<div class="max-w-[570px] m-auto mt-8 flex flex-col gap-2.5">
-			<div class="accordion p-4 bg-bdark-white border rounded-t-lg rounded-b-lg shadow-md cursor-pointer">
-				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl">
-					<p>Question 1</p>
-					<span class="mdi mdi-chevron-down"></span>
-				</div>
-				<div class="content hidden">
-					<hr class="h-px -mx-4 my-6 bg-bdarker-white border-0">
-					<div>
-						<p>
-							Réponse 1.
-						</p>
-					</div>
+			<div class="max-w-[600px]">
+				<img src="{{ asset('assets/images/hero.jpeg') }}" alt="Comptable" class="w-full h-full object-cover">
+			</div>
+		</section>
+		<section class="bg-light-dark-white dark:bg-dark-light-white">
+			<div class="container m-auto min-h-[480px] p-12 flex flex-col justify-between items-center">
+				<h2 class="text-3xl font-semibold text-center md:text-4xl dark:text-dark-white">Pourquoi choisir Billy ?</h2>
+				<div class="mt-8 flex flex-wrap justify-center gap-16">
+					<twig:AdvantageCard title="Avantage 1" description="Description 1"></twig:AdvantageCard>
+					<twig:AdvantageCard title="Avantage 2" description="Description 2"></twig:AdvantageCard>
+					<twig:AdvantageCard title="Avantage 3" description="Description 3"></twig:AdvantageCard>
 				</div>
 			</div>
-			<div class="accordion p-4 bg-bdark-white border rounded-t-lg rounded-b-lg shadow-md cursor-pointer">
-				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl">
-					<p>Question 2</p>
-					<span class="mdi mdi-chevron-down"></span>
-				</div>
-				<div class="content hidden">
-					<hr class="h-px -mx-4 my-6 bg-bdarker-white border-0">
-					<div>
-						<p>
-							Réponse 2.
-						</p>
-					</div>
-				</div>
+		</section>
+		<section class="p-12">
+			<h2 class="text-3xl font-semibold text-center md:text-4xl dark:text-dark-white">Les questions fréquemment posées</h2>
+			<div class="max-w-[570px] m-auto mt-8 flex flex-col gap-2.5">
+				<twig:Accordion question="Question 1" answer="Réponse 1"></twig:Accordion>
+				<twig:Accordion question="Question 2" answer="Réponse 2"></twig:Accordion>
+				<twig:Accordion question="Question 3" answer="Réponse 3"></twig:Accordion>
 			</div>
-			<div class="accordion p-4 bg-bdark-white border rounded-t-lg rounded-b-lg shadow-md cursor-pointer">
-				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl">
-					<p>Question 3</p>
-					<span class="mdi mdi-chevron-down"></span>
-				</div>
-				<div class="content hidden">
-					<hr class="h-px -mx-4 my-6 bg-bdarker-white border-0">
-					<div>
-						<p>
-							Réponse 3.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-</main>
-<footer class="h-80 bg-bdarker-green">
-</footer>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('assets/js/accordion.js') }}"></script>
+		</section>
+	</main>
 {% endblock %}

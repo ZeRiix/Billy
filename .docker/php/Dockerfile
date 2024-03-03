@@ -19,7 +19,8 @@ RUN apk update && apk add --no-cache \
 	unzip \
 	curl \
 	postgresql-dev \
-	git
+	git \
+	dcron
 
 # Nettoyer le cache
 RUN rm -rf /var/cache/apk/*
@@ -30,3 +31,12 @@ RUN docker-php-ext-install pdo pdo_pgsql pgsql gd
 
 # Exposer le port 9000
 EXPOSE 9000
+
+# Ajout de la tâche cron
+COPY crontab /etc/crontabs/root
+
+# Donner les droits d'exécution à la tâche cron
+RUN chmod 0644 /etc/crontabs/root && \
+	chmod +x /usr/sbin/crond
+
+CMD ["sh", "-c", "crond -f -d 8 && php-fpm"]

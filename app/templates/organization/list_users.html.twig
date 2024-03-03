@@ -1,0 +1,31 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Gérer les utilisateurs{% endblock %}
+
+{% block body %}
+	<div class="mb-14 flex justify-between items-center">
+		<h1 class="text-3xl font-semibold dark:dark:text-dark-white">Gérer les utilisateurs</h1>
+		<twig:Button value="Ajouter" :href="path('organization_invite_user', { 'organization': getCurrentOrganization().id })"></twig:Button>
+	</div>
+
+	{% if users is not empty %}
+		<twig:Table
+			:data="users"
+			:cols="{
+				name: 'Nom',
+				firstname: 'Prénom',
+				email: 'Email',
+			}"
+			:action="true"
+		>
+			<a href="{{ path('app_role_select', { 'organization': getCurrentOrganization().id, 'user': row.id }) }}">
+				<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"></span>
+			</a>
+			<a href="{{ path('organization_leave_user_by', { 'organization': getCurrentOrganization().id, 'user': row.id }) }}">
+				<span class="mdi mdi-trash-can-outline text-xl text-red-600 hover:text-red-400 transition-all duration-300" title="Supprimer"></span>
+			</a>
+		</twig:Table>
+	{% else %}
+		<p>Il n'y a pas d'utilisateur dans cette organisation</p>
+	{% endif %}
+{% endblock %}

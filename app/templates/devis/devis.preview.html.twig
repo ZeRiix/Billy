@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aperçu du devis{% endblock %}
+
+{% block layout %}
+	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+	<div class="w-full h-[100vh]">
+		{% include '/generate_pdf/devis-pdf.html.twig' with { devis: devis, totalHt: totalHt, logoPath: logoPath, imageSign: imageSign } %}
+	</div>
+	<div class="fixed bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+		{% if devis.status.value == 'lock' %}
+			<button id="openButton"
+				class="px-6 py-2 text-white bg-light-lighter-green border-light-lighter-green hover:bg-light-green hover:border-light-green font-semibold rounded-large border-solid border-2 transition-all duration-300"
+			>
+				Signer
+			</button>
+		{% endif %}
+
+		<a href="{{ path('app_generate_pdf_devis', { organization: getCurrentOrganization().id, devis: devis.id }) }}"
+			class="px-6 py-2 text-white bg-light-lighter-green border-light-lighter-green hover:bg-light-green hover:border-light-green font-semibold rounded-large border-solid border-2 transition-all duration-300"
+		>
+			Télécharger
+		</a>
+	</div>
+	<div 
+	data-controller="sign" 
+	class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.30)] flex items-center justify-center hidden"
+	>
+		<div class="p-10 bg-white opacity-100 rounded-md flex flex-col items-center relative gap-4">
+			<span id="closeButton" class="absolute right-1 top-1 mdi mdi-close"></span>
+			<canvas id="signCanvas" height="200" width="200" class="border-black border-2 rounded-md"></canvas>
+			<div class="w-full flex gap-4 justify-center">
+				<button id="clearButton"
+					class="text-light-lighter-green cursor-pointer hover:text-light-green transition-all duration-300"
+				>
+					Effacer
+				</button>
+
+				<button id="doneButton"
+					class="px-6 py-2 text-white bg-light-lighter-green border-light-lighter-green hover:bg-light-green hover:border-light-green font-semibold rounded-large border-solid border-2 transition-all duration-300"
+				>
+					Valider
+				</button>
+			</div>
+		</div>
+	</div>
+
+	{% if devis.status.value == 'lock' %}
+		<div class="fixed top-full left-full">
+			{{ form_start(form) }}
+				{{ form_widget(form.imageSign) }}
+			{{ form_end(form) }}
+		</div>
+	{% endif %}
+{% endblock %}

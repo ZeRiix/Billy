@@ -1,0 +1,37 @@
+{% use 'tailwind_2_layout.html.twig' %}
+
+{%- block form_row -%}
+	<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		<div class="text-sm text-red-700">
+			{{ form_errors(form) }}
+		</div>
+	</div>
+{%- endblock form_row -%}
+
+{%- block checkbox_row -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_errors(form) -}}
+        <div class="inline-flex items-center gap-1 dark:text-dark-white">
+            {{- form_widget(form, widget_attr) -}}
+            {{- form_label(form) -}}
+        </div>
+        {{- form_help(form) -}}
+    </div>
+{%- endblock checkbox_row -%}
+
+{%- block widget_attributes -%}
+	{%- set attr = attr|merge({ class: attr.class|default(widget_class|default('w-60 sm:w-80 p-2 rounded-lg outline-none border-2 dark:border-dark-white focus:border-light-green dark:focus:border-dark-lighter-green transition-all duration-300 dark:bg-dark-light-black dark:border-opacity-50 dark:focus:border-opacity-100')) }) -%}
+	{{- parent() -}}
+{%- endblock widget_attributes -%}
+
+{%- block submit_widget -%}
+    {%- set type = type|default('submit') -%}
+	{%- set attr = attr|merge({ class: (attr.class|default('') ~ 'px-6 py-2 text-white dark:text-dark-white font-semibold bg-light-lighter-green dark:bg-dark-green border-light-lighter-green dark:border-dark-green rounded-large hover:bg-light-green dark:hover:bg-dark-lighter-green hover:border-light-green dark:hover:border-dark-lighter-green transition-all duration-300')|trim}) -%}
+	{{- parent() -}}
+{%- endblock submit_widget -%}

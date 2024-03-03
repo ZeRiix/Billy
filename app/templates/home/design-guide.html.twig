@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Design Guide{% endblock %}
+
+{% block layout %}
+<main class=" bg-gray-300 dark:bg-dark-light-white">
+	<div class="container mx-auto py-8">
+		<div>
+		<small class="font-semibold dark:text-dark-white">Design guide</small>
+		<h1 class="text-4xl md:text-5xl font-bold dark:text-dark-white">Billy</h1>
+	</div>
+    <section class="flex flex-col gap-4">
+        <h2 class="mt-8 mb-4 pb-2 border-b border-black dark:border-dark-white dark:text-dark-white text-xs font-semibold">Typography</h2>
+		<div>
+			 <!-- Headings -->
+			<h1 class="text-4xl md:text-5xl font-bold dark:text-dark-white">Heading 1</h1>
+			<h2 class="text-3xl md:text-4xl font-semibold dark:text-dark-white">Header 2</h2>
+			<h3 class="text-2xl md:text-3xl font-semibold dark:text-dark-white">Header 3</h3>
+			<h4 class="text-xl md:text-2xl font-semibold dark:text-dark-white">Header 4</h4>
+			<h5 class="text-lg md:text-xl font-semibold dark:text-dark-white">Header 5</h5>
+			<h6 class="text-base md:text-lg font-semibold dark:text-dark-white">Header 6</h6>
+			<!-- -->
+		</div>
+		<div>
+			<!-- Paragraph -->
+			<p class="font-semibold dark:text-dark-white">This is a heading paragraph.</p>
+			<p class="dark:text-dark-white">This is an ordinary paragraph.</p>
+			<!-- -->
+		</div>
+    </section>
+    <section class="flex flex-col gap-4">
+        <h2 class="mt-8 mb-4 pb-2 border-b border-black dark:border-dark-white dark:text-dark-white text-xs font-semibold">Buttons and links</h2>
+		<div class="flex gap-4">
+			<!-- Buttons -->
+			<button class="px-6 py-2 text-white dark:text-dark-white bg-light-lighter-green dark:bg-dark-green border-light-lighter-green dark:border-dark-green hover:bg-light-green dark:hover:bg-dark-lighter-green hover:border-light-green dark:hover:border-dark-lighter-green font-semibold rounded-large border-solid border-2 transition-all duration-300">Default</button>
+			<button class="px-6 py-2 text-light-green dark:text-dark-lighter-green border-light-green dark:border-dark-lighter-green hover:text-white dark:hover:text-dark-white hover:bg-light-green dark:hover:bg-dark-lighter-green font-semibold rounded-large border-solid border-2 transition-all duration-300">Stroke</button>
+        	<!-- -->
+		</div>
+		<div class="flex gap-4">
+			<!-- Links -->
+			<a href="#" class="text-white dark:text-dark-white font-semibold hover:underline transition-all duration-300">Link 1</a>
+			<a href="#" class="dark:dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">Link 2</a>
+			<!-- -->
+		</div>
+		<div class="flex gap-4">
+			<!-- Toggle -->
+			<label for="toggle" class="inline-flex relative items-center cursor-pointer">
+				<input
+					
+					type="checkbox" 
+					id="toggle" 
+					class="sr-only peer" 
+					onClick=""
+					name="toggle"
+				>
+				<div class="w-11 h-6 bg-gray-200 dark:bg-light-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-light-green"></div>
+				<span class="ml-3 text-sm font-medium text-gray-900 dark:text-light-gray">Toggle</span>
+			</label>
+			<label for="toggleChecked" class="inline-flex relative items-center cursor-pointer">
+				<input
+					
+					type="checkbox" 
+					id="toggleChecked" 
+					class="sr-only peer" 
+					onClick=""
+					name="toggleChecked"
+					checked
+				>
+				<div class="w-11 h-6 bg-gray-200 dark:bg-light-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-light-green"></div>
+				<span class="ml-3 text-sm font-medium text-gray-900 dark:text-light-gray">Toggle checked</span>
+			</label>
+			<!--  -->
+		</div>
+		<div class="flex gap-4">
+			<!-- Theme toggle -->
+			<button data-controller="themeToggle" class="w-12 p-2 text-lg text-white border border-white rounded-md">
+				<span class="mdi mdi-weather-night"></span>
+			</button>
+			<button data-controller="themeToggle" class="w-12 p-2 text-lg text-light-lighter-gray dark:text-dark-light-gray border border-light-lighter-gray dark:border-dark-light-gray rounded-md">
+				<span class="mdi mdi-weather-night"></span>
+			</button>
+			<!--  -->
+		</div>
+    </section>
+    <section class="flex flex-col gap-4">
+        <h2 class="mt-8 mb-4 pb-2 border-b border-black dark:border-dark-white dark:text-dark-white text-xs font-semibold">Inputs</h2>
+		<div class="flex gap-4">
+			<!-- Text -->
+			<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+				<label for="text-normal">Input text normal</label>
+				<input type="text" name="text-normal" id="text-normal" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 dark:border-dark-white focus:border-light-green dark:focus:border-dark-lighter-green transition-all duration-300 dark:bg-dark-light-black dark:border-opacity-50 dark:focus:border-opacity-100">
+			</div>
+			<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+				<label for="text-focus">Input text focus</label>
+				<input type="text" name="text-focus" id="text-focus" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 border-light-green dark:border-dark-lighter-green dark:bg-dark-light-black">
+			</div>
+			<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+				<label for="text-error">Input text error</label>
+				<input type="text" name="text-error" id="text-error" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 border-red-600 dark:bg-dark-light-black">
+			</div>
+			<!-- -->
+		</div>
+		<div class="flex gap-4">
+			<!-- Textarea -->
+			<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+				<label for="textarea-normal">textarea text normal</label>
+				<textarea name="textarea-normal" id="textarea-normal" cols="30" rows="3" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 dark:border-dark-white focus:border-light-green dark:focus:border-dark-lighter-green transition-all duration-300 dark:bg-dark-light-black dark:border-opacity-50 dark:focus:border-opacity-100"></textarea>
+			</div>
+			<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+				<label for="textarea-focus">textarea text focus</label>
+				<textarea name="textarea-focus" id="textarea-focus" cols="30" rows="3" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 border-light-green dark:border-dark-lighter-green dark:bg-dark-light-black"></textarea>
+			</div>
+			<div class="max-w-xs flex flex-col gap-2 dark:text-dark-white">
+				<label for="textarea-error">textarea text error</label>
+				<textarea name="textarea-error" id="textarea-error" cols="30" rows="3" class="w-60 sm:w-80 p-2 rounded-lg outline-none border-2 border-red-600 dark:bg-dark-light-black"></textarea>
+			</div>
+			<!-- -->
+		</div>
+		<div class="flex gap-4">
+			<!-- Checkbox -->
+			<div class="inline-flex items-center gap-1 dark:text-dark-white">
+				<input type="checkbox" id="checkbox" name="checkbox" class="mr-2">
+				<label class="block" for="checkbox">Checkbox</label>
+			</div>
+			<div class="inline-flex items-center gap-1 dark:text-dark-white">
+				<input type="checkbox" id="checkbox-checked" name="checkbox-checked" class="mr-2" checked>
+				<label class="block" for="checkbox-checked">Checkbox</label>
+			</div>
+			<!-- -->
+		</div>
+    </section>
+    <section class="flex flex-col gap-4">
+        <h2 class="mt-8 mb-4 pb-2 border-b border-black dark:border-dark-white dark:text-dark-white text-xs font-semibold">Badges</h2>
+		<div class="flex gap-4">
+			<!-- Badges -->
+			<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full">Badge 1</span>
+			<span class="px-4 py-2 bg-blue-500 font-semibold text-white uppercase rounded-full">Badge 2</span>
+			<span class="px-4 py-2 bg-yellow-500 font-semibold text-white uppercase rounded-full">Badge 3</span>
+			<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full">Badge 4</span>
+			<!-- -->
+		</div>
+    </section>
+	<section class="flex flex-col gap-4">
+        <h2 class="mt-8 mb-4 pb-2 border-b border-black dark:border-dark-white dark:text-dark-white text-xs font-semibold">Composants</h2>
+		
+		<div>
+			<span class="font-semibold dark:text-dark-white">Accordion</span>
+			<!-- Accordion -->
+			<div data-controller="accordion" class="p-4 bg-light-dark-white dark:bg-dark-light-white border dark:border-dark-light-white rounded-t-lg rounded-b-lg shadow-md cursor-pointer">
+				<div class="flex justify-between items-center text-xl font-semibold md:text-2xl dark:text-dark-white">
+					<p>Title</p>
+					<span class="mdi mdi-chevron-down"></span>
+				</div>
+				<div class="content hidden">
+					<hr class="h-px -mx-4 my-6 bg-light-darker-white border-0">
+					<div>
+						<p class="dark:text-dark-white">
+							Some paragraph.
+						</p>
+					</div>
+				</div>
+			</div>
+			<!-- -->
+		</div>
+		<div>
+			<span class="font-semibold dark:text-dark-white">Table</span>
+			<!-- Table -->
+			<div class="overflow-x-scroll xl:overflow-x-auto">
+				<table class="w-[1280px] xl:w-full leading-normal">
+					<thead>
+						<tr>
+							<th class="px-5 py-3 border-b-2 border-gray-200 dark:border-[#363b3d] bg-gray-100 dark:bg-[#1e2022] text-left text-xs font-semibold text-gray-600 dark:text-[#b1aaa0] uppercase tracking-wider">header</th>
+							<th class="px-5 py-3 border-b-2 border-gray-200 dark:border-[#363b3d] bg-gray-100 dark:bg-[#1e2022] text-left text-xs font-semibold text-gray-600 dark:text-[#b1aaa0] uppercase tracking-wider">header</th>
+							<th class="px-5 py-3 border-b-2 border-gray-200 dark:border-[#363b3d] bg-gray-100 dark:bg-[#1e2022] text-left text-xs font-semibold text-gray-600 dark:text-[#b1aaa0] uppercase tracking-wider">header</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="relative">
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+						</tr>
+						<tr class="relative">
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+						</tr>
+						<tr class="relative">
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+							<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">Cell</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- -->
+		</div>
+    </section>
+	</div>
+</main>
+
+{% endblock %}

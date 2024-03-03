@@ -1,0 +1,199 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ devis.organization.name }}-{{ devis.id }}</title>
+    <style>
+        body {
+            margin: 30px;
+			font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+		
+        h4 {
+            margin: 0;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .w-half {
+            width: 50%;
+        }
+
+        .margin-top {
+            margin-top: 1.25rem;
+        }
+
+        .footer {
+            font-size: 0.875rem;
+            padding: 1rem;
+            background-color: rgb(241 245 249);
+        }
+
+		.text-right {
+			text-align: right;
+		}
+
+        .line-through {
+            text-decoration: line-through;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+			border-collapse: collapse;
+        }
+
+        table.products {
+            font-size: 0.875rem;
+        }
+
+        table.products tr {
+            background-color: #b6c6bc;
+			border: solid 1px #b6c6bc;
+        }
+
+        table.products th {
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+
+        table tr.items {
+            background-color: rgb(241 245 249);
+			border: solid 1px #b6c6bc;
+        }
+
+        table tr.items td {
+            padding: 0.5rem;
+			border: solid 1px #b6c6bc;
+        }
+
+        .logo {
+            height: 150px;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .signature {
+            width: 50%;
+            height: 100px;
+            margin-top: 1rem;
+            border: solid 1px;
+            text-align: center;
+        }
+
+        .signature img {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="w-full">
+        <tr>
+            <td class="w-half">
+                <img src="{{ logoPath }}" alt="logo" class="logo" />
+            </td>
+            <td class="w-half text-right">
+                <h2 class="text-4xl font-semibold">Devis n°{{ devis.id }}</h2>
+                <div>Réalisé le : {{ devis.createdAt | date('d/m/y') }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="margin-top">
+        <table class="w-full">
+            <tr>
+                <td class="w-half">
+                    <div>
+                        <h4 class="text-xl font-semibold">Destinataire :</h4>
+                    </div>
+                    <div>{{ devis.client.name }}</div>
+                    <div>{{ devis.client.address }}</div>
+                    <div>{{ devis.client.phone }}</div>
+                </td>
+                <td class="w-half text-right">
+                    <div>
+                        <h4 class="text-xl font-semibold">Émetteur :</h4>
+                    </div>
+                    <div>{{ devis.organization.name }}</div>
+                    <div>{{ devis.organization.address }}</div>
+                    <div>{{ devis.organization.phone }}</div>
+                    <div>{{ devis.organization.email }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="margin-top">
+        <table class="products">
+            <tr>
+				<th>Produit</th>
+                <th>Description</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Montant</th>
+            </tr>
+			{% for commande in devis.commandes %}
+            <tr class="items">
+				<td>{{ commande.name }}</td>
+                <td>{{ commande.description }}</td>
+                <td>{{ commande.quantity }}</td>
+                <td>{{ commande.unitPrice }} €</td>
+                <td>{{ commande.montant }} €</td>
+            </tr>
+			{% endfor %}
+        </table>
+
+        <div class="total">
+            <div>Total HT : {{ totalHt }} €</div>
+        </div>
+
+        {# <div class="total">
+            <div>TVA : {{ tva }}</div>
+        </div> #}
+
+        {% if devis.discount > 0 %}
+        <div class="total">
+            <div>Remise : {{ devis.discount }} %</div>
+        </div>
+        {% endif %}
+
+        {# <div class="total">
+            {% if devis.discount == 0 %}
+            <div>Total TTC : {{ totalTtc }}</div>
+            {% else %}
+            <div class="line-through">Total TTC : {{ totalTtc }}</div>
+            <div>Total TTC : {{ totalTtc - (totalTtc * devis.discount / 100) }}</div>
+            {% endif %}
+        </div> #}
+    </div>
+
+    <div class="margin-top">
+        <table class="w-full">
+            <tr>
+                <td class="w-half">
+                    <div>Date et signature du client :</div>
+                    <div class="signature">
+                        {% if imageSign != null %}
+                        <img src="{{ imageSign }}" alt="image" class="sign" />
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="w-half"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer margin-top">
+        <div>&copy; {{ 'now' | date('Y') }} - Tous droits réservés - Mentions légales</div>
+    </div>
+</body>
+
+</html>

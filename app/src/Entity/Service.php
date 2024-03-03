@@ -4,51 +4,69 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 // local imports
 use App\Repository\ServiceRepository;
 use App\Entity\Organization;
 use App\Entity\Commande;
-use App\Entity\Devis;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ORM\Table(name: "`service`")]
 #[ORM\HasLifecycleCallbacks]
 class Service
 {
+	#[Groups(["service"])]
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
 	#[ORM\GeneratedValue(strategy: "CUSTOM")]
 	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "services")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Organization $Organization;
+	#[Groups(["organization"])]
+	#[ORM\ManyToOne(inversedBy: "services")]
+	private ?Organization $organization = null;
 
+	#[Groups(["commandes"])]
 	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "service")]
 	private Collection $commandes;
 
 	//add to late manyToMany devis
-
+	#[Groups(["service"])]
 	#[ORM\Column(length: 100)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le nom du service.")]
+	#[
+		Assert\Length(
+			min: 3,
+			max: 100,
+			minMessage: "Le nom du service doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le nom du service doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $name = null;
 
-	#[ORM\Column(type: Types::TEXT)]
+	#[Groups(["service"])]
+	#[ORM\Column(length: 1000)]
+	#[
+		Assert\Length(
+			max: 1000,
+			maxMessage: "La description du service doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $description = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
-	private ?string $total_ht = null;
+	#[Groups(["service"])]
+	#[ORM\Column(type: Types::FLOAT, nullable: true, precision: 10, scale: 2)]
+	private ?string $unitPrice = null;
 
-	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
-	private ?string $total_ttc = null;
-
-	#[ORM\Column(type: Types::DECIMAL, nullable: true, precision: 10, scale: 2)]
-	private $discount = null;
+	#[Groups(["service"])]
+	#[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
+	private ?bool $isArchived = false;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -68,12 +86,12 @@ class Service
 
 	public function getOrganization(): ?Organization
 	{
-		return $this->Organization;
+		return $this->organization;
 	}
 
-	public function setOrganization(?Organization $Organization): self
+	public function setOrganization(Organization $organization): self
 	{
-		$this->Organization = $Organization;
+		$this->organization = $organization;
 
 		return $this;
 	}
@@ -107,38 +125,14 @@ class Service
 		return $this;
 	}
 
-	public function getTotalHt(): ?string
+	public function getUnitPrice(): ?string
 	{
-		return $this->total_ht;
+		return $this->unitPrice;
 	}
 
-	public function setTotalHt(?string $total_ht): static
+	public function setUnitPrice(?string $unitPrice): static
 	{
-		$this->total_ht = $total_ht;
-
-		return $this;
-	}
-
-	public function getTotalTtc(): ?string
-	{
-		return $this->total_ttc;
-	}
-
-	public function setTotalTtc(?string $total_ttc): static
-	{
-		$this->total_ttc = $total_ttc;
-
-		return $this;
-	}
-
-	public function getDiscount(): ?string
-	{
-		return $this->discount;
-	}
-
-	public function setDiscount(?string $discount): static
-	{
-		$this->discount = $discount;
+		$this->unitPrice = $unitPrice;
 
 		return $this;
 	}
@@ -164,5 +158,17 @@ class Service
 	public function setUpdatedAt(): void
 	{
 		$this->updated_at = new \DateTimeImmutable();
+	}
+
+	public function getIsArchived(): ?bool
+	{
+		return $this->isArchived;
+	}
+
+	public function setIsArchived(bool $isArchived): static
+	{
+		$this->isArchived = $isArchived;
+
+		return $this;
 	}
 }

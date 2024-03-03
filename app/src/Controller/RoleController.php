@@ -2,27 +2,34 @@
 
 namespace App\Controller;
 
+use App\Entity\Organization;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // local imports
-use App\Middleware\Middleware;
-use App\Middleware\PermissionMiddleware;
-use App\Middleware\Role\UserCanUpdateRoleMiddleware;
 use App\Services\Role\RoleService;
+use App\Security\Voter\RoleVoter;
 use App\Entity\Role;
+use App\Entity\User;
+use App\Repository\RoleRepository;
 // form
-use App\Form\GiveRoleForm;
-use App\Form\GiveRoleData;
+use App\Form\SelectRoleForm;
 use App\Form\CreateRoleForm;
 use App\Form\UpdateRoleForm;
 
-class RoleController extends MiddlewareController
+class RoleController extends AbstractController
 {
-	#[Route("/organization/{OrganizationId}/role", name: "app_role", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_org")]
-	public function create(Request $request, RoleService $roleService): Response
+	#[Route("/organization/{organization}/role", name: "app_role", methods: ["GET", "POST"])]
+	public function create(Request $request, RoleService $roleService, Organization $organization): Response
 	{
+		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour accéder à la création de rôle pour cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
 		$response = new Response();
 		$role = new Role();
 		$form = $this->createForm(CreateRoleForm::class, $role);
@@ -32,7 +39,7 @@ class RoleController extends MiddlewareController
 			/** @var Role */
 			$role = $form->getData();
 			try {
-				$roleService->create($role, Middleware::$floor["organization"]);
+				$roleService->create($role, $organization);
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "Le rôle a bien été créé.");
 			} catch (\Exception $e) {
@@ -45,28 +52,47 @@ class RoleController extends MiddlewareController
 			"role/index.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);
 	}
 
-	#[Route("/organization/{OrganizationId}/role/give", name: "app_role_give", methods: ["GET", "POST"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
-	public function giveRoleToUser(Request $request, RoleService $roleService): Response
-	{
+	#[
+		Route(
+			"/organization/{organization}/user/{user}/selectrole",
+			name: "app_role_select",
+			methods: ["GET", "POST"]
+		)
+	]
+	public function selectRoleToUser(
+		Request $request,
+		RoleService $roleService,
+		Organization $organization,
+		RoleRepository $roleRepository,
+		User $user
+	): Response {
+		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour editer les rôles d'un utilisateur pour cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
 		$response = new Response();
-		$giveRoleData = new GiveRoleData();
-		$form = $this->createForm(GiveRoleForm::class, $giveRoleData, [
-			"organization_id" => $request->get("OrganizationId"),
+		$rolesUser = $roleService->getRolesUserHasInOrganization($user, $organization);
+		$form = $this->createForm(SelectRoleForm::class, null, [
+			"rolesHas" => $rolesUser,
+			"roles" => $roleRepository->getRolesForOrganization($organization),
 		]);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$data = $form->getData();
+			$selectedRole = $form->getData();
 			try {
-				$roleService->give($data->getUser(), $data->getRole());
+				$roleService->attribute($user, $selectedRole);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle a bien été donné à l'utilisateur.");
+				$this->addFlash("success", "Les droits de l'utilisateur ont été modifié.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -74,28 +100,41 @@ class RoleController extends MiddlewareController
 		}
 
 		return $this->render(
-			"role/give_role.html.twig",
+			"role/select_role.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);
 	}
 
-	#[Route("/organization/{OrganizationId}/role/{roleId}", name: "app_role_delete", methods: ["DELETE"])]
-	#[Middleware(UserCanUpdateRoleMiddleware::class, "exist", output: "role")]
-	public function delete(RoleService $roleService): void
+	#[Route("/organization/{organization}/role/{role}", name: "app_role_delete", methods: ["DELETE"])]
+	public function delete(RoleService $roleService, Organization $organization, Role $role)
 	{
-		$roleService->delete(Middleware::$floor["role"]);
-		$this->redirectToRoute("/organization/" . Middleware::$floor["organization"]->getId() . "/roles");
+		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour supprimer un rôle pour cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
+		$roleService->delete($role);
+		$this->redirectToRoute("/organization/" . $organization->getId() . "/roles");
 	}
 
-	#[Route("/organization/{OrganizationId}/roles", name: "app_role_list", methods: ["GET"])]
-	#[Middleware(PermissionMiddleware::class, "has", options: "manage_user")]
-	public function list(RoleService $roleService): Response
+	#[Route("/organization/{organization}/roles", name: "app_roles", methods: ["GET"])]
+	public function list(RoleService $roleService, Organization $organization): Response
 	{
+		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour lister les rôles de cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
 		$response = new Response();
-		$roles = $roleService->getAll(Middleware::$floor["organization"]);
+		$roles = $roleService->getAll($organization);
 		return $this->render(
 			"role/list_role.html.twig",
 			[
@@ -105,33 +144,31 @@ class RoleController extends MiddlewareController
 		);
 	}
 
-	#[
-		Route(
-			"/organization/{OrganizationId}/role/{roleId}",
-			name: "app_role_update",
-			methods: ["GET", "POST"]
-		)
-	]
-	#[Middleware(UserCanUpdateRoleMiddleware::class, "exist", output: "role")]
-	public function update(Request $request, RoleService $roleService): Response
-	{
-		$response = new Response();
-		if (Middleware::$floor["role"]->getName() === "OWNER") {
-			$this->redirectToRoute(
-				route: "/organization/" . Middleware::$floor["organization"]->getId(),
-				status: Response::HTTP_UNAUTHORIZED
+	#[Route("/organization/{organization}/role/{role}", name: "app_role_update", methods: ["GET", "POST"])]
+	public function update(
+		Request $request,
+		RoleService $roleService,
+		Role $role,
+		Organization $organization
+	): Response {
+		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour modifier un rôle pour cette organisation."
 			);
+			return $this->redirectToRoute("app_organizations");
 		}
-		$form = $this->createForm(UpdateRoleForm::class, Middleware::$floor["role"]);
+		$response = new Response();
+		$form = $this->createForm(UpdateRoleForm::class, $role);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			/** @var Role $role */
 			$role = $form->getData();
 			try {
-				$roleService->update($role, Middleware::$floor["organization"]);
+				$roleService->update($role, $organization);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle à bien été modifiée");
+				$this->addFlash("success", "Le rôle à bien été modifié.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -142,6 +179,7 @@ class RoleController extends MiddlewareController
 			"role/update_role.html.twig",
 			[
 				"form" => $form->createView(),
+				"organization" => $organization,
 			],
 			$response
 		);

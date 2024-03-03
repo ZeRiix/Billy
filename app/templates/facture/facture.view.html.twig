@@ -1,0 +1,60 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %} Gérer la facture n°{{ bill.chrono }}{% endblock %}
+
+{% block body %}
+	<h1 class="mb-14 text-3xl font-semibold dark:text-dark-white">Gérer la facture n°{{ bill.chrono }}</h1>
+	<div class="p-14 flex flex-col gap-20 items-center rounded-xl bg-white dark:bg-dark-light-black">
+		<div class="flex flex-row justify-between gap-4 w-full">
+		    <ul class="flex flex-col gap-4 dark:text-dark-white">
+				<li><strong>Nom de l'organisation : </strong>{{ bill.organization.name }}</li>
+				<li><strong>Nom et prénom du client : </strong>{{ bill.client.name ~ " " ~ bill.client.firstname }}</li>
+				<li>
+					<strong>Devis : </strong>
+					<a href="{{ path('app_update_devis', {organization: bill.organization.id, devis: bill.devis.id}) }}" class="underline">{{bill.devis.name}}</a>
+				</li>
+			</ul>
+			<ul class="flex flex-col gap-4 dark:text-dark-white">
+				<li>
+				<strong>Statut du paiement : </strong>
+					{% if bill.statut.value == 'payé' %}
+						<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-check-circle"> Payé</span>
+					{% elseif bill.statut.value == 'waiting' %}
+						<span class="px-4 py-2 bg-orange-500 font-semibold text-white uppercase rounded-full mdi mdi-clock-alert-outline"> En attente</span>
+					{% endif %}
+				</li>
+				<li><strong>Date de création : </strong>{{bill.createdAt | date('d/m/y')}}</li>
+				{% if bill.statut.value == 'waiting' %}
+					<a href="{{ path('app_create_remind_facture', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-send text-light-green">
+						Créer un rappel
+					</a>
+				{% endif %}
+			</ul>
+		</div>
+		<twig:Table
+			:data="commands"
+			:cols="{
+				name: 'Nom de la commande',
+				'service.name': 'Nom du service',
+				'unitPrice': 'Prix (en €)',
+				quantity: 'Quantité',
+				montant: 'Montant (en €)'
+			}"
+			:action="false"
+		>
+		</twig:Table>
+		<div class="flex gap-10 text-light-green">
+			<a href="{{ path('app_facture_download', { organization: bill.organization.id, devis: devis.id, facture: bill.id }) }}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-download-circle">
+				Télécharger
+			</a>
+			{% if bill.statut.value == 'waiting' and checkPermissionOnOrganization(app.user, 'write_factures') %}
+				<a href="{{ path('app_pay_facture', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
+					Payer ?
+				</a>
+			{% endif %}
+			<a href="{{ path('app_preview_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
+				Aperçu
+			</a>
+		</div>
+	</div>
+{% endblock %}

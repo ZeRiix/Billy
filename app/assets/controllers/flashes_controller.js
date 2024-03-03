@@ -1,33 +1,28 @@
-import {Controller} from "@hotwired/stimulus";
+import { Controller } from "@hotwired/stimulus";
 
-export default class extends Controller{
-	connect(){
-		const flashes = document.querySelectorAll(".flash");
-		let autoClose;
-		
-		// Auto close flash messages after 5 seconds
-		if(this.element && flashes.length > 0){
-			autoClose = setTimeout(() => {
-				flashes[0].style.opacity = 0;
-				setTimeout(() => {
-					flashes[0].remove();
-				}
-				, 700);
+export default class extends Controller {
+	static targets = ["flash", "closeBtn"];
+
+	connect() {
+		if (this.hasFlashTarget) {
+			this.autoClose = setTimeout(() => {
+				this.flashTarget.classList.add("fade-out");
 			}, 5000);
 		}
 
-		const closeBtns = document.querySelectorAll(".close-btn");
-
-		// Close flash message on click
-		closeBtns.forEach((closeBtn) => {
+		this.closeBtnTargets.forEach((closeBtn) => {
 			closeBtn.addEventListener("click", (e) => {
-				e.target.parentElement.style.opacity = 0;
-				setTimeout(() => {
-					e.target.parentElement.remove();
-				}
-				, 700);
-				clearTimeout(autoClose);
+				e.target.parentElement.classList.add("fade-out");
+				clearTimeout(this.autoClose);
 			});
 		});
+	}
+
+	removeFlash(e) {
+		if (e.propertyName !== "opacity" || !e.target.classList.contains("fade-out")) {
+			return;
+		}
+
+		e.target.remove();
 	}
 }

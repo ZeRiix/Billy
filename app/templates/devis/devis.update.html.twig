@@ -1,0 +1,146 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Modifier le devis {{ quotation.name }} (id : {{ quotation.id }}){% endblock %}
+
+{% block body %}
+	<div class="mb-14 flex gap-10">
+		<h1 class="text-3xl font-semibold dark:text-dark-white">
+				Modifier le devis {{ quotation.name }} (id : {{ quotation.id }}) 
+		</h1>
+
+		{% if  quotation.status.value == 'editing' %}
+			<span class="px-4 py-2 bg-yellow-500 font-semibold text-white uppercase rounded-full mdi mdi-pencil"> Édition</span>
+		{% elseif  quotation.status.value == 'lock' %}
+			<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-lock"> Verrouillé</span>
+		{% elseif  quotation.status.value == 'canceled' %}
+			<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-close"> Annulé</span>
+		{% elseif  quotation.status.value == 'sign' %}
+			<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-fountain-pen-tip"> Signé</span>
+		{% elseif  quotation.status.value == 'completed' %}
+			<span class="px-4 py-2 bg-blue-500 font-semibold text-white uppercase rounded-full mdi mdi-check"> Facturé</span>
+		{% endif %}
+	</div>
+	
+	<div class="p-14 rounded-xl bg-white dark:bg-dark-light-black">
+		{{ form_start(form) }}
+			<fieldset 
+				{{ quotation.status.value != 'editing'? 'disabled' : '' }} 
+				class="flex flex-row gap-10 justify-between items-start"
+			>
+				<div>
+					<div class="flex gap-5">
+						{{ form_row(form.name) }}
+						{{ form_row(form.description) }}
+					</div>
+					<div class="flex gap-5">
+						{{ form_row(form.client) }}
+						{{ form_row(form.discount) }}
+					</div>
+				<div class="w-full flex gap-4 text-light-green">
+					{% if quotation.status.value == 'editing' %}
+						<label 
+							class="cursor-pointer hover:underline transition-all duration-300"
+							for="redirectCommand" 
+							onclick="
+							setTimeout(() => {
+								document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+							}, 50)
+							"
+						>
+							<span class="mdi mdi-plus"></span>
+							Ajouter une commande
+						</label>
+						<label 
+						class="cursor-pointer hover:underline transition-all duration-300"
+							for="redirectSend" 
+							onclick="
+							setTimeout(() => {
+								document.querySelector('[name=\'edit_devis_form\']').requestSubmit();
+							}, 50)
+							"
+						>
+							<span class="mdi mdi-send"></span>
+							Envoyer
+						</label>
+
+						
+						<label 
+							class="cursor-pointer hover:underline transition-all duration-300"
+							for="redirectSend" 
+							onclick="
+							setTimeout(() => {
+								if(!confirm('Etes vous sur de vouloir annuler ce devis')) return;
+								document.querySelector('#cancelForm').requestSubmit();
+							}, 50)
+							"
+						>
+							<span class="mdi mdi-close"></span>
+							Annuler
+						</label>
+					{% endif %}
+
+					{% if quotation.status.value == 'lock' %}
+						<a href="{{ path('app_unlock_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-lock-open">
+							Dévérouiller
+						</a>
+					{% endif %}
+
+					{% if quotation.status.value == 'lock' or quotation.status.value == 'sign' %}
+						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
+							Aperçu
+						</a>
+					{% endif %}
+				</div>
+				{% if quotation.status.value == 'editing' %}
+					<input type="checkbox" id="redirectCommand" name="redirectCommand" class="fixed top-full left-full">
+					<input type="checkbox" id="redirectSend" name="redirectSend" class="fixed top-full left-full">
+				{% endif %}
+				</div>
+				{% if quotation.status.value == 'sign' or quotation.status.value == 'completed' %}
+					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">
+						Voir mes factures
+						<span class="mdi mdi-arrow-right"></span> 
+					</a>
+				{% endif %}
+			</fieldset>
+			<div class="my-5 flex flex-col gap-10">
+				<!-- table d'affichage des commandes ajoutées  -->
+				<twig:Table
+					:data="commandes"
+					:cols="{
+						name: 'Nom de la commande',
+						'service.name': 'Nom du service',
+						'unitPrice': 'Prix (en €)',
+						quantity: 'Quantité',
+						montant: 'Montant (en €)'
+					}"
+					:action="quotation.status.value == 'editing'"
+				>
+					<a href="{{ path('app_update_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+						<span class="mdi mdi-pencil text-xl text-light-gray"></span>
+					</a>
+					<a href="{{ path('app_delete_commande', { organization: organization.id, devis: quotation.id, commande: row.id }) }}">
+						<span class="mdi mdi-trash-can-outline text-xl text-red-500"></span>
+					</a>
+				</twig:Table>
+
+				<span class="dark:text-dark-white">
+					Total HT : {{ totalHT }} €
+				</span>
+
+				{% if quotation.status.value == 'sign' %}
+					<a href="#" class="dark:text-dark-white hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">Générer ma facture</a>
+				{% endif %}
+			</div>
+			<div class="w-full flex justify-between items-center">
+				<a href="{{ path('app_devis', { organization: organization.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+					Revenir aux devis
+				</a>
+				<div class="{{quotation.status.value != 'editing' ? 'hidden': ''}}">
+					{{ form_widget(form.submit) }}
+				</div>
+			</div>		
+		{{ form_end(form) }}
+	</div>
+	<form id="cancelForm" action="{{ path('app_cancel_devis', { devis: quotation.id, organization: organization.id })}}" class="fixed top-full"></form>
+{% endblock %}

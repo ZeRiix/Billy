@@ -1,19 +1,44 @@
-{% extends 'base.html.twig' %}
+{% extends 'connected.html.twig' %}
 
-{% block title %}Création d'un client{% endblock %}
+{% block title %}{{ isCreating is defined ? 'Ajouter un' : 'Modifier le' }} client{% endblock %}
 
 {% block body %}
-    <h1>Création d'un client</h1>
+<div data-controller="clientForm" data-clientform-entreprise-value="{{ isEntrprise is defined ? isEntrprise : "null" }}">
+	<div class="mb-14 flex justify-between items-center">
+		<h1 class="text-3xl font-semibold pb-6 dark:text-dark-white">{{ isCreating is defined ? 'Ajouter un ' : 'Modifier le ' }} client</h1>
+		{% if isCreating is defined %} 
+			<twig:Toggle title="Entreprise" name="clientToggle" :isChecked="true"></twig:Toggle>
+		{% endif %}
+	</div>
+	<div class="p-14 rounded-xl bg-white dark:bg-dark-light-black">
+		{{ form_start(form) }}
+			<div class="flex flex-col gap-10 items-start">
+				<div class="P-field flex flex-col lg:flex-row gap-5">
+					{{ form_row(form.name) }}
+					{{ form_row(form.firstname) }}
+				</div>
+				<div class="flex flex-col lg:flex-row gap-5">
+					{{ form_row(form.email) }}
+					{{ form_row(form.phone) }}
+				</div>
+				<div class="E-field flex flex-col lg:flex-row gap-5">
+					{{ form_row(form.activity) }}
 
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.firstname) }}
-    {{ form_row(form.address) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.phone) }}
-    {{ form_row(form.activity) }}
-    {{ form_row(form.siret) }}
-
-    {{ form_row(form.submit) }}
-    {{ form_end(form) }}
+					<fieldset class="E-field" {{ isCreating is defined? '' : 'disabled' }}>
+						{{ form_row(form.siret) }}
+					</fieldset>
+				</div>
+				<div class="P-field">
+					{{ form_row(form.address) }}
+				</div>
+				<div class="w-full flex justify-between items-center">
+					<a href="{{ path('app_clients', { 'organization': organization.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+						Revenir aux services
+					</a>
+					{{ form_row(form.submit) }}
+				</div>
+			</div>
+		{{ form_end(form) }}
+	</div>
+</div>
 {% endblock %}

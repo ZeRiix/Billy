@@ -1,0 +1,45 @@
+<div class="overflow-x-scroll xl:overflow-x-auto">
+	<table class="w-[1280px] xl:w-full leading-normal">
+		<thead>
+			<tr>
+				{% for header in cols %}
+					<th class="px-5 py-3 border-b-2 border-gray-200 dark:border-[#363b3d] bg-gray-100 dark:bg-[#1e2022] text-left text-xs font-semibold text-gray-600 dark:text-[#b1aaa0] uppercase tracking-wider">{{ header }}</th>
+				{% endfor %}
+				
+				{% if action is defined and action == true %}
+					<th class="px-5 py-3 border-b-2 border-gray-200 dark:border-[#363b3d] bg-gray-100 dark:bg-[#1e2022] text-left text-xs font-semibold text-gray-600 dark:text-[#b1aaa0] uppercase tracking-wider">Actions</th>
+				{% endif %}
+				
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in data %}
+				<tr class="relative">
+					{% for key, value in cols %}
+						{% set currentValue = row %}
+						{% for prop in key|split('.') %}
+								{% set currentValue = attribute(currentValue, prop) is defined ? attribute(currentValue, prop) : 'null' %}
+						{% endfor %}
+						<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">
+							{% if block(key|replace({'.': '_'})) is defined %}
+								{{block(key|replace({'.': '_'}))|raw}}
+							{% else %}
+								{% if currentValue.timestamp is defined %}
+									{{currentValue|date('d/m/Y')}}
+								{% else %}
+									{{currentValue}}	
+								{% endif %}
+							{% endif %}
+						</td>
+					{% endfor %}
+
+					{% if action is defined and action == true %}
+						<td class="px-5 py-3 border-b border-gray-200 dark:border-[#363b3d] bg-white dark:bg-dark-light-black text-sm dark:text-dark-white">
+							{% block content %}{% endblock %}
+						</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

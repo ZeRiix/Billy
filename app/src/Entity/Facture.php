@@ -12,6 +12,14 @@ use App\Repository\FactureRepository;
 use App\Entity\Organization;
 use App\Entity\Client;
 use App\Entity\Devis;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
+enum FactureStatus: string
+{
+	case WAITING = "waiting";
+	case PAID = "payé";
+}
 
 #[ORM\Entity(repositoryClass: FactureRepository::class)]
 #[ORM\Table(name: "`facture`")]
@@ -24,49 +32,25 @@ class Facture
 	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "factures")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Organization $Organization;
+	#[ORM\Column(type: Types::INTEGER, nullable: false)]
+	private ?int $chrono = null;
+
+	#[ORM\ManyToOne(inversedBy: "factures")]
+	private ?Organization $organization = null;
 
 	#[ORM\ManyToOne(targetEntity: Client::class, inversedBy: "factures")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Client $client;
 
+	#[ORM\OneToMany(targetEntity: Commande::class, mappedBy: "facture")]
+	private Collection $commandes;
+
 	#[ORM\ManyToOne(targetEntity: Devis::class, inversedBy: "factures")]
 	#[ORM\JoinColumn(nullable: false)]
 	private Devis $devis;
 
-	#[ORM\Column(type: Types::TEXT)]
-	private ?string $num_facture = null;
-
-	#[ORM\Column(length: 100)]
-	private ?string $name = null;
-
-	#[ORM\Column(type: Types::TEXT)]
-	private ?string $description = null;
-
-	#[ORM\Column(type: Types::BOOLEAN)]
-	private ?bool $is_signed = null;
-
-	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
-	private ?string $total_ht = null;
-
-	#[
-		ORM\Column(
-			type: Types::DECIMAL,
-			nullable: false,
-			precision: 10,
-			scale: 2
-		)
-	]
-	private ?string $total_ttc = null;
+	#[ORM\Column(type: Types::STRING, enumType: FactureStatus::class)]
+	private FactureStatus $statut = FactureStatus::WAITING;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -74,19 +58,55 @@ class Facture
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $updated_at = null;
 
+	#[ORM\OneToMany(targetEntity: BillReminder::class, mappedBy: "facture")]
+	private Collection $billReminders;
+
+	public function __construct()
+	{
+		$this->commandes = new ArrayCollection();
+		$this->billReminders = new ArrayCollection();
+	}
+
 	public function getId(): ?Uuid
 	{
 		return $this->id;
 	}
 
-	public function getOrganization(): ?Organization
+	public function getChrono(): ?int
 	{
-		return $this->Organization;
+		return $this->chrono;
 	}
 
-	public function setOrganization(Organization $Organization): self
+	public function setChrono(int $chrono): self
 	{
-		$this->Organization = $Organization;
+		$this->chrono = $chrono;
+
+		return $this;
+	}
+
+	public function getCommandes(): Collection
+	{
+		return $this->commandes;
+	}
+
+	public function addCommande(Commande $commande): self
+	{
+		if (!$this->commandes->contains($commande)) {
+			$this->commandes[] = $commande;
+			$commande->setFacture($this);
+		}
+
+		return $this;
+	}
+
+	public function getOrganization(): ?Organization
+	{
+		return $this->organization;
+	}
+
+	public function setOrganization(?Organization $organization): self
+	{
+		$this->organization = $organization;
 
 		return $this;
 	}
@@ -115,74 +135,41 @@ class Facture
 		return $this;
 	}
 
-	public function getNumFacture(): ?string
+	public function getStatut(): FactureStatus
 	{
-		return $this->num_facture;
+		return $this->statut;
 	}
 
-	public function setNumFacture(string $num_facture): self
+	public function setStatut(FactureStatus $statut): static
 	{
-		$this->num_facture = $num_facture;
+		$this->statut = $statut;
 
 		return $this;
 	}
 
-	public function getName(): ?string
+	/**
+	 * @return Collection<int, BillReminder>
+	 */
+	public function getBillReminders(): Collection
 	{
-		return $this->name;
+		return $this->billReminders;
 	}
 
-	public function setName(string $name): static
+	public function addBillReminder(BillReminder $billReminder): static
 	{
-		$this->name = $name;
+		if (!$this->billReminders->contains($billReminder)) {
+			$this->billReminders->add($billReminder);
+			$billReminder->setFacture($this);
+		}
 
 		return $this;
 	}
 
-	public function getDescription(): ?string
+	public function removeBillReminder(BillReminder $billReminder): static
 	{
-		return $this->description;
-	}
-
-	public function setDescription(string $description): static
-	{
-		$this->description = $description;
-
-		return $this;
-	}
-
-	public function getIsSigned(): ?bool
-	{
-		return $this->is_signed;
-	}
-
-	public function setIsSigned(bool $is_signed): static
-	{
-		$this->is_signed = $is_signed;
-
-		return $this;
-	}
-
-	public function getTotalHt(): ?string
-	{
-		return $this->total_ht;
-	}
-
-	public function setTotalHt(string $total_ht): static
-	{
-		$this->total_ht = $total_ht;
-
-		return $this;
-	}
-
-	public function getTotalTtc(): ?string
-	{
-		return $this->total_ttc;
-	}
-
-	public function setTotalTtc(string $total_ttc): static
-	{
-		$this->total_ttc = $total_ttc;
+		if ($this->billReminders->removeElement($billReminder)) {
+			// set the owning side to null (unless already changed)
+		}
 
 		return $this;
 	}

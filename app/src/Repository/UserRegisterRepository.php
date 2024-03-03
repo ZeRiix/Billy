@@ -5,10 +5,10 @@ namespace App\Repository;
 use Doctrine\Persistence\ManagerRegistry;
 
 // local imports
-use App\Repository\BaseRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Entity\UserRegister;
 
-class UserRegisterRepository extends BaseRepository
+class UserRegisterRepository extends ServiceEntityRepository
 {
 	public function __construct(ManagerRegistry $registry)
 	{
@@ -37,7 +37,8 @@ class UserRegisterRepository extends BaseRepository
 		$user->setEmail($data["email"]);
 		$user->setPassword(password_hash($data["password"], PASSWORD_DEFAULT)); // define password hash in .env
 
-		$this->save($user);
+		$this->getEntityManager()->persist($user);
+		$this->getEntityManager()->flush();
 
 		return $user;
 	}

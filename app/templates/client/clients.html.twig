@@ -1,40 +1,54 @@
-{% extends 'base.html.twig' %}
+{% extends 'connected.html.twig' %}
 
-{% block title %}Liste des clients{% endblock %}
+{% block title %}Gérer les Clients{% endblock %}
 
 {% block body %}
-    <h1>Liste des clients</h1>
-
-    {% if clients is not empty %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Téléphone</th>
-                    <th>Activité</th>
-                    <th>SIRET</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for client in clients %}
-                    <tr>
-                        <td>{{ client.name }}</td>
-                        <td>{{ client.firstname }}</td>
-                        <td>{{ client.email }}</td>
-                        <td>{{ client.phone }}</td>
-                        <td>{{ client.activity }}</td>
-                        <td>{{ client.siret }}</td>
-                        <td>
-                            <a href="{{ path('client', { 'OrganizationId': client.Organization.id, 'ClientId': client.id }) }}">Détails</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucun client trouvé.</p>
-    {% endif %}
+	<div class="mb-14 flex justify-between items-center">
+		<form id="archivedForm" action="" method="GET">
+			<h1 class="text-3xl font-semibold pb-4 dark:text-dark-white">Gérer les Clients</h1>
+			<twig:Toggle 
+			title="Archivé" 
+			:isChecked="isArchived"
+			name="archived"
+			onClick="
+				setTimeout(() => {
+					document.getElementById('archivedForm').requestSubmit()
+				})
+			">
+			</twig:Toggle>
+		</form>
+		<twig:Button
+			value="Ajouter"
+			:href="path('app_client_create', { 'organization': getCurrentOrganization().id })"
+		></twig:Button>
+	</div>
+	{% if clients is not empty %}
+		<twig:Table
+			:data="clients"
+			:cols="{
+				name: 'Nom',
+				firstname: 'Prénom',
+				email: 'Email',
+				phone: 'Téléphone',
+				siret: 'Siret',
+				activity: 'Activité'
+			}"
+			:action="true"
+		>
+			<a href="{{ path('app_client_update', { 'organization': getCurrentOrganization().id, client: row.id }) }}">
+				<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"></span>
+			</a>
+			{% if  row.isArchived == false %}
+			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
+				<span class="mdi mdi-archive-arrow-down-outline text-xl text-light-gray hover:text-orange-400 transition-all duration-300" title="Archiver"></span>
+			</a>
+			{% else %}
+			<a href="{{ path('app_client_archive', { organization: getCurrentOrganization().id, client: row.id }) }}">
+				<span class="mdi mdi-archive-arrow-up-outline text-xl text-light-gray hover:text-orange-400 transition-all duration-300" title="Désarchiver"></span>
+			</a>
+			{% endif %}
+		</twig:Table>
+	{% else %}
+		<p class="dark:text-dark-white">Aucun client trouvé.</p>
+	{% endif %}
 {% endblock %}

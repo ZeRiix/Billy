@@ -2,41 +2,56 @@
 
 namespace App\Controller;
 
-use App\Controller\MiddlewareController;
 use App\Entity\Organization;
 use App\Entity\Service;
 use App\Form\CreateServiceForm;
-use App\Form\UpdateServiceForm;
-use App\Middleware\Middleware;
-use App\Service\Middleware\UserCanCreateServiceMiddleware;
-use App\Service\Middleware\UserCanUpdateServiceMiddleware;
+use App\Security\Voter\ServiceVoter;
 use App\Services\ServiceService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ServiceController extends MiddlewareController
+class ServiceController extends AbstractController
 {
-	#[Route("/organization/{OrganizationId}/services", name: "services", methods: ["GET"])]
-	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
-	public function index()
+	#[Route("/organization/{organization}/services", name: "app_services", methods: ["GET"])]
+	public function view(Request $request, Organization $organization): Response
 	{
-		/** @var Organization $organization */
-		$organization = Middleware::$floor["organization"];
+		if (!$this->isGranted(ServiceVoter::VIEW, $organization)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour consulter les services de cette organisation."
+			);
+			return $this->redirectToRoute("app_organizations");
+		}
+		// gets services
+		if ($request->query->get("archived")) {
+			$services = $organization->getServices();
+		} else {
+			$services = $organization
+				->getServices()
+				->filter(fn(Service $service) => !$service->getIsArchived());
+		}
 
-		$services = $organization->getServices();
-
-		return $this->render("service/services.html.twig", [
-			"organization" => $organization,
-			"services" => $services,
-		]);
+		return $this->render(
+			"service/index.html.twig",
+			[
+				"services" => $services,
+				"isArchived" => $request->query->get("archived") ? true : false,
+			],
+			new Response(status: Response::HTTP_OK)
+		);
 	}
 
-	#[Route("/organization/{OrganizationId}/service", name: "create_service", methods: ["GET", "POST"])]
-	#[Middleware(UserCanCreateServiceMiddleware::class, "validate")]
-	public function create(Request $request, ServiceService $serviceService)
-	{
-		$response = new Response();
+	#[Route("/organization/{organization}/service", name: "app_create_service", methods: ["GET", "POST"])]
+	public function create(
+		Organization $organization,
+		Request $request,
+		ServiceService $serviceService
+	): Response {
+		if (!$this->isGranted(ServiceVoter::CREATE, $organization)) {
+			return $this->redirectToRoute("app_services", ["id" => $organization->getId()]);
+		}
 
 		$service = new Service();
 		$createServiceForm = $this->createForm(CreateServiceForm::class, $service);
@@ -44,74 +59,115 @@ class ServiceController extends MiddlewareController
 
 		if ($createServiceForm->isSubmitted() && $createServiceForm->isValid()) {
 			$service = $createServiceForm->getData();
-			/** @var Organization $organization */
-			$organization = Middleware::$floor["organization"];
 
 			try {
 				$serviceService->createService($organization, $service);
-				$this->addFlash("success", "Le service a bien été créé.");
-
-				// Redirect to services page
-				$response->setStatusCode(Response::HTTP_FOUND);
-				$response->headers->set("Location", "/organization/" . $organization->getId() . "/services");
-				return $response;
+				$this->addFlash("success", "Le service {$service->getName()} a bien été créé.");
+				if ($request->query->get("callback")) {
+					return $this->redirect($request->query->get("callback"));
+				} else {
+					return $this->redirectToRoute("app_services", ["organization" => $organization->getId()]);
+				}
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
-				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 			}
 		}
 
-		return $this->render(
-			"service/createService.html.twig",
-			[
-				"createServiceForm" => $createServiceForm->createView(),
-			],
-			$response
-		);
+		return $this->render("service/create.html.twig", [
+			"createServiceForm" => $createServiceForm,
+			"update" => false,
+			"organization" => $organization,
+		]);
 	}
 
 	#[
 		Route(
-			"/organization/{OrganizationId}/service/{serviceId}",
-			name: "update_service",
+			"/organization/{organization}/service/{service}",
+			name: "app_update_service",
 			methods: ["GET", "POST"]
 		)
 	]
-	#[Middleware(UserCanUpdateServiceMiddleware::class, "validate")]
-	public function update(Request $request, ServiceService $serviceService)
+	public function update(Service $service, Request $request, ServiceService $serviceService): Response
 	{
-		$response = new Response();
+		if (!$this->isGranted(ServiceVoter::UPDATE, $service)) {
+			return $this->redirectToRoute("app_services", ["id" => $service->getOrganization()->getId()]);
+		}
 
-		/** @var Service $service */
-		$service = Middleware::$floor["service"];
-		$updateServiceForm = $this->createForm(UpdateServiceForm::class, $service);
-		$updateServiceForm->handleRequest($request);
+		$createServiceForm = $this->createForm(CreateServiceForm::class, $service);
+		$createServiceForm->handleRequest($request);
 
-		if ($updateServiceForm->isSubmitted() && $updateServiceForm->isValid()) {
-			$service = $updateServiceForm->getData();
-			/** @var Organization $organization */
-			$organization = Middleware::$floor["organization"];
+		if ($createServiceForm->isSubmitted() && $createServiceForm->isValid()) {
+			$service = $createServiceForm->getData();
 
 			try {
-				$serviceService->updateService($organization, $service);
-				$this->addFlash("success", "Le service à bien été mis à jour.");
-
-				// Redirect to services page
-				$response->setStatusCode(Response::HTTP_FOUND);
-				$response->headers->set("Location", "/organization/" . $organization->getId() . "/services");
-				return $response;
+				$serviceService->updateService($service->getOrganization(), $service);
+				$this->addFlash("success", "Le service {$service->getName()} a bien été modifié.");
+				if ($request->query->get("callback")) {
+					return $this->redirect($request->query->get("callback"));
+				} else {
+					return $this->redirectToRoute("app_services", [
+						"organization" => $service->getOrganization()->getId(),
+					]);
+				}
 			} catch (\Exception $error) {
 				$this->addFlash("error", $error->getMessage());
-				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 			}
 		}
 
-		return $this->render(
-			"service/updateService.html.twig",
-			[
-				"updateServiceForm" => $updateServiceForm->createView(),
-			],
-			$response
-		);
+		return $this->render("service/create.html.twig", [
+			"createServiceForm" => $createServiceForm,
+			"update" => true,
+			"organization" => $service->getOrganization(),
+		]);
+	}
+
+	#[Route("/service/{service}", name: "app_get_description_service", methods: ["GET"])]
+	public function getDescription(Service $service): Response
+	{
+		return $this->json([
+			"description" => $service->getDescription(),
+		]);
+	}
+
+	#[
+		Route(
+			"/organization/{organization}/service/{service}/archived",
+			name: "app_archive_service",
+			methods: ["GET"]
+		)
+	]
+	public function archive(Service $service, ServiceService $serviceService): Response
+	{
+		if (!$this->isGranted(ServiceVoter::UPDATE, $service)) {
+			$this->addFlash(
+				"error",
+				"Vous n'avez pas les droits pour archiver ce service de cette organisation."
+			);
+			return $this->redirectToRoute("app_services", ["id" => $service->getOrganization()->getId()]);
+		}
+
+		$response = new Response();
+		try {
+			$serviceService->archiveService($service);
+			$response->setStatusCode(Response::HTTP_OK);
+			if ($service->getIsArchived()) {
+				$this->addFlash("success", "Le service {$service->getName()} a bien été archivé.");
+			} else {
+				$this->addFlash("success", "Le service {$service->getName()} a bien été désarchivé.");
+			}
+		} catch (\Exception $error) {
+			$this->addFlash("error", $error->getMessage());
+		}
+
+		if ($service->getIsArchived()) {
+			return $this->redirectToRoute("app_services", [
+				"organization" => $service->getOrganization()->getId(),
+			]);
+		}
+
+		return $this->redirectToRoute("app_services", [
+			"organization" => $service->getOrganization()->getId(),
+			"archived" => true,
+		]);
 	}
 }

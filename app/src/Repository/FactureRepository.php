@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Facture;
+use App\Repository\Traits\SaveTrait;
+use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,33 +18,23 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FactureRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Facture::class);
 	}
 
-	//    /**
-	//     * @return Facture[] Returns an array of Facture objects
-	//     */
-	//    public function findByExampleField($value): array
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->orderBy('s.id', 'ASC')
-	//            ->setMaxResults(10)
-	//            ->getQuery()
-	//            ->getResult()
-	//        ;
-	//    }
+	public function genChrono(Organization $organization): int
+	{
+		$conn = $this->_em->getConnection();
+		$sql = "SELECT count(*) FROM facture WHERE organization_id = :organization_id";
 
-	//    public function findOneBySomeField($value): ?Facture
-	//    {
-	//        return $this->createQueryBuilder('s')
-	//            ->andWhere('s.exampleField = :val')
-	//            ->setParameter('val', $value)
-	//            ->getQuery()
-	//            ->getOneOrNullResult()
-	//        ;
-	//    }
+		$conn->prepare($sql);
+		$res = $conn->executeQuery($sql, [
+			"organization_id" => $organization->getId(),
+		]);
+
+		return $res->fetchAllAssociative()[0]["count"] + 1;
+	}
 }

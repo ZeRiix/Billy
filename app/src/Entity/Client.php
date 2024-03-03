@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -11,7 +12,7 @@ use Symfony\Component\Uid\Uuid;
 
 // local imports
 use App\Repository\ClientRepository;
-use App\Entity\Organiation;
+use App\Entity\Organization;
 use App\Entity\Devis;
 use App\Entity\Facture;
 
@@ -26,9 +27,8 @@ class Client
 	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id;
 
-	#[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: "clients")]
-	#[ORM\JoinColumn(nullable: false)]
-	private Organization $Organization;
+	#[ORM\ManyToOne(inversedBy: "clients")]
+	private ?Organization $organization = null;
 
 	#[ORM\OneToMany(targetEntity: Devis::class, mappedBy: "client")]
 	private Collection $devis;
@@ -37,25 +37,90 @@ class Client
 	private Collection $factures;
 
 	#[ORM\Column(length: 100, nullable: false)]
+	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner le nom du client.")]
+	#[
+		Assert\Length(
+			min: 4,
+			max: 100,
+			minMessage: "Le nom du client doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le nom du client doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $name = null;
 
-	#[ORM\Column(length: 100, nullable: false)]
+	#[ORM\Column(length: 100, nullable: true)]
+	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner le prénom du client.")]
+	#[
+		Assert\Length(
+			min: 4,
+			max: 100,
+			minMessage: "Le prénom du client doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le prénom du client doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $firstname = null;
 
-	#[ORM\Column(type: Types::TEXT, nullable: false)]
+	#[ORM\Column(type: Types::TEXT, nullable: true)]
+	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner l'adresse du client.")]
+	#[
+		Assert\Length(
+			min: 10,
+			max: 255,
+			minMessage: "L'adresse du client doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "L'adresse du client doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $address = null;
 
-	#[ORM\Column(length: 255, nullable: false)]
-	private ?string $email = null;
+	#[ORM\Column(length: 320, nullable: false)]
+	#[Assert\NotBlank(message: "Veuillez renseigner l'email du client.")]
+	#[
+		Assert\Length(
+			min: 10,
+			max: 320,
+			minMessage: "L'email du client doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "L'email du client doit contenir au maximum {{ limit }} caractères."
+		)
+	]
+	private ?string $email = null; //Pas testé si regex fonctionne à test quand on aura un form
 
-	#[ORM\Column(length: 20, nullable: false)]
+	#[ORM\Column(length: 10, nullable: true)]
+	#[Assert\NotBlank(message: "Veuillez renseigner le numéro de téléphone du client")]
+	#[
+		Assert\Regex(
+			pattern: "/^0[1-9]([-. ]?[0-9]{2}){4}$/",
+			message: "Veuillez renseigner un numéro de téléphone valide."
+		)
+	]
+	#[
+		Assert\Length(
+			min: 10,
+			max: 10,
+			minMessage: "Le numéro de téléphone doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères."
+		)
+	]
 	private ?string $phone = null;
 
-	#[ORM\Column(length: 100, nullable: false)]
+	#[ORM\Column(length: 50, nullable: true)]
+	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner l'activité du client.")]
+	#[
+		Assert\Length(
+			min: 2,
+			max: 50,
+			minMessage: "L'activité du client doit contenir au moins {{ limit }} caractères.",
+			maxMessage: "L'activité doit contenir au maximum {{ limit }} caractères."
+		)
+	]
 	private ?string $activity = null;
 
-	#[ORM\Column(length: 14, nullable: false, unique: true)]
+	#[ORM\Column(length: 14, nullable: true)]
+	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner le siret du client.")]
+	#[Assert\Length(min: 14, max: 14, exactMessage: "Le siret doit contenir {{ limit }} caractères.")]
 	private ?string $siret = null;
+
+	#[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
+	private ?bool $isArchived = false;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?\DateTimeImmutable $created_at = null;
@@ -76,12 +141,12 @@ class Client
 
 	public function getOrganization(): ?Organization
 	{
-		return $this->Organization;
+		return $this->organization;
 	}
 
 	public function setOrganization(?Organization $Organization): self
 	{
-		$this->Organization = $Organization;
+		$this->organization = $Organization;
 
 		return $this;
 	}
@@ -149,7 +214,7 @@ class Client
 		return $this->phone;
 	}
 
-	public function setPhone(?string $phone): static
+	public function setPhone(string $phone): static
 	{
 		$this->phone = $phone;
 
@@ -201,5 +266,17 @@ class Client
 	public function setUpdatedAt(): void
 	{
 		$this->updated_at = new \DateTimeImmutable();
+	}
+
+	public function getIsArchived(): ?bool
+	{
+		return $this->isArchived;
+	}
+
+	public function setIsArchived(bool $isArchived): static
+	{
+		$this->isArchived = $isArchived;
+
+		return $this;
 	}
 }

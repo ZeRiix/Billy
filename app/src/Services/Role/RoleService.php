@@ -9,6 +9,8 @@ use App\Entity\Organization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\UserRepository;
+use Exception;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class RoleService
 {
@@ -41,6 +43,14 @@ class RoleService
 	public function create(Role $role, Organization $organization): Role
 	{
 		// create role
+		$roleFound = $this->roleRepository->findOneBy([
+			"organization" => $organization,
+			"name" => $role,
+		]);
+		if ($roleFound) {
+			throw new Exception("Un rôle portant ce nom existe déjà.");
+		}
+
 		$role->setOrganization($organization);
 		$this->roleRepository->save($role);
 
@@ -71,29 +81,7 @@ class RoleService
 	{
 		// get roles for user and organization
 		/** @var Role $role */
-		$roles = $this->roleRepository->getUserRolesForOrganization($organization, $user);
-		// check if user has permission
-		foreach ($roles as $role) {
-			if ($role->getManageOrg() && $permission === "manage_org") {
-				return true;
-			}
-			if ($role->getManageUser() && $permission === "manage_user") {
-				return true;
-			}
-			if ($role->getManageClient() && $permission === "manage_client") {
-				return true;
-			}
-			if ($role->getWriteDevis() && $permission === "write_devis") {
-				return true;
-			}
-			if ($role->getWriteFactures() && $permission === "write_factures") {
-				return true;
-			}
-			if ($role->getManageService() && $permission === "manage_service") {
-				return true;
-			}
-		}
-		return false;
+		return $this->roleRepository->userHasPermission($organization, $user, $permission);
 	}
 
 	public function getOrganizationIsOwner(User $user)
@@ -113,9 +101,55 @@ class RoleService
 
 	public function update(Role $role, Organization $organization)
 	{
+		$roleFound = $this->roleRepository->findOneBy([
+			"organization" => $organization,
+			"name" => $role,
+		]);
+		if ($roleFound && $roleFound->getId() !== $role->getId()) {
+			throw new Exception("Un rôle portant ce nom existe déjà.");
+		}
+
 		if ($role->getOrganization() !== $organization) {
-			throw new \Exception("Ce role n'existe pas");
+			throw new Exception("Ce rôle n'existe pas.");
 		}
 		$this->roleRepository->save($role);
+	}
+
+	public function getRolesUserDoesNotHaveInOrganization(User $user, Organization $organization)
+	{
+		// affreux
+		$rolesUserInOrganization = $this->roleRepository->getUserRolesForOrganization($organization, $user);
+		$roles = $this->roleRepository->getRolesForOrganization($organization);
+		foreach ($rolesUserInOrganization as $roleUserInOrganization) {
+			foreach ($roles as $key => $role) {
+				if ($roleUserInOrganization["id"] == $role->getId() || $role->getName() === "OWNER") {
+					unset($roles[$key]);
+				}
+			}
+		}
+
+		return $roles;
+	}
+
+	public function getRolesUserHasInOrganization(User $user, Organization $organization)
+	{
+		return $this->roleRepository->getUserRolesForOrganization($organization, $user);
+	}
+
+	public function attribute(User $user, array $select)
+	{
+		foreach ($select as $key => $value) {
+			if ($value) {
+				$role = $this->roleRepository->find($key);
+				if ($role) {
+					$this->give($user, $role);
+				}
+			} else {
+				$role = $this->roleRepository->find($key);
+				if ($role) {
+					$this->takeOff($user, $role);
+				}
+			}
+		}
 	}
 }

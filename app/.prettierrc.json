@@ -1,5 +1,7 @@
 {
-	"plugins": ["@prettier/plugin-php"],
+	"plugins": [
+		"@prettier/plugin-php"
+	],
 	"parser": "php",
 	"tabWidth": 4,
 	"semi": true,

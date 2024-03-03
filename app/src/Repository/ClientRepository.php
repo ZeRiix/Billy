@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Client;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Repository\BaseRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\Traits\SaveTrait;
+use App\Repository\Traits\DeleteTrait;
 
 /**
  * @extends ClientEntityRepository<Client>
@@ -14,8 +16,11 @@ use App\Repository\BaseRepository;
  * @method Client[]    findAll()
  * @method Client[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ClientRepository extends BaseRepository
+class ClientRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+	use DeleteTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Client::class);
@@ -33,14 +38,20 @@ class ClientRepository extends BaseRepository
 		$client->setAddress($data["address"]);
 		$client->setActivity($data["activity"]);
 		$client->setOrganization($data["Organization"]);
-
-		$this->save($client);
-
+		$this->getEntityManager()->persist($client);
+		$this->getEntityManager()->flush();
 		return $client;
 	}
 
 	public function findOneBySiret(string $siret): ?Client
 	{
 		return $this->findOneBy(["siret" => $siret]);
+	}
+
+	public function findRandomClient()
+	{
+		$clients = $this->findAll();
+		$randomClient = $clients[array_rand($clients)];
+		return $randomClient;
 	}
 }

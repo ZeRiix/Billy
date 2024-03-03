@@ -1,0 +1,61 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Facture de {{organization.name}}{% endblock %}
+
+{% block body %}
+	<div class="mb-14">
+		<h1 class="text-3xl font-semibold pb-4 dark:text-dark-white">Facture de {{organization.name}}</h1>
+
+		<form id="searchForm" action="" class="flex gap-4">
+			<twig:Toggle 
+			title="En attente" 
+			:isChecked="waitingCheck"
+			name="waiting"
+			onClick="
+				setTimeout(() => {
+					document.getElementById('searchForm').requestSubmit()
+				})
+			">
+			</twig:Toggle>
+
+			<twig:Toggle 
+			title="Payé" 
+			:isChecked="payeCheck"
+			name="payé"
+			onClick="
+				setTimeout(() => {
+					document.getElementById('searchForm').requestSubmit()
+				})
+			">
+			</twig:Toggle>
+		</form>
+	</div>
+	
+	<twig:Table
+		:data="bills"
+		:cols="{
+			chrono: 'N° Facture',
+			'devis.name': 'Nom du devis',
+			'organization.name': 'Nom de l\'organisation',
+			'client.name': 'Nom du client',
+			createdAt: 'Date de création',
+			statut: 'Statut paiement'
+		}"
+		:action="true"
+	>
+
+		{% block statut %}
+			{% if row.statut.value == 'payé' %}
+				<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-check-circle"> Payé</span>
+			{% elseif row.statut.value == 'canceled' %}
+				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-cancel"> Annulé</span>
+			{% elseif row.statut.value == 'waiting' %}
+				<span class="px-4 py-2 bg-orange-500 font-semibold text-white uppercase rounded-full mdi mdi-clock-alert-outline"> En attente</span>
+			{% endif %}
+		{% endblock %}
+		<a 
+			class="mdi mdi-eye text-xl text-gray-500"
+			href="{{ path('app_facture_get_id', { organization: organization.id, devis: row.devis.id, facture: row.id }) }}"
+		></a>
+	</twig:Table>
+{% endblock %}

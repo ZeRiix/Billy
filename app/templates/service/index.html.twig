@@ -1,0 +1,43 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Gérer les services{% endblock %}
+
+{% block body %}
+	<div class="mb-14 flex justify-between items-center">
+		<form id="archivedForm" action="" method="GET">
+			<h1 class="text-3xl font-semibold pb-4 dark:text-dark-white">Gérer les services</h1>
+			<twig:Toggle 
+			title="Archivé" 
+			:isChecked="isArchived"
+			name="archived"
+			onClick="
+				setTimeout(() => {
+					document.getElementById('archivedForm').requestSubmit()
+				})
+			">
+			</twig:Toggle>
+		</form>
+		<twig:Button value="Ajouter" :href="path('app_create_service', { organization: getCurrentOrganization().id })"></twig:Button>
+	</div>
+	<twig:Table
+		:data="services"
+		:cols="{
+			name: 'Nom du Service',
+			description: 'Description',
+		}"
+		:action="true"
+	>
+		<a href="{{ path('app_update_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
+			<span class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"></span>
+		</a>
+		{% if  row.isArchived == false %}
+			<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
+				<span class="mdi mdi-archive-arrow-down-outline text-xl text-light-gray hover:text-yellow-500 transition-all duration-300" title="Archiver"></span>
+			</a>
+		{% else %}
+			<a href="{{ path('app_archive_service', { organization: getCurrentOrganization().id, service: row.id }) }}">
+				<span class="mdi mdi-archive-arrow-up-outline text-xl text-light-gray hover:text-yellow-500 transition-all duration-300" title="Désarchiver"></span>
+			</a>
+		{% endif %}
+	</twig:Table>
+{% endblock %}

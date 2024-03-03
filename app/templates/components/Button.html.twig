@@ -1,0 +1,9 @@
+
+<a 
+	href="{{ href }}"
+	class="px-6 py-2 {{ style == 'full' ? 'text-white dark:text-dark-white bg-light-lighter-green dark:bg-dark-green border-light-lighter-green dark:border-dark-green hover:bg-light-green dark:hover:bg-dark-lighter-green hover:border-light-green dark:hover:border-dark-lighter-green' : 'text-light-green dark:text-dark-lighter-green border-light-green dark:border-dark-lighter-green hover:text-white dark:hover:text-dark-white hover:bg-light-green dark:hover:bg-dark-lighter-green' }} font-semibold rounded-large border-solid border-2 transition-all duration-300"
+	{{ blank ? 'target="_blank"' : ''}}
+>
+	{{ value }}
+</a>
+

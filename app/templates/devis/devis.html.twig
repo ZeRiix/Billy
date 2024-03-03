@@ -1,0 +1,124 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Gérer les devis{% endblock %}
+
+{% block body %}
+	<div class="mb-14 flex justify-between items-center">
+		<form id="searchForm" action="" class>
+			<h1 class="text-3xl font-semibold pb-4 dark:text-dark-white">Gérer les devis</h1>
+
+			<div class="flex gap-4">
+				<twig:Toggle 
+				title="Édition" 
+				:isChecked="editingCheck"
+				name="editing"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Verrouillé" 
+				:isChecked="lockCheck"
+				name="lock"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Signé" 
+				:isChecked="signCheck"
+				name="sign"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Facturé" 
+				:isChecked="completedCheck"
+				name="completed"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+
+				<twig:Toggle 
+				title="Annulé" 
+				:isChecked="canceledCheck"
+				name="canceled"
+				onClick="
+					setTimeout(() => {
+						document.getElementById('searchForm').requestSubmit()
+					})
+				">
+				</twig:Toggle>
+			</div>
+		</form>
+
+		{% if canCreate == true %}
+			<twig:Button value="Ajouter" :href="path('app_create_devis', { organization: organization.id })"></twig:Button>
+		{% endif %}
+	</div>
+	<twig:Table
+		:data="quotations"
+		:cols="{
+			id: 'N° de devis',
+			name: 'Nom du devis',
+			'client.name': 'Nom du client',
+			status: 'Status'
+		}"
+		:action="true"
+	>
+		
+		{% block status %}
+			{% if currentValue.value == 'editing' %}
+				<span class="px-4 py-2 bg-yellow-500 font-semibold text-white uppercase rounded-full mdi mdi-pencil"> Édition</span>
+			{% elseif currentValue.value == 'lock' %}
+				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-lock"> Verrouillé</span>
+			{% elseif currentValue.value == 'canceled' %}
+				<span class="px-4 py-2 bg-red-500 font-semibold text-white uppercase rounded-full mdi mdi-close"> Annulé</span>
+			{% elseif currentValue.value == 'sign' %}
+				<span class="px-4 py-2 bg-green-500 font-semibold text-white uppercase rounded-full mdi mdi-fountain-pen-tip"> Signé</span>
+			{% elseif currentValue.value == 'completed' %}
+				<span class="px-4 py-2 bg-blue-500 font-semibold text-white uppercase rounded-full mdi mdi-check"> Facturé</span>
+			{% endif %}
+
+		{% endblock %}
+
+		{% block client_name %}
+			{% if currentValue == 'null' %}
+				Client indéfini
+			{% else %}
+				{{ currentValue }}
+			{% endif %}
+		{% endblock %}
+	
+		{% if row.status.value == 'editing' %}
+			<a 
+				class="mdi mdi-pencil text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Modifier"
+				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
+			></a>
+		{% else %}
+			<a 
+				class="mdi mdi-eye text-xl text-light-gray hover:text-light-green transition-all duration-300" title="Voir le devis"
+				href="{{ path('app_update_devis', { organization: organization.id, devis: row.id }) }}"
+			></a>
+			{% if (row.status.value == 'sign' or row.status.value == 'completed') and checkPermissionOnOrganization(app.user, 'read_factures') %}
+				<a 
+					class="mdi mdi-note text-xl text-light-gray hover:text-orange-400 transition-all duration-300" title="Voir les factures"
+					href="{{ path('app_bills_by_devis', { organization: organization.id, devis: row.id }) }}"
+				></a>
+			{% endif %}
+		{% endif %}
+	</twig:Table>
+{% endblock %}

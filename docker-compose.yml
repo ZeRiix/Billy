@@ -5,7 +5,9 @@ services:
     volumes:
       - ./app:/app
     user: 1000:1000
-    #command: composer install --ignore-platform-reqs --no-scripts
+    # command: composer install --ignore-platform-reqs --no-scripts
+    # command: composer require symfony/ux-twig-component
+    # command: composer require dompdf/dompdf
     command: composer update --ignore-platform-reqs --no-scripts
 
   php:
@@ -15,8 +17,9 @@ services:
     volumes:
       - ./app:/var/www
       - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    command: php-fpm
+      - ./.docker/php/crontab:/etc/crontabs/root
     user: 1000:1000
+    command: php-fpm
     depends_on:
       composer:
         condition: service_completed_successfully
@@ -65,6 +68,11 @@ services:
     image: adminer:latest
     ports:
       - 8888:8080
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - 1080:1080
 
 volumes:
   postgres-data:

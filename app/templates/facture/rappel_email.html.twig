@@ -1,0 +1,17 @@
+<table width="100%" style="background-color:#EFEFEF; border:0; cellspacing:0; cellpadding:0;">
+    <tr>
+        <td align="center">
+            <div style="background-color: #fff; border-radius: 8px; max-width: 450px; width: 100%; margin: 100px 0; padding: 2.5rem; box-sizing: border-box;">
+                <div style="text-align: center; padding: 1rem 0; margin-bottom: 2.5rem;">
+                    <img width="96px" src="{{ absolute_url(get_logo_org(organization)) }}" alt="logo" style="border-radius: 8px;">
+                </div>
+                <div style="text-align: center; margin: 2.5rem 0;">
+                    <div style="font-weight: 700; font-size: 1.5rem; margin-bottom: 2rem;">Bonjour {{ clientFullName }}</div>
+                    <p style="font-size: 1rem; line-height: 1.5rem;">Un rappel de paiement pour la <strong>facture N° {{ facture.chrono }}</strong> vous à été envoyé,</p>
+                   	<p style="font-size: 1rem; line-height: 1.5rem;">Cette facture est à l'origine du devis : <strong>{{ devis.name }}</strong>.</p>
+					<p style="font-size: 1rem; line-height: 1.5rem;">Cordialement, {{organization.name}}.</p>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

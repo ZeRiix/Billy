@@ -1,0 +1,156 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ facture.organization.name }}-{{ facture.id }}</title>
+    <style>
+        body {
+            margin: 30px;
+			font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        h4 {
+            margin: 0;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .w-half {
+            width: 50%;
+        }
+
+        .margin-top {
+            margin-top: 1.25rem;
+        }
+
+        .footer {
+            font-size: 0.875rem;
+            padding: 1rem;
+            background-color: rgb(241 245 249);
+        }
+
+		.text-right {
+			text-align: right;
+		}
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+			border-collapse: collapse;
+        }
+
+        table.products {
+            font-size: 0.875rem;
+        }
+
+        table.products tr {
+            background-color: #b6c6bc;
+			border: solid 1px #b6c6bc;
+        }
+
+        table.products th {
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+
+        table tr.items {
+            background-color: rgb(241 245 249);
+			border: solid 1px #b6c6bc;
+        }
+
+        table tr.items td {
+            padding: 0.5rem;
+			border: solid 1px #b6c6bc;
+        }
+
+        .logo {
+            height: 150px;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="w-full">
+        <tr>
+            <td class="w-half">
+                <img src="{{ logoPath }}" alt="logo" class="logo" />
+            </td>
+            <td class="w-half text-right">
+                <h2>Facture n°{{ facture.chrono }}</h2>
+                <div>Réalisée le : {{ facture.createdAt | date('d/m/y') }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="margin-top">
+        <table class="w-full">
+            <tr>
+                <td class="w-half">
+                    <div>
+                        <h4>Destinataire :</h4>
+                    </div>
+                    <div>{{ facture.client.name }}</div>
+                    <div>{{ facture.client.address }}</div>
+                    <div>{{ facture.client.phone }}</div>
+                </td>
+                <td class="w-half text-right">
+                    <div>
+                        <h4>Émetteur :</h4>
+                    </div>
+                    <div>{{ facture.organization.name }}</div>
+                    <div>{{ facture.organization.address }}</div>
+                    <div>{{ facture.organization.phone }}</div>
+                    <div>{{ facture.organization.email }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="margin-top">
+        <table class="products">
+            <tr>
+				<th>Produit</th>
+                <th>Description</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Montant</th>
+            </tr>
+			{% for commande in facture.commandes %}
+            <tr class="items">
+				<td>{{ commande.name }}</td>
+                <td>{{ commande.description }}</td>
+                <td>{{ commande.quantity }}</td>
+                <td>{{ commande.unitPrice }} €</td>
+                <td>{{ commande.montant }} €</td>
+            </tr>
+			{% endfor %}
+        </table>
+
+		<div class="total">
+			<div>Total HT : {{ totalHt }} €</div>
+		</div>
+
+		{# <div class="total">
+			<div>TVA : {{ tva }}</div>
+		</div> #}
+
+		{# <div class="total">
+			<div>Total TTC : {{ totalTtc }}</div>
+		</div> #}
+    </div>
+
+    <div class="footer margin-top">
+        <div>&copy; {{ 'now' | date('Y') }} - Tous droits réservés - Mentions légales</div>
+    </div>
+</body>
+
+</html>

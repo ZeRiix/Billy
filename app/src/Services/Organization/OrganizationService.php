@@ -11,10 +11,10 @@ use App\Entity\InviteOrganization;
 use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\RoleRepository;
-use App\Services\File\FileUploaderService;
 use App\Repository\UserRepository;
 use App\Services\MailService;
 use App\Repository\InviteOrganizationRepository;
+
 use function Symfony\Component\Clock\now;
 
 class OrganizationService
@@ -23,8 +23,6 @@ class OrganizationService
 
 	private RoleRepository $roleRepository;
 
-	private FileUploaderService $fileUploaderService;
-
 	private UserRepository $userRepository;
 
 	private InviteOrganizationRepository $inviteOrganizationRepository;
@@ -32,7 +30,6 @@ class OrganizationService
 	public function __construct(
 		OrganizationRepository $organizationRepository,
 		RoleRepository $roleRepository,
-		FileUploaderService $fileUploaderService,
 		UserRepository $userRepository,
 		InviteOrganizationRepository $inviteOrganizationRepository
 	) {
@@ -40,30 +37,18 @@ class OrganizationService
 		$this->roleRepository = $roleRepository;
 		$this->userRepository = $userRepository;
 		$this->inviteOrganizationRepository = $inviteOrganizationRepository;
-		$this->fileUploaderService = $fileUploaderService;
 	}
 
 	public function modify(Organization $organization)
 	{
-		if ($organization->getImage() !== null) {
-			$this->fileUploaderService->uploadImage($organization->getImage(), $organization);
-		}
 		$this->organizationRepository->save($organization);
 	}
 
-	public function create(Organization $organization, User $user)
+	public function create(Organization $organization, User $user): Organization
 	{
-		// check name is already registered
-		if ($this->organizationRepository->findOneByName($organization->getName())) {
-			throw new \Exception("Une organisation avec ce nom existe déjà.");
-		}
-		// check siret is already registered
-		if ($this->organizationRepository->findOneBySiret($organization->getSiret())) {
-			throw new \Exception("Une organisation avec ce siret existe déjà.");
-		}
 		// check if user is already owner of an organization
-		$isOwner = $this->roleRepository->findOneBy(["name" => "OWNER"]);
-		if ($isOwner && $isOwner->getUsers()->contains($user)) {
+		$isOwner = $this->roleRepository->isOwner($user);
+		if ($isOwner) {
 			throw new \Exception("Vous êtes déjà propriétaire d'une organisation.");
 		}
 		// check siret is valid
@@ -72,7 +57,6 @@ class OrganizationService
 			throw new \Exception("Veuillez vérifier votre siret.");
 		}
 		$responseForSiret = $responseForSiret->toArray();
-
 		// set name and address for organization
 		$organization->setName($this->constructNameForOrganization($responseForSiret));
 		// set address for organization
@@ -85,6 +69,8 @@ class OrganizationService
 		$this->roleRepository->setOwner($user, $organization);
 		// save organization
 		$this->organizationRepository->save($organization);
+		// return organization
+		return $organization;
 	}
 
 	public static function constructNameForOrganization(array $data): ?string
@@ -177,32 +163,32 @@ class OrganizationService
 		// save invitation
 		$this->inviteOrganizationRepository->create($organization, $user);
 
-		// send invitation email to user
-		$mail = new MailService();
-		$mail->send(
-			$email,
-			"Invitation à rejoindre l'organisation " . $organization->getName(),
-			"Bonjour, vous avez été invité à rejoindre l'organisation " .
-				$organization->getName() .
-				"." .
-				"rejoint l'organisation en cliquant sur le lien suivant : " .
-				$_ENV["HOST"] .
+		// make email template
+		$mail = MailService::createHtmlBodyWithTwig("organization/invite_email.html.twig", [
+			"invite" =>
+				$_ENV["APP_URL"] .
 				"/organization/" .
 				$organization->getId() .
 				"/user/" .
 				$user->getId() .
-				"/join"
+				"/join",
+			"organization" => $organization,
+		]);
+		// send invitation email to user
+		MailService::send(
+			$email,
+			"Invitation à rejoindre l'organisation " . $organization->getName(),
+			$mail,
+			false
 		);
 	}
 
-	public function join(Organization $organization, string $user): void
+	public function join(Organization $organization, User $user): void
 	{
-		// get the user
-		$user = $this->userRepository->findOneById($user);
 		// check if user is already in organization
 		$userInOrg = $this->checkIsInOrganization($user, $organization);
 		if ($userInOrg) {
-			throw new \Exception("Vous êtes déja dans l'organisation.");
+			throw new \Exception("Vous faites déjà partis de cette organization.");
 		}
 		// check if user has an invitation
 		$invite = $this->inviteOrganizationRepository->getInviteOrganizationByOrganizationAndUser(
@@ -251,5 +237,10 @@ class OrganizationService
 	public function getCreatedBy(User $user): ?Organization
 	{
 		return $this->organizationRepository->findOneBy(["createdBy" => $user]);
+	}
+
+	public function getUsers(Organization $organization)
+	{
+		return $this->organizationRepository->getUsersByOrganization($organization);
 	}
 }

@@ -1,0 +1,27 @@
+{% extends 'connected.html.twig' %}
+
+{% block title %}Modifier l'utilisateur{% endblock %}
+{% block body %}
+<div class="px-10 py-5">
+	<h1 class="text-3xl font-semibold pb-6 dark:text-dark-white">Modifier l'utilisateur</h1>
+	<div class="p-14 rounded-xl bg-white max-w-lg dark:bg-dark-light-black">
+		{{ form_start(form) }}
+			<div class="mt-10 w-full flex justify-between items-center">
+				<a href="{{ path('organization_list_users', { 'organization': organization.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300 mdi mdi-arrow-left">
+					Revenir aux utilisateurs
+				</a>
+				{{ form_widget(form.submit) }}
+			</div>
+		{{ form_end(form) }}
+	</div>
+</div>
+
+<style>
+{# select form with name #}
+form[name="select_role_form"] {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  gap: 0.5rem;
+}
+</style>
+{% endblock %}

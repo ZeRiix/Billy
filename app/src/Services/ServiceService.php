@@ -24,6 +24,7 @@ class ServiceService
 		}
 
 		$service->setOrganization($organization);
+		$service->setIsArchived(false);
 
 		$this->serviceRepository->save($service);
 	}
@@ -36,6 +37,17 @@ class ServiceService
 		}
 
 		$service->setOrganization($organization);
+
+		$this->serviceRepository->save($service);
+	}
+
+	public function archiveService(Service $service)
+	{
+		if ($service->getIsArchived()) {
+			$service->setIsArchived(false);
+		} else {
+			$service->setIsArchived(true);
+		}
 
 		$this->serviceRepository->save($service);
 	}

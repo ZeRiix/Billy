@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Commande;
+use App\Repository\Traits\SaveTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,9 +17,17 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CommandeRepository extends ServiceEntityRepository
 {
+	use SaveTrait;
+
 	public function __construct(ManagerRegistry $registry)
 	{
 		parent::__construct($registry, Commande::class);
+	}
+
+	public function delete(Commande $commande): void
+	{
+		$this->_em->remove($commande);
+		$this->_em->flush();
 	}
 
 	//    /**
