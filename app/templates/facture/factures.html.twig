@@ -9,7 +9,7 @@
 			<a href="{{ path('app_update_devis', {organization: organization.id, devis: devis.id}) }}" class="underline">{{devis.name}}</a>
 		</h1>
 		{% if canCreate == true %}
-		<a href="{{ path('app_create_facture', {organization: organization.id, devis: devis.id}) }}" class="px-12 py-4 text-white text-lg font-semibold bg-light-lighter-green rounded-large hover:bg-light-green ease-in-out duration-300">Ajouter</a>
+			<twig:Button value="Créer" :href="path('app_create_facture', {organization: organization.id, devis: devis.id})"></twig:Button>
 		{% endif %}
 	</div>
 	<twig:Table
