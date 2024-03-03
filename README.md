@@ -4,11 +4,6 @@
 <div align="center">
  <img src="https://billy.campani.fr/assets/images/billy.png" width="200" height="200" />
 </div>
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com) &nbsp;
-[![forthebadge](https://forthebadge.com/images/badges/open-source.svg)](https://forthebadge.com) &nbsp;
-![GitHub Repo stars](https://img.shields.io/github/stars/ZeRiix/Billy?color=red&logo=github&style=for-the-badge) &nbsp;
-![GitHub forks](https://img.shields.io/github/forks/ZeRiix/Billy?color=red&logo=github&style=for-the-badge) &nbsp;
-[![forthebadge](https://forthebadge.com/images/badges/docker-container.svg)](https://forthebadge.com)
 
 ## Objectif Principal
 
