@@ -372,7 +372,11 @@ class FactureController extends AbstractController
 		BillReminderService $billReminderService
 	) {
 		$devis = $facture->getDevis();
-		if ($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED) {
+		$organization = $facture->getOrganization();
+		if (
+			!$this->isGranted(OrganizationVoter::WRITE_FACTURE, $organization) ||
+			($devis->getStatus() != DeviStatus::SIGN && $devis->getStatus() != DeviStatus::COMPLETED)
+		) {
 			$this->addFlash(
 				"error",
 				"Vous ne pouvez pas changer le statut d'une facture si le devis n'est pas signé ou complété."
