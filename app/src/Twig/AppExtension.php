@@ -38,6 +38,7 @@ class AppExtension extends AbstractExtension
 			new TwigFunction("checkPermissionOnOrganization", [$this, "checkPermissionOnOrganization"]),
 			new TwigFunction("getCurrentOrganization", [$this, "getCurrentOrganization"]),
 			new TwigFunction("entityToJson", [$this, "entityToJson"]),
+			// new TwigFunction("absolute_url", [$this, "absoluteUrl"]),
 		];
 	}
 
@@ -69,5 +70,10 @@ class AppExtension extends AbstractExtension
 	public function entityToJson(mixed $entity, array $groups)
 	{
 		return json_encode($this->serializer->normalize($entity, null, ["groups" => $groups]));
+	}
+
+	public function absoluteUrl(string $path)
+	{
+		return $_ENV["APP_URL"] . $path;
 	}
 }

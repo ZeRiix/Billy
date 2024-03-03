@@ -64,7 +64,7 @@ class MailService
 		);
 		$twig->addFunction(
 			new \Twig\TwigFunction("absolute_url", function (string $path) {
-				return getenv("ORIGIN") . "/" . $path;
+				return $_ENV["APP_URL"] . "/" . $path;
 			})
 		);
 		$twig->addFunction(

@@ -48,11 +48,4 @@ class CreateClientForm extends AbstractType
 				"label" => "Valider",
 			]);
 	}
-
-	public function configureOptions(OptionsResolver $resolver)
-	{
-		$resolver->setDefaults([
-			"data_class" => Client::class,
-		]);
-	}
 }

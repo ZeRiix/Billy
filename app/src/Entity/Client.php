@@ -114,7 +114,7 @@ class Client
 	]
 	private ?string $activity = null;
 
-	#[ORM\Column(length: 14, nullable: true, unique: true)]
+	#[ORM\Column(length: 14, nullable: true)]
 	#[Assert\NotBlank(["allowNull" => true], message: "Veuillez renseigner le siret du client.")]
 	#[Assert\Length(min: 14, max: 14, exactMessage: "Le siret doit contenir {{ limit }} caractères.")]
 	private ?string $siret = null;
