@@ -87,7 +87,7 @@ docker-compose up -d
 -   [x] Invoice system followed with chrono number <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/>
 -   [x] Payment reminder email system (invoice, devis) <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/>
 
-## Others Documentation
+## Others Documentations
 
 - [MLD](documentation/database/mld.drawio)
 - [MCD](documentation/database/mcd.drawio)
