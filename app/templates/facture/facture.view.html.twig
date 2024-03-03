@@ -49,7 +49,7 @@
 			</a>
 			{% if bill.statut.value == 'waiting' and checkPermissionOnOrganization(app.user, 'write_factures') %}
 				<a href="{{ path('app_pay_facture', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300">
-					Payée ?
+					Payer ?
 				</a>
 			{% endif %}
 			<a href="{{ path('app_preview_bill', { devis: devis.id, organization: organization.id, facture: bill.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
