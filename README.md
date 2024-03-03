@@ -95,3 +95,4 @@ docker-compose up -d
 - [Personas](documentation/persona2.md) Frederic Campani
 - [Strucure Menu](documentation/structure_menu.png)
 - [Figma](https://www.figma.com/file/eHYmv2jk89fwDYUmCmBE5N/Maquette?type=design&node-id=0:1&mode=design&t=a7yLhPvVe4JKxSV4-1)
+- <img src="documentation/structure_menu.pngé"/>
