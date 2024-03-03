@@ -166,9 +166,7 @@ class OrganizationService
 		// make email template
 		$mail = MailService::createHtmlBodyWithTwig("organization/invite_email.html.twig", [
 			"invite" =>
-				$_SERVER["REQUEST_SCHEME"] .
-				"://" .
-				$_SERVER["HTTP_HOST"] .
+				getenv("ORIGIN") .
 				"/organization/" .
 				$organization->getId() .
 				"/user/" .

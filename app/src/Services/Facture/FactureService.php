@@ -71,9 +71,7 @@ class FactureService
 		// make mail body
 		$body = MailService::createHtmlBodyWithTwig("facture/email.html.twig", [
 			"facture" =>
-				$_SERVER["REQUEST_SCHEME"] .
-				"://" .
-				$_SERVER["HTTP_HOST"] .
+				getenv("ORIGIN") .
 				"/organization/" .
 				$bill->getOrganization()->getId() .
 				"/quotation/" .

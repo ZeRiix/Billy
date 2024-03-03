@@ -84,9 +84,7 @@ class DevisService
 		// make mail body
 		$body = MailService::createHtmlBodyWithTwig("devis/email.html.twig", [
 			"devis" =>
-				$_SERVER["REQUEST_SCHEME"] .
-				"://" .
-				$_SERVER["HTTP_HOST"] .
+				getenv("ORIGIN") .
 				"/organization/" .
 				$devis->getOrganization()->getId() .
 				"/quotation/" .

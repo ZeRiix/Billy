@@ -64,7 +64,7 @@ class MailService
 		);
 		$twig->addFunction(
 			new \Twig\TwigFunction("absolute_url", function (string $path) {
-				return $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"] . "/" . $path;
+				return getenv("ORIGIN") . "/" . $path;
 			})
 		);
 		$twig->addFunction(
