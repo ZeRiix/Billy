@@ -85,7 +85,7 @@
 						</a>
 					{% endif %}
 
-					{% if quotation.status.value != 'editing' and quotation.status.value != 'canceled' %}
+					{% if quotation.status.value == 'lock' or quotation.status.value == 'sign' %}
 						<a href="{{ path('app_preview_devis', { devis: quotation.id, organization: organization.id })}}" class="cursor-pointer hover:underline transition-all duration-300 mdi mdi-magnify">
 							Aperçu
 						</a>
@@ -97,7 +97,7 @@
 				{% endif %}
 				</div>
 				{% if quotation.status.value == 'sign' or quotation.status.value == 'completed' %}
-					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="hover:text-light-green">
+					<a href="{{ path('app_bills_by_devis', { organization: organization.id, devis: quotation.id }) }}" class="text-light-lighter-green dark:text-dark-green hover:text-light-green dark:hover:text-dark-lighter-green transition-all duration-300">
 						Voir mes factures
 						<span class="mdi mdi-arrow-right"></span> 
 					</a>
