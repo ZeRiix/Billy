@@ -76,7 +76,7 @@ docker-compose up -d
 -   [x] Figma model <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/> <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/>
 -   [x] Template email <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/> <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/>
 -   [x] System sign customer devis with email <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
--   [x] Generate PDF document (Devis, Invoice) <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/>
+-   [x] Generate PDF document (Devis, Invoice) <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/> <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/>
 -   [x] Gestion user in organization (role, invite, admin, panel, etc) <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/>
 -   [x] Sales statistics <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
 -   [x] Service management <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
