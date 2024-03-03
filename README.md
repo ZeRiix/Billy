@@ -64,7 +64,7 @@ docker-compose up -d
 
 -   [x] Specifications <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/> <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/> <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/> <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
 -   [x] MCD/MLD <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/> <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/> <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/> <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
--   [x] Personats <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/> <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/> <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/> <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
+-   [x] Personas <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/> <img src="https://avatars.githubusercontent.com/u/58041322?v=4" width="16" alt="Maubry94"/> <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/> <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
 -   [x] Entities <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/> <img src="https://avatars.githubusercontent.com/u/74609430?v=4" width="16" alt="Vitaalx"/> <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
 -   [x] Security (authentification, reset passwords, etc...) <img src="https://avatars.githubusercontent.com/u/98911237?v=4" width="16" alt="mathcovax"/>
 -   [x] Gmail API <img src="https://avatars.githubusercontent.com/u/70342449?v=4" width="16" alt="ZeRiix"/>
@@ -89,8 +89,9 @@ docker-compose up -d
 
 ## Others Documentation
 
-[MLD](documentation/database/mld.drawio)
-[MCD](documentation/database/mcd.drawio)
-[Personas](documentation/persona.md) Sanda De Sousa
-[Personas](documentation/persona2.md) Frederic Campani
-[Strucure Menu](documentation/structure_menu.png)
+- [MLD](documentation/database/mld.drawio)
+- [MCD](documentation/database/mcd.drawio)
+- [Personas](documentation/persona.md) Sanda De Sousa
+- [Personas](documentation/persona2.md) Frederic Campani
+- [Strucure Menu](documentation/structure_menu.png)
+- [Figma](https://www.figma.com/file/eHYmv2jk89fwDYUmCmBE5N/Maquette?type=design&node-id=0:1&mode=design&t=a7yLhPvVe4JKxSV4-1)
