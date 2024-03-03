@@ -188,7 +188,7 @@ class OrganizationService
 		// check if user is already in organization
 		$userInOrg = $this->checkIsInOrganization($user, $organization);
 		if ($userInOrg) {
-			throw new \Exception("Vous êtes déja dans l'organisation.");
+			throw new \Exception("Vous faites déjà partis de cette organization.");
 		}
 		// check if user has an invitation
 		$invite = $this->inviteOrganizationRepository->getInviteOrganizationByOrganizationAndUser(

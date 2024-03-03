@@ -342,7 +342,7 @@ class DevisController extends AbstractController
 		try {
 			$devis->setStatus(DeviStatus::EDITING);
 			$devisRepository->save($devis);
-			$this->addFlash("success", "Le devis a bien étais éditer.");
+			$this->addFlash("success", "Le devis a bien été édité.");
 		} catch (\Exception $e) {
 			$this->addFlash("error", $e->getMessage());
 		}
@@ -374,7 +374,7 @@ class DevisController extends AbstractController
 		try {
 			$devis->setStatus(DeviStatus::CANCELED);
 			$devisRepository->save($devis);
-			$this->addFlash("success", "Le devis a bien étais éditer.");
+			$this->addFlash("success", "Le devis a bien été édité.");
 		} catch (\Exception $e) {
 			$this->addFlash("error", $e->getMessage());
 		}

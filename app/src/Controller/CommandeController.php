@@ -62,7 +62,6 @@ class CommandeController extends AbstractController
 					"devis" => $devis->getId(),
 				]);
 			} catch (\Exception $e) {
-				die($e->getMessage());
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
 			}

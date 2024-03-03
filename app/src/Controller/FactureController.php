@@ -42,7 +42,7 @@ class FactureController extends AbstractController
 		) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour voir les factures de ce devis ou le devis n'est pas signé."
+				"Vous n'avez pas les droits pour voir les factures de ce devis ou le devis n'est pas signé ou complété."
 			);
 			return $this->redirectToRoute("app_update_devis", [
 				"organization" => $organization->getId(),
@@ -78,7 +78,7 @@ class FactureController extends AbstractController
 		) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour créer une facture pour cette Organisation ou le devis n'est pas signé."
+				"Vous n'avez pas les droits pour créer une facture pour cette organisation ou le devis n'est pas signé."
 			);
 			return $this->redirectToRoute("app_update_devis", [
 				"organization" => $organization->getId(),
@@ -100,7 +100,7 @@ class FactureController extends AbstractController
 					$commandeIds
 				);
 
-				$this->addFlash("success", "La facture à bien été créee.");
+				$this->addFlash("success", "La facture à bien été créée.");
 				return $this->redirectToRoute("app_bills_by_devis", [
 					"organization" => $organization->getId(),
 					"devis" => $devis->getId(),
@@ -140,7 +140,7 @@ class FactureController extends AbstractController
 		) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour créer une facture pour cette Organisation ou la facture est déjà payée."
+				"Vous n'avez pas les droits pour créer une facture pour cette organisation ou la facture est déjà payée."
 			);
 			return $this->redirectToRoute("app_facture_get_id", [
 				"organization" => $organization->getId(),
@@ -186,7 +186,7 @@ class FactureController extends AbstractController
 		) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour voir les factures de cette Organisation."
+				"Vous n'avez pas les droits pour voir les factures de cette organisation."
 			);
 			return $this->redirectToRoute("app_bills_by_devis", [
 				"organization" => $devis->getOrganization()->getId(),
@@ -211,7 +211,7 @@ class FactureController extends AbstractController
 		if (!$this->isGranted(OrganizationVoter::READ_FACTURE, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour voir les factures de cette Organisation."
+				"Vous n'avez pas les droits pour voir les factures de cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}

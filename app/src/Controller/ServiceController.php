@@ -20,7 +20,7 @@ class ServiceController extends AbstractController
 		if (!$this->isGranted(ServiceVoter::VIEW, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour consulter les services dans cette organisation."
+				"Vous n'avez pas les droits pour consulter les services de cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -62,7 +62,7 @@ class ServiceController extends AbstractController
 
 			try {
 				$serviceService->createService($organization, $service);
-				$this->addFlash("success", "Le service a bien été créé.");
+				$this->addFlash("success", "Le service {$service->getName()} a bien été créé.");
 				if ($request->query->get("callback")) {
 					return $this->redirect($request->query->get("callback"));
 				} else {
@@ -101,7 +101,7 @@ class ServiceController extends AbstractController
 
 			try {
 				$serviceService->updateService($service->getOrganization(), $service);
-				$this->addFlash("success", "Le service a bien été modifié.");
+				$this->addFlash("success", "Le service {$service->getName()} a bien été modifié.");
 				if ($request->query->get("callback")) {
 					return $this->redirect($request->query->get("callback"));
 				} else {
@@ -141,7 +141,7 @@ class ServiceController extends AbstractController
 		if (!$this->isGranted(ServiceVoter::UPDATE, $service)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour archiver le service dans cette organisation."
+				"Vous n'avez pas les droits pour archiver ce service de cette organisation."
 			);
 			return $this->redirectToRoute("app_services", ["id" => $service->getOrganization()->getId()]);
 		}
@@ -151,9 +151,9 @@ class ServiceController extends AbstractController
 			$serviceService->archiveService($service);
 			$response->setStatusCode(Response::HTTP_OK);
 			if ($service->getIsArchived()) {
-				$this->addFlash("success", "Le service a bien été archivé.");
+				$this->addFlash("success", "Le service {$service->getName()} a bien été archivé.");
 			} else {
-				$this->addFlash("success", "Le service a bien été désarchivé.");
+				$this->addFlash("success", "Le service {$service->getName()} a bien été désarchivé.");
 			}
 		} catch (\Exception $error) {
 			$this->addFlash("error", $error->getMessage());

@@ -27,7 +27,7 @@ class BillReminderService
 		$remindersForFacture = $this->billReminderRepository->findBy(["facture" => $facture]);
 
 		if (count($remindersForFacture) == 3) {
-			throw new \Exception("Vous ne pouvez pas créer plus de 3 rappels pour une facture.");
+			throw new \Exception("Vous ne pouvez pas créer plus de 3 rappels par facture.");
 		}
 
 		$duplicates = $this->billReminderRepository->findBy([
@@ -69,9 +69,9 @@ class BillReminderService
 		}
 
 		$body = MailService::createHtmlBodyWithTwig("facture/rappel_email.html.twig", [
-			"facture" => $facture->getChrono(),
-			"devis" => $devis->getName(),
-			"client" => $client->getName() . " " . $client->getFirstname(),
+			"facture" => $facture,
+			"devis" => $devis,
+			"clientFullName" => $client->getName() . " " . $client->getFirstname(),
 			"organization" => $organization,
 		]);
 		MailService::send(

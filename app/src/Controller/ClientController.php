@@ -140,7 +140,7 @@ class ClientController extends AbstractController
 			try {
 				$clientService->update($organization, $client);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le client à bien été modifiée.");
+				$this->addFlash("success", "Le client à bien été modifié.");
 				return $this->redirectToRoute("app_clients", ["organization" => $organization->getId()]);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);

@@ -151,8 +151,7 @@ class ResetPasswordController extends AbstractController
 
 	private function processSendingPasswordResetEmail(
 		string $emailFormData,
-		MailerInterface $mailer,
-		TranslatorInterface $translator
+		MailerInterface $mailer
 	): RedirectResponse {
 		$user = $this->entityManager->getRepository(User::class)->findOneBy([
 			"email" => $emailFormData,
@@ -186,7 +185,7 @@ class ResetPasswordController extends AbstractController
 		$send = (new Email())
 			->from(new Address("billy.esgi@gmail.com", "support-billy@gmail.com"))
 			->to($user->getEmail())
-			->subject("Your password reset request")
+			->subject("Réinitialiser votre mot de passe")
 			->html($htmlContent);
 		$mailer->send($send);
 

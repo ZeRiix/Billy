@@ -49,7 +49,7 @@ class EmailVerifier
 		$send = (new Email())
 			->from(new Address("billy.esgi@gmail.com", "support-billy@gmail.com"))
 			->to($user->getEmail())
-			->subject("Please Confirm your Email")
+			->subject("Confirmer votre email")
 			->html($htmlContent);
 		(new Mailer(new GmailSmtpTransport("billy.esgi@gmail.com", "qmrp leef onim orrj")))->send($send);
 

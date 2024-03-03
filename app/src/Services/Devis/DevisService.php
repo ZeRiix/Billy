@@ -66,17 +66,17 @@ class DevisService
 	public function sendDevis(Devis $devis)
 	{
 		if ($devis->getStatus() !== DeviStatus::EDITING) {
-			throw new \Exception("Vous ne pouvez pas envoyer un devis vérouiller.");
+			throw new \Exception("Vous ne pouvez pas envoyer un devis vérouillé.");
 		}
 		if (!isset($devis->getCommandes()[0])) {
 			throw new \Exception("Il faut minimum une commande pour envoyer un devis.");
 		}
 		$client = $devis->getClient();
 		if (!$client) {
-			throw new \Exception("Vous n'avez pas selectioner de client pour ce devis.");
+			throw new \Exception("Vous n'avez pas sélectioné de client pour ce devis.");
 		}
 		if (!$client->getEmail()) {
-			throw new \Exception("Le client selectioner na pas d'adresse email.");
+			throw new \Exception("Le client sélectioné n'a pas d'adresse email.");
 		}
 
 		// lock the devis

@@ -18,7 +18,6 @@ use App\Form\CreateOrganizationForm;
 use App\Form\EditOrganizationForm;
 use App\Form\InviteUserForm;
 use App\Form\LeaveOrganizationForm;
-use App\Form\LeaveOrganizationByForm;
 
 class OrganizationController extends AbstractController
 {
@@ -74,7 +73,7 @@ class OrganizationController extends AbstractController
 			try {
 				$organization = $organizationService->create($organization, $user);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "L'organisation a bien été créée.");
+				$this->addFlash("success", "L'organisation {$organization->getName()} a bien été créée.");
 				return $this->redirectToRoute("app_organization_get_id", [
 					"organization" => $organization->getId(),
 				]);
@@ -145,7 +144,7 @@ class OrganizationController extends AbstractController
 		Organization $organization
 	): Response {
 		if (!$this->isGranted(OrganizationVoter::INVITE, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour inviter un utilsateur");
+			$this->addFlash("error", "Vous n'avez pas les droits pour inviter un utilisateur.");
 			return $this->redirectToRoute("app_organization_get_id", [
 				"organization" => $organization->getId(),
 			]);
@@ -160,7 +159,7 @@ class OrganizationController extends AbstractController
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash(
 					"success",
-					"L'utilisateur a bien été invité dans l'organisation : " . $organization->getName() . "."
+					"L'utilisateur a bien été invité dans l'organisation : {$organization->getName()}."
 				);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -194,7 +193,10 @@ class OrganizationController extends AbstractController
 		try {
 			$organizationService->join($organization, $user);
 			$response->setStatusCode(Response::HTTP_OK);
-			$this->addFlash("success", "L'utilisateur a bien rejoint l'organisation.");
+			$this->addFlash(
+				"success",
+				"L'utilisateur a bien rejoint l'organisation : {$organization->getName()}."
+			);
 		} catch (\Exception $e) {
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 			$this->addFlash("error", $e->getMessage());
@@ -220,7 +222,10 @@ class OrganizationController extends AbstractController
 			try {
 				$organizationService->leave($user, $organization);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Vous avez bien quitté l'organisation.");
+				$this->addFlash(
+					"success",
+					"Vous avez bien quitté l'organisation : {$organization->getName()}."
+				);
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
@@ -250,7 +255,7 @@ class OrganizationController extends AbstractController
 		User $user
 	): Response {
 		if (!$this->isGranted(OrganizationVoter::REMOVE_USER, $organization)) {
-			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un utilisateur");
+			$this->addFlash("error", "Vous n'avez pas les droits pour supprimer un utilisateur.");
 			return $this->redirectToRoute("app_organization_get_id", [
 				"organization" => $organization->getId(),
 			]);

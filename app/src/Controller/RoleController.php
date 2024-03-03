@@ -26,7 +26,7 @@ class RoleController extends AbstractController
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour accéder à réation de role poue cette orgaisation."
+				"Vous n'avez pas les droits pour accéder à la création de rôle pour cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -75,7 +75,7 @@ class RoleController extends AbstractController
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour editer les roles d'un utilisarteur dans cette organisation."
+				"Vous n'avez pas les droits pour editer les rôles d'un utilisateur pour cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -94,7 +94,6 @@ class RoleController extends AbstractController
 				$response->setStatusCode(Response::HTTP_OK);
 				$this->addFlash("success", "Les droits de l'utilisateur ont été modifié.");
 			} catch (\Exception $e) {
-				die(var_dump($e->getMessage()));
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());
 			}
@@ -116,7 +115,7 @@ class RoleController extends AbstractController
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour supprimer un role dans cette organisation."
+				"Vous n'avez pas les droits pour supprimer un rôle pour cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -130,7 +129,7 @@ class RoleController extends AbstractController
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour lister les roles de cette organisation."
+				"Vous n'avez pas les droits pour lister les rôles de cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -155,7 +154,7 @@ class RoleController extends AbstractController
 		if (!$this->isGranted(RoleVoter::MANAGE, $organization)) {
 			$this->addFlash(
 				"error",
-				"Vous n'avez pas les droits pour modifier un role dans cette organisation."
+				"Vous n'avez pas les droits pour modifier un rôle pour cette organisation."
 			);
 			return $this->redirectToRoute("app_organizations");
 		}
@@ -169,7 +168,7 @@ class RoleController extends AbstractController
 			try {
 				$roleService->update($role, $organization);
 				$response->setStatusCode(Response::HTTP_OK);
-				$this->addFlash("success", "Le rôle à bien été modifiée");
+				$this->addFlash("success", "Le rôle à bien été modifié.");
 			} catch (\Exception $e) {
 				$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 				$this->addFlash("error", $e->getMessage());

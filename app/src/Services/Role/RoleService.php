@@ -44,11 +44,11 @@ class RoleService
 	{
 		// create role
 		$roleFound = $this->roleRepository->findOneBy([
-			"organization" => $organization, 
-			"name" => $role
+			"organization" => $organization,
+			"name" => $role,
 		]);
-		if($roleFound){
-			throw new Exception("Un role portant ce nom existe déjà.");
+		if ($roleFound) {
+			throw new Exception("Un rôle portant ce nom existe déjà.");
 		}
 
 		$role->setOrganization($organization);
@@ -102,15 +102,15 @@ class RoleService
 	public function update(Role $role, Organization $organization)
 	{
 		$roleFound = $this->roleRepository->findOneBy([
-			"organization" => $organization, 
-			"name" => $role
+			"organization" => $organization,
+			"name" => $role,
 		]);
-		if($roleFound && $roleFound->getId() !== $role->getId()){
-			throw new Exception("Un role portant ce nom existe déjà.");
+		if ($roleFound && $roleFound->getId() !== $role->getId()) {
+			throw new Exception("Un rôle portant ce nom existe déjà.");
 		}
 
 		if ($role->getOrganization() !== $organization) {
-			throw new \Exception("Ce role n'existe pas");
+			throw new Exception("Ce rôle n'existe pas.");
 		}
 		$this->roleRepository->save($role);
 	}
@@ -134,7 +134,6 @@ class RoleService
 	public function getRolesUserHasInOrganization(User $user, Organization $organization)
 	{
 		return $this->roleRepository->getUserRolesForOrganization($organization, $user);
-		
 	}
 
 	public function attribute(User $user, array $select)
