@@ -96,4 +96,5 @@ docker-compose up -d
 - [Strucure Menu](documentation/structure_menu.png)
 - [Design Guide](https://billy.campani.fr/design-guide)
 - [Figma](https://www.figma.com/file/eHYmv2jk89fwDYUmCmBE5N/Maquette?type=design&node-id=0:1&mode=design&t=a7yLhPvVe4JKxSV4-1)
+- [Charte Graphique](https://www.figma.com/file/eHYmv2jk89fwDYUmCmBE5N?node-id=154:2069&t=a7yLhPvVe4JKxSV4-1&locale=en&type=design)
 - <img src="documentation/structure_menu.png"/>
